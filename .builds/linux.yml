@@ -1,0 +1,45 @@
+# SPDX-License-Identifier: Unlicense OR MIT
+image: debian/testing
+packages:
+ - curl
+ - pkg-config
+ - libwayland-dev
+ - libx11-dev
+ - libx11-xcb-dev
+ - libxkbcommon-dev
+ - libxkbcommon-x11-dev
+ - libgles2-mesa-dev
+ - libegl1-mesa-dev
+ - libffi-dev
+ - libxcursor-dev
+ - libxrandr-dev
+ - libxinerama-dev
+ - libxi-dev
+ - libxxf86vm-dev
+sources:
+ - https://git.sr.ht/~eliasnaur/gio-example
+environment:
+ PATH: /home/build/sdk/go/bin:/usr/bin:/home/build/go/bin
+tasks:
+ - install_go: |
+     mkdir -p /home/build/sdk
+     cd /home/build/sdk
+     curl -Lso go.tar.gz https://golang.org/dl/go1.15.6.linux-amd64.tar.gz
+     echo "3918e6cc85e7eaaa6f859f1bdbaac772e7a825b0eb423c63d3ae68b21f84b844 go.tar.gz" | sha256sum -c -
+     tar xzf go.tar.gz
+ - test_example: |
+     cd gio-example
+     go test -race ./...
+ - check_gofmt: |
+     cd gio-example
+     test -z "$(gofmt -s -l .)"
+ - check_sign_off: |
+     set +x -e
+     cd gio-example
+     for hash in $(git log -n 20 --format="%H"); do
+        message=$(git log -1 --format=%B $hash)
+        if [[ ! "$message" =~ "Signed-off-by: " ]]; then
+            echo "unsigned commit $hash"
+            exit 1
+        fi
+     done
