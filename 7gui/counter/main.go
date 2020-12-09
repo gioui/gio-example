@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image"
 	"log"
 	"os"
 	"strconv"
@@ -125,11 +124,7 @@ func (counter *Counter) Layout(th *material.Theme, gtx layout.Context) layout.Di
 		}),
 		// We use an empty widget to add spacing between the text
 		// and the button.
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Dimensions{
-				Size: image.Pt(gtx.Px(defaultMargin), 0),
-			}
-		}),
+		layout.Rigid(layout.Spacer{Height: defaultMargin}.Layout),
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 			// For every click on the button increment the count.
 			for range counter.increase.Clicks() {

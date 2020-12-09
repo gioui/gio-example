@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image"
 	"image/color"
 	"log"
 	"os"
@@ -121,11 +120,7 @@ func (conv *Converter) Init() {
 // Layout lays out the editors.
 func (conv *Converter) Layout(th *material.Theme, gtx layout.Context) layout.Dimensions {
 	// We use an empty widget to add spacing between widgets.
-	spacer := layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-		return layout.Dimensions{
-			Size: image.Pt(gtx.Px(defaultMargin), 0),
-		}
-	})
+	spacer := layout.Rigid(layout.Spacer{Width: defaultMargin}.Layout)
 
 	// check whether the celsius value has changed.
 	if conv.Celsius.Changed() {
