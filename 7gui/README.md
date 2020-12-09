@@ -6,7 +6,16 @@ The examples are over-commented to help understand the structure better, in prac
 
 ## Counter
 
-This shows basic usage of the Gio and how to write interactions.
-The counter shows how to display a count value that increases when you press a button.
+Counter shows basic usage of Gio and how to write interactions.
 
-[Source](./counter)
+It displays a count value that increases when you press a button.
+
+[Source](./counter/main.go)
+
+## Temperature Converter
+
+Temperature conversion shows bidirectional data flow between two editable fields.
+
+It implements a bordered field that can be used to propagate values back to another field without causing update loops.
+
+[Source](./temperature/main.go)
