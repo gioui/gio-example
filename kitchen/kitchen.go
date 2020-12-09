@@ -21,6 +21,7 @@ import (
 	"gioui.org/app/headless"
 	"gioui.org/f32"
 	"gioui.org/font/gofont"
+	"gioui.org/io/pointer"
 	"gioui.org/io/router"
 	"gioui.org/io/system"
 	"gioui.org/layout"
@@ -287,7 +288,9 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 						for button.Clicked() {
 							green = !green
 						}
-						return material.Button(th, button, "Click me!").Layout(gtx)
+						dims := material.Button(th, button, "Click me!").Layout(gtx)
+						pointer.CursorNameOp{Name: pointer.CursorPointer}.Add(gtx.Ops)
+						return dims
 					})
 				}),
 				layout.Rigid(func(gtx C) D {
