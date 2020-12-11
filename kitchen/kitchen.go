@@ -54,7 +54,7 @@ func main() {
 		log.Fatal(err)
 	}
 	icon = ic
-	progressIncrementer = make(chan int)
+	progressIncrementer = make(chan float32)
 	if *screenshot != "" {
 		if err := saveScreenshot(*screenshot); err != nil {
 			fmt.Fprintf(os.Stderr, "failed to save screenshot: %v\n", err)
@@ -66,7 +66,7 @@ func main() {
 	go func() {
 		for {
 			time.Sleep(time.Second)
-			progressIncrementer <- 10
+			progressIncrementer <- 0.1
 		}
 	}()
 
@@ -138,7 +138,7 @@ func loop(w *app.Window) error {
 			}
 		case p := <-progressIncrementer:
 			progress += p
-			if progress > 100 {
+			if progress > 1 {
 				progress = 0
 			}
 			w.Invalidate()
@@ -186,8 +186,8 @@ var (
 	list              = &layout.List{
 		Axis: layout.Vertical,
 	}
-	progress            = 0
-	progressIncrementer chan int
+	progress            = float32(0)
+	progressIncrementer chan float32
 	green               = true
 	topLabel            = "Hello, Gio"
 	icon                *widget.Icon

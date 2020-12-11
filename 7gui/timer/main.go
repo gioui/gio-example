@@ -125,11 +125,11 @@ func (ui *UI) Layout(gtx layout.Context) layout.Dimensions {
 
 	// get the latest information about the timer.
 	info := ui.Timer.Info()
-	progress := 0
+	progress := float32(0)
 	if info.Duration == 0 {
-		progress = 100
+		progress = 1
 	} else {
-		progress = int(info.Progress * 100 / info.Duration)
+		progress = float32(info.Progress.Seconds() / info.Duration.Seconds())
 	}
 
 	// inset is used to add padding around the window border.
