@@ -8,6 +8,7 @@ require (
 	git.sr.ht/~whereswaldon/haptic v0.0.0-20201207220958-78675dee81dd
 	git.sr.ht/~whereswaldon/niotify v0.0.3
 	git.sr.ht/~whereswaldon/outlay v0.0.0-20201207220906-cbe824700857
+	git.sr.ht/~whereswaldon/scroll v0.0.0-20201208022259-cc815a044b0b
 	github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4
 	github.com/google/go-github/v24 v24.0.1
