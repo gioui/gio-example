@@ -8,6 +8,9 @@ import (
 	"time"
 
 	"gioui.org/app"
+	"gioui.org/example/gio-extras/outlay/fan/playing"
+	xwidget "gioui.org/example/gio-extras/outlay/fan/widget"
+	"gioui.org/example/gio-extras/outlay/fan/widget/boring"
 	"gioui.org/font/gofont"
 	"gioui.org/io/system"
 	"gioui.org/layout"
@@ -16,9 +19,6 @@ import (
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"git.sr.ht/~whereswaldon/outlay"
-	"gioui.org/example/gio-extras/outlay/fan/playing"
-	xwidget "gioui.org/example/gio-extras/outlay/fan/widget"
-	"gioui.org/example/gio-extras/outlay/fan/widget/boring"
 )
 
 type (

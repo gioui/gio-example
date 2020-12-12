@@ -50,24 +50,24 @@ func loop(w *app.Window) error {
 			}
 			gtx := layout.NewContext(&ops, e)
 			layout.Inset{
-    			Top: e.Insets.Top,
-    			Bottom: e.Insets.Bottom,
-    			Left: e.Insets.Left,
-    			Right: e.Insets.Right,
+				Top:    e.Insets.Top,
+				Bottom: e.Insets.Bottom,
+				Left:   e.Insets.Left,
+				Right:  e.Insets.Right,
 			}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 
-			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-                              layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-                                           text := "notification errors will appear here"
-                                           if err != nil {
-                                               text = err.Error()
-                                           }
-                                   return material.Body1(th, text).Layout(gtx)
-                              }),
-                              layout.Flexed(1,func(gtx layout.Context) layout.Dimensions {
-                                    return material.Button(th, &button, "Send Notification").Layout(gtx)
-                              }),
-                          )
+				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						text := "notification errors will appear here"
+						if err != nil {
+							text = err.Error()
+						}
+						return material.Body1(th, text).Layout(gtx)
+					}),
+					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+						return material.Button(th, &button, "Send Notification").Layout(gtx)
+					}),
+				)
 			})
 			e.Frame(gtx.Ops)
 			if first {
@@ -78,8 +78,8 @@ func loop(w *app.Window) error {
 						log.Printf("manager creation failed: %v", e)
 						err = e
 					}
-					for _ = range notificationRequests {
-    						log.Println("trying to send notification")
+					for range notificationRequests {
+						log.Println("trying to send notification")
 						notif, e := mgr.CreateNotification("hello!", "IS GIO OUT THERE?")
 						if e != nil {
 							log.Printf("notification send failed: %v", e)
