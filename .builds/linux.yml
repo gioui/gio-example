@@ -22,7 +22,7 @@ environment:
  PATH: /home/build/sdk/go/bin:/usr/bin:/home/build/go/bin
  github_mirror: git@github.com:gioui/gio-example
 secrets:
- - 00000000-0000-0000-0000-000000000000
+ - c9ef426e-0c06-42b1-9ee8-d7b9aad02363
 tasks:
  - install_go: |
      mkdir -p /home/build/sdk
