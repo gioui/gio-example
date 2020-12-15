@@ -20,6 +20,9 @@ sources:
  - https://git.sr.ht/~eliasnaur/gio-example
 environment:
  PATH: /home/build/sdk/go/bin:/usr/bin:/home/build/go/bin
+ github_mirror: git@github.com:gioui/gio-example
+secrets:
+ - 00000000-0000-0000-0000-000000000000
 tasks:
  - install_go: |
      mkdir -p /home/build/sdk
@@ -43,3 +46,8 @@ tasks:
             exit 1
         fi
      done
+ - mirror: |
+     # mirror to github
+     ssh-keyscan github.com > "$HOME"/.ssh/known_hosts && cd gio-example && git push --mirror "$github_mirror" || echo "failed mirroring"
+   
+
