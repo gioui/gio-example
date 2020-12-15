@@ -17,3 +17,5 @@ Post discussion to the [mailing list](https://lists.sr.ht/~eliasnaur/gio) and pa
 account is required and you can post without being subscribed.
 
 See the [contribution guide](https://gioui.org/doc/contribute) for more details.
+
+An [official GitHub mirror](https://github.com/gioui/gio-example) is available.
