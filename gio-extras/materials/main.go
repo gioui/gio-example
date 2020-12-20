@@ -13,6 +13,7 @@ import (
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -252,12 +253,14 @@ const (
 )
 
 func LayoutAboutPage(gtx C) D {
+	th := *th
+	th.Palette = currentAccent
 	return layout.Flex{
 		Alignment: layout.Middle,
 		Axis:      layout.Vertical,
 	}.Layout(gtx,
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return inset.Layout(gtx, material.Body1(th, `This library implements material design components from https://material.io using https://gioui.org.
+			return inset.Layout(gtx, material.Body1(&th, `This library implements material design components from https://material.io using https://gioui.org.
 
 Materials (this library) would not be possible without the incredible work of Elias Naur and the Gio community. Materials is maintained by Chris Waldon.
 
@@ -267,20 +270,30 @@ If you like this library and work like it, please consider sponsoring Elias and/
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return layout.Flex{Alignment: layout.Middle}.Layout(gtx,
 				layout.Flexed(settingDetailsColumnWidth, func(gtx C) D {
-					return inset.Layout(gtx, material.Body1(th, "Elias Naur can be sponsored on GitHub at "+sponsorEliasURL).Layout)
+					return inset.Layout(gtx, material.Body1(&th, "Try another theme:").Layout)
 				}),
 				layout.Flexed(settingNameColumnWidth, func(gtx C) D {
-					if eliasCopyButton.Clicked() {
-						clipboardRequests <- sponsorEliasURL
-					}
-					return inset.Layout(gtx, material.Button(th, &eliasCopyButton, "Copy Sponsorship URL").Layout)
+					return inset.Layout(gtx, material.Switch(&th, &alternatePalette).Layout)
 				}),
 			)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return layout.Flex{Alignment: layout.Middle}.Layout(gtx,
 				layout.Flexed(settingDetailsColumnWidth, func(gtx C) D {
-					return inset.Layout(gtx, material.Body1(th, "Chris Waldon can be sponsored on GitHub at "+sponsorChrisURLGitHub+" and on Liberapay at "+sponsorChrisURLLiberapay).Layout)
+					return inset.Layout(gtx, material.Body1(&th, "Elias Naur can be sponsored on GitHub at "+sponsorEliasURL).Layout)
+				}),
+				layout.Flexed(settingNameColumnWidth, func(gtx C) D {
+					if eliasCopyButton.Clicked() {
+						clipboardRequests <- sponsorEliasURL
+					}
+					return inset.Layout(gtx, material.Button(&th, &eliasCopyButton, "Copy Sponsorship URL").Layout)
+				}),
+			)
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return layout.Flex{Alignment: layout.Middle}.Layout(gtx,
+				layout.Flexed(settingDetailsColumnWidth, func(gtx C) D {
+					return inset.Layout(gtx, material.Body1(&th, "Chris Waldon can be sponsored on GitHub at "+sponsorChrisURLGitHub+" and on Liberapay at "+sponsorChrisURLLiberapay).Layout)
 				}),
 				layout.Flexed(settingNameColumnWidth, func(gtx C) D {
 					if chrisCopyButtonGH.Clicked() {
@@ -291,8 +304,8 @@ If you like this library and work like it, please consider sponsoring Elias and/
 					}
 					return inset.Layout(gtx, func(gtx C) D {
 						return layout.Flex{}.Layout(gtx,
-							layout.Flexed(.5, material.Button(th, &chrisCopyButtonGH, "Copy GitHub URL").Layout),
-							layout.Flexed(.5, material.Button(th, &chrisCopyButtonLP, "Copy Liberapay URL").Layout),
+							layout.Flexed(.5, material.Button(&th, &chrisCopyButtonGH, "Copy GitHub URL").Layout),
+							layout.Flexed(.5, material.Button(&th, &chrisCopyButtonLP, "Copy Liberapay URL").Layout),
 						)
 					})
 				}),
@@ -458,13 +471,35 @@ var (
 		Duration: time.Millisecond * 100,
 		State:    materials.Invisible,
 	}
-	nav      = materials.NewNav(th, "Navigation Drawer", "This is an example.")
+	nav      = materials.NewNav("Navigation Drawer", "This is an example.")
 	modalNav = materials.ModalNavFrom(&nav, modal)
 
-	bar = materials.NewAppBar(th, modal)
+	bar = materials.NewAppBar(modal)
 
-	inset = layout.UniformInset(unit.Dp(8))
-	th    = material.NewTheme(gofont.Collection())
+	inset              = layout.UniformInset(unit.Dp(8))
+	th                 = material.NewTheme(gofont.Collection())
+	lightPalette       = th.Palette
+	lightPaletteAccent = func() material.Palette {
+		out := th.Palette
+		out.ContrastBg = color.NRGBA{A: 0xff, R: 0x9e, G: 0x9d, B: 0x24}
+		return out
+	}()
+	altPalette = func() material.Palette {
+		out := th.Palette
+		out.Bg = color.NRGBA{R: 0xff, G: 0xfb, B: 0xe6, A: 0xff}
+		out.Fg = color.NRGBA{A: 0xff}
+		out.ContrastBg = color.NRGBA{R: 0x35, G: 0x69, B: 0x59, A: 0xff}
+		return out
+	}()
+	altPaletteAccent = func() material.Palette {
+		out := th.Palette
+		out.Bg = color.NRGBA{R: 0xff, G: 0xfb, B: 0xe6, A: 0xff}
+		out.Fg = color.NRGBA{A: 0xff}
+		out.ContrastBg = color.NRGBA{R: 0xfd, G: 0x55, B: 0x23, A: 0xff}
+		out.ContrastFg = out.Fg
+		return out
+	}()
+	currentAccent material.Palette = lightPaletteAccent
 
 	heartBtn, plusBtn, exampleOverflowState               widget.Clickable
 	red, green, blue                                      widget.Clickable
@@ -473,6 +508,7 @@ var (
 	bottomBar                                             widget.Bool
 	customNavIcon                                         widget.Bool
 	nonModalDrawer                                        widget.Bool
+	alternatePalette                                      widget.Bool
 	favorited                                             bool
 	inputAlignment                                        layout.Alignment
 	inputAlignmentEnum                                    widget.Enum
@@ -596,11 +632,19 @@ func loop(w *app.Window) error {
 						log.Printf("Overflow action selected: %v", event)
 					}
 				}
+				if alternatePalette.Value {
+					th.Palette = altPalette
+					currentAccent = altPaletteAccent
+				} else {
+					th.Palette = lightPalette
+					currentAccent = lightPaletteAccent
+				}
 				if nav.NavDestinationChanged() {
 					page := pages[nav.CurrentNavDestination().(int)]
 					bar.Title = page.Name
 					bar.SetActions(page.Actions, page.Overflow)
 				}
+				paint.Fill(gtx.Ops, th.Palette.Bg)
 				layout.Inset{
 					Top:    e.Insets.Top,
 					Bottom: e.Insets.Bottom,
@@ -611,7 +655,7 @@ func loop(w *app.Window) error {
 						return layout.Flex{}.Layout(gtx,
 							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 								gtx.Constraints.Max.X /= 3
-								return nav.Layout(gtx, &navAnim)
+								return nav.Layout(gtx, th, &navAnim)
 							}),
 							layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 								page := &pages[nav.CurrentNavDestination().(int)]
@@ -624,7 +668,7 @@ func loop(w *app.Window) error {
 						)
 					})
 					bar := layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return bar.Layout(gtx)
+						return bar.Layout(gtx, th)
 					})
 					flex := layout.Flex{Axis: layout.Vertical}
 					if bottomBar.Value {
@@ -632,7 +676,7 @@ func loop(w *app.Window) error {
 					} else {
 						flex.Layout(gtx, bar, content)
 					}
-					modal.Layout(gtx)
+					modal.Layout(gtx, th)
 					return layout.Dimensions{Size: gtx.Constraints.Max}
 				})
 				e.Frame(gtx.Ops)

@@ -3,10 +3,10 @@ module gioui.org/example
 go 1.13
 
 require (
-	gioui.org v0.0.0-20201211192434-745bb949bb45
+	gioui.org v0.0.0-20201219144351-00c4a53036ad
 	git.sr.ht/~whereswaldon/colorpicker v0.0.0-20201207220634-905cd7cc7248
 	git.sr.ht/~whereswaldon/haptic v0.0.0-20201207220958-78675dee81dd
-	git.sr.ht/~whereswaldon/materials v0.0.0-20201212021906-748774a2ad9b
+	git.sr.ht/~whereswaldon/materials v0.0.0-20201220015048-3f4fb49d1fd9
 	git.sr.ht/~whereswaldon/niotify v0.0.3
 	git.sr.ht/~whereswaldon/outlay v0.0.0-20201207220906-cbe824700857
 	git.sr.ht/~whereswaldon/scroll v0.0.0-20201208022259-cc815a044b0b
