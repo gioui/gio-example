@@ -16,7 +16,6 @@ package main
 import (
 	"image"
 	"log"
-	"math"
 	"runtime"
 	"time"
 
@@ -35,13 +34,6 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
-type glfwConfig struct {
-	Scale float32
-}
-
-type goglFunctions struct {
-}
-
 func main() {
 	// Required by the OpenGL threading model.
 	runtime.LockOSThread()
@@ -57,6 +49,7 @@ func main() {
 	glfw.WindowHint(glfw.ContextVersionMinor, 3)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+	glfw.WindowHint(glfw.CocoaRetinaFramebuffer, glfw.True)
 
 	window, err := glfw.CreateWindow(800, 600, "Gio + GLFW", nil, nil)
 	if err != nil {
@@ -90,12 +83,8 @@ func main() {
 	registerCallbacks(window, &queue)
 	for !window.ShouldClose() {
 		glfw.PollEvents()
-		scale := float32(1.0)
-		if monitor := window.GetMonitor(); monitor != nil {
-			scalex, _ := window.GetMonitor().GetContentScale()
-			scale = scalex
-		}
-		width, height := window.GetSize()
+		scale, _ := window.GetContentScale()
+		width, height := window.GetFramebufferSize()
 		sz := image.Point{X: width, Y: height}
 		ops.Reset()
 		gtx := layout.Context{
@@ -130,7 +119,8 @@ func registerCallbacks(window *glfw.Window, q *router.Router) {
 	beginning := time.Now()
 	var lastPos f32.Point
 	window.SetCursorPosCallback(func(w *glfw.Window, xpos float64, ypos float64) {
-		lastPos = f32.Point{X: float32(xpos), Y: float32(ypos)}
+		scale, _ := w.GetContentScale()
+		lastPos = f32.Point{X: float32(xpos) * scale, Y: float32(ypos) * scale}
 		q.Add(pointer.Event{
 			Type:     pointer.Move,
 			Position: lastPos,
@@ -166,12 +156,4 @@ func registerCallbacks(window *glfw.Window, q *router.Router) {
 			Buttons:  btns,
 		})
 	})
-}
-
-func (s *glfwConfig) Px(v unit.Value) int {
-	scale := s.Scale
-	if v.U == unit.UnitPx {
-		scale = 1
-	}
-	return int(math.Round(float64(scale * v.V)))
 }
