@@ -53,6 +53,10 @@ func main() {
 	defer glfw.Terminate()
 	// Gio assumes a sRGB backbuffer.
 	glfw.WindowHint(glfw.SRGBCapable, glfw.True)
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 3)
+	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
 	window, err := glfw.CreateWindow(800, 600, "Gio + GLFW", nil, nil)
 	if err != nil {
@@ -66,6 +70,10 @@ func main() {
 	}
 	// Enable sRGB.
 	gl.Enable(gl.FRAMEBUFFER_SRGB)
+	// Set up default VBA, required for the forward-compatible core profile.
+	var defVBA uint32
+	gl.GenVertexArrays(1, &defVBA)
+	gl.BindVertexArray(defVBA)
 
 	var queue router.Router
 	var ops op.Ops
