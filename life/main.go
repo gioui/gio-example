@@ -18,7 +18,7 @@ import (
 
 var (
 	// cellSizePx is the cell size in pixels.
-	cellSizePx = 5
+	cellSize = unit.Dp(5)
 	// boardSize is the count of cells in a particular dimension.
 	boardSize = image.Pt(50, 50)
 )
@@ -28,12 +28,13 @@ func main() {
 	// such that it can be used for testing.
 	ui := NewUI()
 
+	windowWidth := cellSize.Scale(float32(boardSize.X + 2))
+	windowHeight := cellSize.Scale(float32(boardSize.Y + 2))
 	// This creates a new application window and starts the UI.
 	go func() {
-		windowSize := layout.FPt(boardSize.Add(image.Pt(2, 2)).Mul(cellSizePx))
 		w := app.NewWindow(
 			app.Title("Game of Life"),
-			app.Size(unit.Px(windowSize.X), unit.Px(windowSize.Y)),
+			app.Size(windowWidth, windowHeight),
 		)
 		if err := ui.Run(w); err != nil {
 			log.Println(err)
@@ -110,7 +111,7 @@ func (ui *UI) Run(w *app.Window) error {
 func (ui *UI) Layout(gtx layout.Context) layout.Dimensions {
 	return layout.Center.Layout(gtx,
 		BoardStyle{
-			CellSizePx: cellSizePx,
+			CellSizePx: gtx.Px(cellSize),
 			Board:      ui.Board,
 		}.Layout,
 	)
