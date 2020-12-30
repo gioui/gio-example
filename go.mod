@@ -16,4 +16,6 @@ require (
 	golang.org/x/exp v0.0.0-20201210212021-a20c86df00b4
 	golang.org/x/image v0.0.0-20201208152932-35266b937fa6
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
+	gonum.org/v1/gonum v0.8.2
+	gonum.org/v1/plot v0.8.1
 )
