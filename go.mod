@@ -3,7 +3,7 @@ module gioui.org/example
 go 1.13
 
 require (
-	gioui.org v0.0.0-20201219144351-00c4a53036ad
+	gioui.org v0.0.0-20201231162135-d23514fd5825
 	git.sr.ht/~whereswaldon/colorpicker v0.0.0-20201207220634-905cd7cc7248
 	git.sr.ht/~whereswaldon/haptic v0.0.0-20201207220958-78675dee81dd
 	git.sr.ht/~whereswaldon/materials v0.0.0-20201220015048-3f4fb49d1fd9

@@ -99,9 +99,8 @@ func main() {
 		}
 		draw(gtx, th)
 		gpu.Collect(sz, gtx.Ops)
-		gpu.BeginFrame()
+		gpu.Frame()
 		queue.Frame(gtx.Ops)
-		gpu.EndFrame()
 		window.SwapBuffers()
 	}
 }
