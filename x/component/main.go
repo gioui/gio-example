@@ -19,7 +19,7 @@ import (
 	"gioui.org/widget/material"
 	"golang.org/x/exp/shiny/materialdesign/icons"
 
-	"git.sr.ht/~whereswaldon/materials"
+	"gioui.org/x/component"
 )
 
 type (
@@ -100,15 +100,15 @@ The controls below allow you to see the various features available in our App Ba
 				layout.Flexed(settingDetailsColumnWidth, func(gtx C) D {
 					if contextBtn.Clicked() {
 						bar.SetContextualActions(
-							[]materials.AppBarAction{
-								materials.SimpleIconAction(th, &red, HeartIcon,
-									materials.OverflowAction{
+							[]component.AppBarAction{
+								component.SimpleIconAction(th, &red, HeartIcon,
+									component.OverflowAction{
 										Name: "House",
 										Tag:  &red,
 									},
 								),
 							},
-							[]materials.OverflowAction{
+							[]component.OverflowAction{
 								{
 									Name: "foo",
 									Tag:  &blue,
@@ -133,9 +133,9 @@ The controls below allow you to see the various features available in our App Ba
 				layout.Flexed(settingDetailsColumnWidth, func(gtx C) D {
 					if bottomBar.Changed() {
 						if bottomBar.Value {
-							nav.Anchor = materials.Bottom
+							nav.Anchor = component.Bottom
 						} else {
-							nav.Anchor = materials.Top
+							nav.Anchor = component.Top
 						}
 					}
 
@@ -452,9 +452,9 @@ func LayoutTextFieldPage(gtx C) D {
 
 type Page struct {
 	layout func(layout.Context) layout.Dimensions
-	materials.NavItem
-	Actions  []materials.AppBarAction
-	Overflow []materials.OverflowAction
+	component.NavItem
+	Actions  []component.AppBarAction
+	Overflow []component.OverflowAction
 
 	// laying each page out within a layout.List enables scrolling for the page
 	// content.
@@ -466,15 +466,15 @@ var (
 	clipboardRequests = make(chan string, 1)
 
 	// initialize modal layer to draw modal components
-	modal   = materials.NewModal()
-	navAnim = materials.VisibilityAnimation{
+	modal   = component.NewModal()
+	navAnim = component.VisibilityAnimation{
 		Duration: time.Millisecond * 100,
-		State:    materials.Invisible,
+		State:    component.Invisible,
 	}
-	nav      = materials.NewNav("Navigation Drawer", "This is an example.")
-	modalNav = materials.ModalNavFrom(&nav, modal)
+	nav      = component.NewNav("Navigation Drawer", "This is an example.")
+	modalNav = component.ModalNavFrom(&nav, modal)
 
-	bar = materials.NewAppBar(modal)
+	bar = component.NewAppBar(modal)
 
 	inset              = layout.UniformInset(unit.Dp(8))
 	th                 = material.NewTheme(gofont.Collection())
@@ -512,27 +512,27 @@ var (
 	favorited                                             bool
 	inputAlignment                                        layout.Alignment
 	inputAlignmentEnum                                    widget.Enum
-	nameInput                                             materials.TextField
-	addressInput                                          materials.TextField
-	priceInput                                            materials.TextField
-	tweetInput                                            materials.TextField
-	numberInput                                           materials.TextField
+	nameInput                                             component.TextField
+	addressInput                                          component.TextField
+	priceInput                                            component.TextField
+	tweetInput                                            component.TextField
+	numberInput                                           component.TextField
 
 	pages = []Page{
 		{
-			NavItem: materials.NavItem{
+			NavItem: component.NavItem{
 				Name: "App Bar Features",
 				Icon: HomeIcon,
 			},
 			layout: LayoutAppBarPage,
-			Actions: []materials.AppBarAction{
+			Actions: []component.AppBarAction{
 				{
-					OverflowAction: materials.OverflowAction{
+					OverflowAction: component.OverflowAction{
 						Name: "Favorite",
 						Tag:  &heartBtn,
 					},
 					Layout: func(gtx layout.Context, bg, fg color.NRGBA) layout.Dimensions {
-						btn := materials.SimpleIconButton(th, &heartBtn, HeartIcon)
+						btn := component.SimpleIconButton(th, &heartBtn, HeartIcon)
 						btn.Background = bg
 						if favorited {
 							btn.Color = color.NRGBA{R: 200, A: 255}
@@ -542,14 +542,14 @@ var (
 						return btn.Layout(gtx)
 					},
 				},
-				materials.SimpleIconAction(th, &plusBtn, PlusIcon,
-					materials.OverflowAction{
+				component.SimpleIconAction(th, &plusBtn, PlusIcon,
+					component.OverflowAction{
 						Name: "Create",
 						Tag:  &plusBtn,
 					},
 				),
 			},
-			Overflow: []materials.OverflowAction{
+			Overflow: []component.OverflowAction{
 				{
 					Name: "Example 1",
 					Tag:  &exampleOverflowState,
@@ -561,26 +561,26 @@ var (
 			},
 		},
 		{
-			NavItem: materials.NavItem{
+			NavItem: component.NavItem{
 				Name: "Nav Drawer Features",
 				Icon: SettingsIcon,
 			},
 			layout: LayoutNavDrawerPage,
 		},
 		{
-			NavItem: materials.NavItem{
+			NavItem: component.NavItem{
 				Name: "Text Field Features",
 				Icon: EditIcon,
 			},
 			layout: LayoutTextFieldPage,
 		},
 		{
-			NavItem: materials.NavItem{
+			NavItem: component.NavItem{
 				Name: "About this library",
 				Icon: OtherIcon,
 			},
 			layout:  LayoutAboutPage,
-			Actions: []materials.AppBarAction{},
+			Actions: []component.AppBarAction{},
 		},
 	}
 )
@@ -590,8 +590,8 @@ func loop(w *app.Window) error {
 
 	bar.NavigationIcon = MenuIcon
 	if barOnBottom {
-		bar.Anchor = materials.Bottom
-		nav.Anchor = materials.Bottom
+		bar.Anchor = component.Bottom
+		nav.Anchor = component.Bottom
 	}
 
 	// assign navigation tags and configure navigation bar with all pages
@@ -619,16 +619,16 @@ func loop(w *app.Window) error {
 				gtx := layout.NewContext(&ops, e)
 				for _, event := range bar.Events(gtx) {
 					switch event := event.(type) {
-					case materials.AppBarNavigationClicked:
+					case component.AppBarNavigationClicked:
 						if nonModalDrawer.Value {
 							navAnim.ToggleVisibility(gtx.Now)
 						} else {
 							modalNav.Appear(gtx.Now)
 							navAnim.Disappear(gtx.Now)
 						}
-					case materials.AppBarContextMenuDismissed:
+					case component.AppBarContextMenuDismissed:
 						log.Printf("Context menu dismissed: %v", event)
-					case materials.AppBarOverflowActionClicked:
+					case component.AppBarOverflowActionClicked:
 						log.Printf("Overflow action selected: %v", event)
 					}
 				}

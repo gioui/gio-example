@@ -4,8 +4,8 @@ import (
 	"image/color"
 	"math"
 
-	"gioui.org/example/gio-extras/outlay/fan/playing"
-	xwidget "gioui.org/example/gio-extras/outlay/fan/widget"
+	"gioui.org/example/x/outlay/fan/playing"
+	xwidget "gioui.org/example/x/outlay/fan/widget"
 	"gioui.org/f32"
 	"gioui.org/layout"
 	"gioui.org/op"

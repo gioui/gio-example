@@ -15,7 +15,7 @@ import (
 	"gioui.org/widget/material"
 
 	"gioui.org/font/gofont"
-	"git.sr.ht/~whereswaldon/haptic"
+	"gioui.org/x/haptic"
 )
 
 var buzzer *haptic.Buzzer

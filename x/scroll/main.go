@@ -15,7 +15,7 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
-	"git.sr.ht/~whereswaldon/scroll"
+	"gioui.org/x/scroll"
 
 	"gioui.org/font/gofont"
 )

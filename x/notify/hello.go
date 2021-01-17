@@ -17,7 +17,7 @@ import (
 	//	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
-	"git.sr.ht/~whereswaldon/niotify"
+	"gioui.org/x/notify"
 
 	"gioui.org/font/gofont"
 )
@@ -73,7 +73,7 @@ func loop(w *app.Window) error {
 			if first {
 				first = false
 				go func() {
-					mgr, e := niotify.NewManager()
+					mgr, e := notify.NewManager()
 					if e != nil {
 						log.Printf("manager creation failed: %v", e)
 						err = e

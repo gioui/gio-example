@@ -20,7 +20,7 @@ import (
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 
-	"git.sr.ht/~whereswaldon/outlay"
+	"gioui.org/x/outlay"
 )
 
 func main() {

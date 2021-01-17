@@ -14,7 +14,7 @@ import (
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/widget/material"
-	"git.sr.ht/~whereswaldon/colorpicker"
+	"gioui.org/x/colorpicker"
 )
 
 func main() {
