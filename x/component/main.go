@@ -262,9 +262,6 @@ func LayoutAboutPage(gtx C) D {
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return inset.Layout(gtx, material.Body1(&th, `This library implements material design components from https://material.io using https://gioui.org.
 
-Materials (this library) would not be possible without the incredible work of Elias Naur and the Gio community. Materials is maintained by Chris Waldon.
-
-
 If you like this library and work like it, please consider sponsoring Elias and/or Chris!`).Layout)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
