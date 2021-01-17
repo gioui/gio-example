@@ -323,14 +323,14 @@ func layoutSelectionLayer(gtx C) D {
 	if selecting {
 		paint.FillShape(gtx.Ops, color.NRGBA{R: 255, A: 100}, clip.Rect(selected).Op())
 	}
-	stack := op.Push(gtx.Ops)
+	stack := op.Save(gtx.Ops)
 	pointer.Rect(image.Rectangle{Max: gtx.Constraints.Max}).Add(gtx.Ops)
 	pointer.CursorNameOp{Name: pointer.CursorCrossHair}.Add(gtx.Ops)
 	pointer.InputOp{
 		Tag:   &selected,
 		Types: pointer.Press | pointer.Release | pointer.Drag,
 	}.Add(gtx.Ops)
-	stack.Pop()
+	stack.Load()
 
 	return D{Size: gtx.Constraints.Max}
 }
@@ -350,7 +350,7 @@ type (
 // Layout renders the star into the gtx assuming that it is visible within the
 // provided viewport. Stars outside of the viewport will be skipped.
 func (s Star) Layout(gtx layout.Context, view *viewport) layout.Dimensions {
-	defer op.Push(gtx.Ops).Pop()
+	defer op.Save(gtx.Ops).Load()
 	px := gtx.Px(s.Size)
 	if view != nil {
 		if s.X < view.offset.X || s.X > view.offset.X+view.size.X {

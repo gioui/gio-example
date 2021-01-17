@@ -82,7 +82,7 @@ func (c *CardStyle) Layout(gtx C) D {
 					}),
 					layout.Stacked(func(gtx C) D {
 						return layout.UniformInset(unit.Dp(2)).Layout(gtx, func(gtx C) D {
-							defer op.Push(gtx.Ops).Pop()
+							defer op.Save(gtx.Ops).Load()
 							gtx.Constraints.Min = gtx.Constraints.Max
 							origin := f32.Point{
 								X: float32(gtx.Constraints.Max.X / 2),

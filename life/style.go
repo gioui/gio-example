@@ -22,7 +22,7 @@ type BoardStyle struct {
 
 // Layout draws the Board and accepts input for adding alive cells.
 func (board BoardStyle) Layout(gtx layout.Context) layout.Dimensions {
-	defer op.Push(gtx.Ops).Pop()
+	defer op.Save(gtx.Ops).Load()
 
 	// Calculate the board size based on the cell size in pixels.
 	size := board.Size.Mul(board.CellSizePx)

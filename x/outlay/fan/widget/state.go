@@ -39,7 +39,7 @@ func (c *HoverState) Hovering(gtx C) bool {
 }
 
 func (c *HoverState) Layout(gtx C) D {
-	defer op.Push(gtx.Ops).Pop()
+	defer op.Save(gtx.Ops).Load()
 	pointer.Rect(image.Rectangle{Max: gtx.Constraints.Max}).Add(gtx.Ops)
 	pointer.InputOp{
 		Tag:   c,

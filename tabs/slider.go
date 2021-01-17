@@ -89,7 +89,7 @@ func (s *Slider) Layout(gtx layout.Context, w layout.Widget) layout.Dimensions {
 		return dims
 	}
 
-	defer op.Push(gtx.Ops).Pop()
+	defer op.Save(gtx.Ops).Load()
 
 	offset := smooth(s.offset)
 
