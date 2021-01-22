@@ -120,7 +120,7 @@ func registerCallbacks(window *glfw.Window, q *router.Router) {
 	window.SetCursorPosCallback(func(w *glfw.Window, xpos float64, ypos float64) {
 		scale, _ := w.GetContentScale()
 		lastPos = f32.Point{X: float32(xpos) * scale, Y: float32(ypos) * scale}
-		q.Add(pointer.Event{
+		q.Queue(pointer.Event{
 			Type:     pointer.Move,
 			Position: lastPos,
 			Source:   pointer.Mouse,
@@ -147,7 +147,7 @@ func registerCallbacks(window *glfw.Window, q *router.Router) {
 			typ = pointer.Press
 			btns |= btn
 		}
-		q.Add(pointer.Event{
+		q.Queue(pointer.Event{
 			Type:     typ,
 			Source:   pointer.Mouse,
 			Time:     time.Since(beginning),
