@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Unlicense OR MIT
 
 // GLFW doesn't build on OpenBSD and FreeBSD.
-// +build !openbsd,!freebsd,!windows,!android,!ios,!js
+// +build !openbsd,!freebsd,!android,!ios,!js
 
 // The glfw example demonstrates integration of Gio into a foreign
 // windowing and rendering library, in this case GLFW
@@ -31,9 +31,14 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/go-gl/gl/v3.1/gles2"
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
+
+// desktopGL is true when the (core, desktop) OpenGL should
+// be used, false for OpenGL ES.
+const desktopGL = runtime.GOOS == "darwin"
 
 func main() {
 	// Required by the OpenGL threading model.
@@ -46,11 +51,19 @@ func main() {
 	defer glfw.Terminate()
 	// Gio assumes a sRGB backbuffer.
 	glfw.WindowHint(glfw.SRGBCapable, glfw.True)
-	glfw.WindowHint(glfw.ContextVersionMajor, 3)
-	glfw.WindowHint(glfw.ContextVersionMinor, 3)
-	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+	glfw.WindowHint(glfw.ScaleToMonitor, glfw.True)
 	glfw.WindowHint(glfw.CocoaRetinaFramebuffer, glfw.True)
+	if desktopGL {
+		glfw.WindowHint(glfw.ContextVersionMajor, 3)
+		glfw.WindowHint(glfw.ContextVersionMinor, 3)
+		glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+		glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+	} else {
+		glfw.WindowHint(glfw.ContextCreationAPI, glfw.EGLContextAPI)
+		glfw.WindowHint(glfw.ClientAPI, glfw.OpenGLESAPI)
+		glfw.WindowHint(glfw.ContextVersionMajor, 3)
+		glfw.WindowHint(glfw.ContextVersionMinor, 0)
+	}
 
 	window, err := glfw.CreateWindow(800, 600, "Gio + GLFW", nil, nil)
 	if err != nil {
@@ -59,15 +72,22 @@ func main() {
 
 	window.MakeContextCurrent()
 
-	if err := gl.Init(); err != nil {
-		log.Fatal(err)
+	if desktopGL {
+		err = gl.Init()
+	} else {
+		err = gles2.Init()
 	}
-	// Enable sRGB.
-	gl.Enable(gl.FRAMEBUFFER_SRGB)
-	// Set up default VBA, required for the forward-compatible core profile.
-	var defVBA uint32
-	gl.GenVertexArrays(1, &defVBA)
-	gl.BindVertexArray(defVBA)
+	if err != nil {
+		log.Fatalf("gl.Init failed: %v", err)
+	}
+	if desktopGL {
+		// Enable sRGB.
+		gl.Enable(gl.FRAMEBUFFER_SRGB)
+		// Set up default VBA, required for the forward-compatible core profile.
+		var defVBA uint32
+		gl.GenVertexArrays(1, &defVBA)
+		gl.BindVertexArray(defVBA)
+	}
 
 	var queue router.Router
 	var ops op.Ops
@@ -115,8 +135,13 @@ var (
 // drawOpenGL demonstrates the direct use of OpenGL commands
 // to draw non-Gio content below the Gio UI.
 func drawOpenGL() {
-	gl.ClearColor(0, float32(green), 0, 1)
-	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	if desktopGL {
+		gl.ClearColor(0, float32(green), 0, 1)
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	} else {
+		gles2.ClearColor(0, float32(green), 0, 1)
+		gles2.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	}
 }
 
 // handleCursorEvent handles cursor events not processed by Gio.
@@ -144,7 +169,12 @@ func registerCallbacks(window *glfw.Window, q *router.Router) {
 	beginning := time.Now()
 	var lastPos f32.Point
 	window.SetCursorPosCallback(func(w *glfw.Window, xpos float64, ypos float64) {
-		scale, _ := w.GetContentScale()
+		scale := float32(1)
+		if runtime.GOOS == "darwin" {
+			// macOS cursor positions are not scaled to the underlying framebuffer
+			// size when CocoaRetinaFramebuffer is true.
+			scale, _ = w.GetContentScale()
+		}
 		lastPos = f32.Point{X: float32(xpos) * scale, Y: float32(ypos) * scale}
 		e := pointer.Event{
 			Type:     pointer.Move,
