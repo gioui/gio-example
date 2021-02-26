@@ -3,8 +3,8 @@ module gioui.org/example
 go 1.13
 
 require (
-	gioui.org v0.0.0-20210127212131-b698c8ed8229
-	gioui.org/x v0.0.0-20210120222453-b55819bc712b
+	gioui.org v0.0.0-20210225120118-f6fba7388544
+	gioui.org/x v0.0.0-20210226015410-958111222865
 	gioui.org/x/haptic v0.0.0-20210120222453-b55819bc712b
 	gioui.org/x/notify v0.0.0-20210120222453-b55819bc712b
 	github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7
