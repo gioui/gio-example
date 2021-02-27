@@ -133,7 +133,14 @@ func loop(w *app.Window) error {
 					}
 				}
 
-				transformedKitchen(gtx, th)
+				layout.Inset{
+					Bottom: e.Insets.Bottom,
+					Left:   e.Insets.Left,
+					Right:  e.Insets.Right,
+					Top:    e.Insets.Top,
+				}.Layout(gtx, func(gtx C) D {
+					return transformedKitchen(gtx, th)
+				})
 				e.Frame(gtx.Ops)
 			}
 		case p := <-progressIncrementer:
