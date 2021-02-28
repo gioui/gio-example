@@ -613,9 +613,7 @@ func loop(w *app.Window) error {
 			case system.DestroyEvent:
 				return e.Err
 			case system.FrameEvent:
-				skipInset := e
-				skipInset.Insets = system.Insets{}
-				gtx := layout.NewContext(&ops, skipInset)
+				gtx := layout.NewContext(&ops, e)
 				for _, event := range bar.Events(gtx) {
 					switch event := event.(type) {
 					case component.AppBarNavigationClicked:
