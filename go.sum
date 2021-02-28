@@ -33,8 +33,9 @@ cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20201218220906-28db891af037/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 gioui.org v0.0.0-20210116085804-99bfa6a33cdf/go.mod h1:Y+uS7hHMvku1Q+ooaoq6fYD5B2LGoT8JtFgvmYmRzTw=
-gioui.org v0.0.0-20210225120118-f6fba7388544 h1:xQePGQEyaupU5lfPe3//VUVZLXNsjALGAppEVAEzRh8=
 gioui.org v0.0.0-20210225120118-f6fba7388544/go.mod h1:Y+uS7hHMvku1Q+ooaoq6fYD5B2LGoT8JtFgvmYmRzTw=
+gioui.org v0.0.0-20210228180843-e1248651c871 h1:LDHDc7aDPdzf9I5MfEnSRCSJj6W0Nf6Dl9cLOGj4/ew=
+gioui.org v0.0.0-20210228180843-e1248651c871/go.mod h1:Y+uS7hHMvku1Q+ooaoq6fYD5B2LGoT8JtFgvmYmRzTw=
 gioui.org/x v0.0.0-20210226015410-958111222865 h1:+Oqlmqi1rRugWA//OMKrQsdulyQB6j4QRo5Dm13jcqs=
 gioui.org/x v0.0.0-20210226015410-958111222865/go.mod h1:y7BpIia0O/1wgqVHlfTBaoOCcR1Xm/psmu/1M9AfX9E=
 gioui.org/x/haptic v0.0.0-20210120222453-b55819bc712b h1:3lHNKrTHXJCXhtmCVdTInlNuay3jSQ0SVi9JNQTj5yM=

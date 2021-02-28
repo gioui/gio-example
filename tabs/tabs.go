@@ -45,15 +45,7 @@ func loop(w *app.Window) error {
 			return e.Err
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, e)
-			layout.Inset{
-   				Bottom: e.Insets.Bottom,
-   				Left:   e.Insets.Left,
-    				Right:  e.Insets.Right,
-    				Top:    e.Insets.Top,
-			}.Layout(gtx, func(gtx C) D {
-   		 		return drawTabs(gtx, th)
-		})
-		
+			drawTabs(gtx, th)
 			e.Frame(gtx.Ops)
 		}
 	}

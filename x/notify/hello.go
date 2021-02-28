@@ -49,26 +49,20 @@ func loop(w *app.Window) error {
 				notificationRequests <- struct{}{}
 			}
 			gtx := layout.NewContext(&ops, e)
-			layout.Inset{
-				Top:    e.Insets.Top,
-				Bottom: e.Insets.Bottom,
-				Left:   e.Insets.Left,
-				Right:  e.Insets.Right,
-			}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 
-				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						text := "notification errors will appear here"
-						if err != nil {
-							text = err.Error()
-						}
-						return material.Body1(th, text).Layout(gtx)
-					}),
-					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-						return material.Button(th, &button, "Send Notification").Layout(gtx)
-					}),
-				)
-			})
+			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					text := "notification errors will appear here"
+					if err != nil {
+						text = err.Error()
+					}
+					return material.Body1(th, text).Layout(gtx)
+				}),
+				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+					return material.Button(th, &button, "Send Notification").Layout(gtx)
+				}),
+			)
+
 			e.Frame(gtx.Ops)
 			if first {
 				first = false
