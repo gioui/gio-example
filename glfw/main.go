@@ -100,6 +100,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer gpu.Release()
 
 	registerCallbacks(window, &queue)
 	for !window.ShouldClose() {
