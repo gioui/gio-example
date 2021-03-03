@@ -1,6 +1,6 @@
 module gioui.org/example
 
-go 1.13
+go 1.16
 
 require (
 	gioui.org v0.0.0-20210303100841-ffb26b0e1709
