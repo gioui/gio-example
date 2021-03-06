@@ -18,9 +18,9 @@ import (
 	"time"
 
 	"gioui.org/app"
-	"gioui.org/app/headless"
 	"gioui.org/f32"
 	"gioui.org/font/gofont"
+	"gioui.org/gpu/headless"
 	"gioui.org/io/pointer"
 	"gioui.org/io/router"
 	"gioui.org/io/system"

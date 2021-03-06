@@ -23,7 +23,6 @@ import (
 	"gioui.org/f32"
 	"gioui.org/font/gofont"
 	"gioui.org/gpu"
-	giogl "gioui.org/gpu/gl"
 	"gioui.org/io/pointer"
 	"gioui.org/io/router"
 	"gioui.org/layout"
@@ -92,11 +91,7 @@ func main() {
 	var queue router.Router
 	var ops op.Ops
 	th := material.NewTheme(gofont.Collection())
-	backend, err := giogl.NewBackend(nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	gpu, err := gpu.New(backend)
+	gpu, err := gpu.New(gpu.OpenGL{})
 	if err != nil {
 		log.Fatal(err)
 	}
