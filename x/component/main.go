@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"image"
 	"image/color"
 	"log"
 	"os"
@@ -13,6 +15,7 @@ import (
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget"
@@ -29,6 +32,26 @@ type (
 
 var MenuIcon *widget.Icon = func() *widget.Icon {
 	icon, _ := widget.NewIcon(icons.NavigationMenu)
+	return icon
+}()
+
+var RestaurantMenuIcon *widget.Icon = func() *widget.Icon {
+	icon, _ := widget.NewIcon(icons.MapsRestaurantMenu)
+	return icon
+}()
+
+var AccountBalanceIcon *widget.Icon = func() *widget.Icon {
+	icon, _ := widget.NewIcon(icons.ActionAccountBalance)
+	return icon
+}()
+
+var AccountBoxIcon *widget.Icon = func() *widget.Icon {
+	icon, _ := widget.NewIcon(icons.ActionAccountBox)
+	return icon
+}()
+
+var CartIcon *widget.Icon = func() *widget.Icon {
+	icon, _ := widget.NewIcon(icons.ActionAddShoppingCart)
 	return icon
 }()
 
@@ -101,7 +124,7 @@ The controls below allow you to see the various features available in our App Ba
 					if contextBtn.Clicked() {
 						bar.SetContextualActions(
 							[]component.AppBarAction{
-								component.SimpleIconAction(th, &red, HeartIcon,
+								component.SimpleIconAction(&red, HeartIcon,
 									component.OverflowAction{
 										Name: "House",
 										Tag:  &red,
@@ -447,6 +470,76 @@ func LayoutTextFieldPage(gtx C) D {
 	)
 }
 
+func LayoutMenuPage(gtx C) D {
+	if redButton.Clicked() {
+		leftFillColor = color.NRGBA{R: 200, A: 255}
+	}
+	if greenButton.Clicked() {
+		leftFillColor = color.NRGBA{G: 200, A: 255}
+	}
+	if blueButton.Clicked() {
+		leftFillColor = color.NRGBA{B: 200, A: 255}
+	}
+	th := *th
+	th.Palette = currentAccent
+	return layout.Flex{}.Layout(gtx,
+		layout.Flexed(.5, func(gtx C) D {
+			return widget.Border{
+				Color: color.NRGBA{A: 255},
+				Width: unit.Dp(2),
+			}.Layout(gtx, func(gtx C) D {
+				return layout.Stack{}.Layout(gtx,
+					layout.Stacked(func(gtx C) D {
+						max := image.Pt(gtx.Constraints.Max.X, gtx.Constraints.Max.X)
+						rect := image.Rectangle{
+							Max: max,
+						}
+						paint.FillShape(gtx.Ops, leftFillColor, clip.Rect(rect).Op())
+						return D{Size: max}
+					}),
+					layout.Stacked(func(gtx C) D {
+						return layout.UniformInset(unit.Dp(12)).Layout(gtx, func(gtx C) D {
+							return component.Surface(&th).Layout(gtx, func(gtx C) D {
+								return layout.UniformInset(unit.Dp(12)).Layout(gtx, material.Body1(&th, "Right-click anywhere in this region").Layout)
+							})
+						})
+					}),
+					layout.Expanded(func(gtx C) D {
+						return leftContextArea.Layout(gtx, func(gtx C) D {
+							gtx.Constraints.Min = image.Point{}
+							return component.Menu(&th, &leftMenu).Layout(gtx)
+						})
+					}),
+				)
+			})
+		}),
+		layout.Flexed(.5, func(gtx C) D {
+			gtx.Constraints.Max.Y = gtx.Constraints.Max.X
+			return layout.UniformInset(unit.Dp(12)).Layout(gtx, func(gtx C) D {
+				menuDemoList.Axis = layout.Vertical
+				return menuDemoList.Layout(gtx, 30, func(gtx C, index int) D {
+					if len(menuDemoListStates) < index+1 {
+						menuDemoListStates = append(menuDemoListStates, component.ContextArea{})
+					}
+					state := &menuDemoListStates[index]
+					return layout.Stack{}.Layout(gtx,
+						layout.Stacked(func(gtx C) D {
+							gtx.Constraints.Min.X = gtx.Constraints.Max.X
+							return layout.UniformInset(unit.Dp(8)).Layout(gtx, material.Body1(&th, fmt.Sprintf("Item %d", index)).Layout)
+						}),
+						layout.Expanded(func(gtx C) D {
+							return state.Layout(gtx, func(gtx C) D {
+								gtx.Constraints.Min.X = 0
+								return component.Menu(&th, &rightMenu).Layout(gtx)
+							})
+						}),
+					)
+				})
+			})
+		}),
+	)
+}
+
 type Page struct {
 	layout func(layout.Context) layout.Dimensions
 	component.NavItem
@@ -515,6 +608,61 @@ var (
 	tweetInput                                            component.TextField
 	numberInput                                           component.TextField
 
+	leftContextArea                          component.ContextArea
+	redButton, greenButton, blueButton       widget.Clickable
+	balanceButton, accountButton, cartButton widget.Clickable
+	leftFillColor                            color.NRGBA
+	menuDemoList                             layout.List
+	menuDemoListStates                       []component.ContextArea
+	rightMenu                                component.MenuState = component.MenuState{
+		Options: []func(gtx C) D{
+			func(gtx C) D {
+				item := component.MenuItem(th, &balanceButton, "Balance")
+				item.Icon = AccountBalanceIcon
+				item.Hint = component.MenuHintText(th, "Hint")
+				return item.Layout(gtx)
+			},
+			func(gtx C) D {
+				item := component.MenuItem(th, &accountButton, "Account")
+				item.Icon = AccountBoxIcon
+				item.Hint = component.MenuHintText(th, "Hint")
+				return item.Layout(gtx)
+			},
+			func(gtx C) D {
+				item := component.MenuItem(th, &cartButton, "Cart")
+				item.Icon = CartIcon
+				item.Hint = component.MenuHintText(th, "Hint")
+				return item.Layout(gtx)
+			},
+		},
+	}
+	leftMenu component.MenuState = component.MenuState{
+		Options: []func(gtx C) D{
+			func(gtx C) D {
+				return layout.Inset{
+					Left:  unit.Dp(16),
+					Right: unit.Dp(16),
+				}.Layout(gtx, material.Body1(th, "Menus support arbitrary widgets.\nThis is just a label!\nHere's a loader:").Layout)
+			},
+			component.Divider(th).Layout,
+			func(gtx C) D {
+				return layout.Inset{
+					Top:    unit.Dp(4),
+					Bottom: unit.Dp(4),
+					Left:   unit.Dp(16),
+					Right:  unit.Dp(16),
+				}.Layout(gtx, func(gtx C) D {
+					gtx.Constraints.Max.X = gtx.Px(unit.Dp(24))
+					gtx.Constraints.Max.Y = gtx.Px(unit.Dp(24))
+					return material.Loader(th).Layout(gtx)
+				})
+			},
+			component.SubheadingDivider(th, "Colors").Layout,
+			component.MenuItem(th, &redButton, "Red").Layout,
+			component.MenuItem(th, &greenButton, "Green").Layout,
+			component.MenuItem(th, &blueButton, "Blue").Layout,
+		},
+	}
 	pages = []Page{
 		{
 			NavItem: component.NavItem{
@@ -529,7 +677,7 @@ var (
 						Tag:  &heartBtn,
 					},
 					Layout: func(gtx layout.Context, bg, fg color.NRGBA) layout.Dimensions {
-						btn := component.SimpleIconButton(th, &heartBtn, HeartIcon)
+						btn := component.SimpleIconButton(bg, fg, &heartBtn, HeartIcon)
 						btn.Background = bg
 						if favorited {
 							btn.Color = color.NRGBA{R: 200, A: 255}
@@ -539,7 +687,7 @@ var (
 						return btn.Layout(gtx)
 					},
 				},
-				component.SimpleIconAction(th, &plusBtn, PlusIcon,
+				component.SimpleIconAction(&plusBtn, PlusIcon,
 					component.OverflowAction{
 						Name: "Create",
 						Tag:  &plusBtn,
@@ -570,6 +718,13 @@ var (
 				Icon: EditIcon,
 			},
 			layout: LayoutTextFieldPage,
+		},
+		{
+			NavItem: component.NavItem{
+				Name: "Menu Features",
+				Icon: RestaurantMenuIcon,
+			},
+			layout: LayoutMenuPage,
 		},
 		{
 			NavItem: component.NavItem{
