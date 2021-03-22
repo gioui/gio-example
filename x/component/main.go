@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"image"
 	"image/color"
 	"log"
 	"os"
@@ -13,6 +14,7 @@ import (
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget"
@@ -447,6 +449,48 @@ func LayoutTextFieldPage(gtx C) D {
 	)
 }
 
+func LayoutMenuPage(gtx C) D {
+	if redButton.Clicked() {
+		leftFillColor = color.NRGBA{R: 200, A: 255}
+	}
+	if greenButton.Clicked() {
+		leftFillColor = color.NRGBA{G: 200, A: 255}
+	}
+	if blueButton.Clicked() {
+		leftFillColor = color.NRGBA{B: 200, A: 255}
+	}
+	th := *th
+	th.Palette = currentAccent
+	return layout.Flex{}.Layout(gtx,
+		layout.Flexed(.5, func(gtx C) D {
+			return widget.Border{
+				Color: color.NRGBA{A: 255},
+				Width: unit.Dp(2),
+			}.Layout(gtx, func(gtx C) D {
+				return layout.Stack{}.Layout(gtx,
+					layout.Stacked(func(gtx C) D {
+						rect := image.Rectangle{Max: gtx.Constraints.Max}
+						paint.FillShape(gtx.Ops, leftFillColor, clip.Rect(rect).Op())
+						return D{Size: gtx.Constraints.Max}
+					}),
+					layout.Expanded(func(gtx C) D {
+						return layout.UniformInset(unit.Dp(12)).Layout(gtx, material.Body1(&th, "Right-click anywhere in this region").Layout)
+					}),
+					layout.Expanded(func(gtx C) D {
+						return leftContextArea.Layout(gtx, func(gtx C) D {
+							gtx.Constraints.Min = image.Point{}
+							return component.Menu(&th, &leftMenu).Layout(gtx)
+						})
+					}),
+				)
+			})
+		}),
+		layout.Flexed(.5, func(gtx C) D {
+			return layout.UniformInset(unit.Dp(12)).Layout(gtx, material.Body1(&th, "Under construction...").Layout)
+		}),
+	)
+}
+
 type Page struct {
 	layout func(layout.Context) layout.Dimensions
 	component.NavItem
@@ -515,6 +559,16 @@ var (
 	tweetInput                                            component.TextField
 	numberInput                                           component.TextField
 
+	leftContextArea                    component.ContextArea
+	redButton, greenButton, blueButton widget.Clickable
+	leftFillColor                      color.NRGBA
+	leftMenu                           component.MenuState = component.MenuState{
+		Options: []func(gtx C) D{
+			component.MenuItem(th, &redButton, "Red").Layout,
+			component.MenuItem(th, &greenButton, "Green").Layout,
+			component.MenuItem(th, &blueButton, "Blue").Layout,
+		},
+	}
 	pages = []Page{
 		{
 			NavItem: component.NavItem{
@@ -570,6 +624,13 @@ var (
 				Icon: EditIcon,
 			},
 			layout: LayoutTextFieldPage,
+		},
+		{
+			NavItem: component.NavItem{
+				Name: "Menu Features",
+				Icon: EditIcon,
+			},
+			layout: LayoutMenuPage,
 		},
 		{
 			NavItem: component.NavItem{
