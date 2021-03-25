@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"image"
 	"image/color"
 	"log"
@@ -31,6 +32,21 @@ type (
 
 var MenuIcon *widget.Icon = func() *widget.Icon {
 	icon, _ := widget.NewIcon(icons.NavigationMenu)
+	return icon
+}()
+
+var AccountBalanceIcon *widget.Icon = func() *widget.Icon {
+	icon, _ := widget.NewIcon(icons.ActionAccountBalance)
+	return icon
+}()
+
+var AccountBoxIcon *widget.Icon = func() *widget.Icon {
+	icon, _ := widget.NewIcon(icons.ActionAccountBox)
+	return icon
+}()
+
+var CartIcon *widget.Icon = func() *widget.Icon {
+	icon, _ := widget.NewIcon(icons.ActionAddShoppingCart)
 	return icon
 }()
 
@@ -474,7 +490,11 @@ func LayoutMenuPage(gtx C) D {
 						return D{Size: gtx.Constraints.Max}
 					}),
 					layout.Expanded(func(gtx C) D {
-						return layout.UniformInset(unit.Dp(12)).Layout(gtx, material.Body1(&th, "Right-click anywhere in this region").Layout)
+						return layout.UniformInset(unit.Dp(12)).Layout(gtx, func(gtx C) D {
+							return component.Surface(&th).Layout(gtx, func(gtx C) D {
+								return layout.UniformInset(unit.Dp(12)).Layout(gtx, material.Body1(&th, "Right-click anywhere in this region").Layout)
+							})
+						})
 					}),
 					layout.Expanded(func(gtx C) D {
 						return leftContextArea.Layout(gtx, func(gtx C) D {
@@ -486,7 +506,26 @@ func LayoutMenuPage(gtx C) D {
 			})
 		}),
 		layout.Flexed(.5, func(gtx C) D {
-			return layout.UniformInset(unit.Dp(12)).Layout(gtx, material.Body1(&th, "Under construction...").Layout)
+			return layout.UniformInset(unit.Dp(12)).Layout(gtx, func(gtx C) D {
+				menuDemoList.Axis = layout.Vertical
+				return menuDemoList.Layout(gtx, 30, func(gtx C, index int) D {
+					if len(menuDemoListStates) < index+1 {
+						menuDemoListStates = append(menuDemoListStates, component.ContextArea{})
+					}
+					state := &menuDemoListStates[index]
+					return layout.Stack{}.Layout(gtx,
+						layout.Stacked(func(gtx C) D {
+							return layout.UniformInset(unit.Dp(8)).Layout(gtx, material.Body1(&th, fmt.Sprintf("Item %d", index)).Layout)
+						}),
+						layout.Expanded(func(gtx C) D {
+							return state.Layout(gtx, func(gtx C) D {
+								gtx.Constraints.Min.X = 0
+								return component.Menu(&th, &rightMenu).Layout(gtx)
+							})
+						}),
+					)
+				})
+			})
 		}),
 	)
 }
@@ -559,11 +598,56 @@ var (
 	tweetInput                                            component.TextField
 	numberInput                                           component.TextField
 
-	leftContextArea                    component.ContextArea
-	redButton, greenButton, blueButton widget.Clickable
-	leftFillColor                      color.NRGBA
-	leftMenu                           component.MenuState = component.MenuState{
+	leftContextArea                          component.ContextArea
+	redButton, greenButton, blueButton       widget.Clickable
+	balanceButton, accountButton, cartButton widget.Clickable
+	leftFillColor                            color.NRGBA
+	menuDemoList                             layout.List
+	menuDemoListStates                       []component.ContextArea
+	rightMenu                                component.MenuState = component.MenuState{
 		Options: []func(gtx C) D{
+			func(gtx C) D {
+				item := component.MenuItem(th, &balanceButton, "Balance")
+				item.Icon = AccountBalanceIcon
+				item.Hint = component.MenuHintText(th, "Hint")
+				return item.Layout(gtx)
+			},
+			func(gtx C) D {
+				item := component.MenuItem(th, &accountButton, "Account")
+				item.Icon = AccountBoxIcon
+				item.Hint = component.MenuHintText(th, "Hint")
+				return item.Layout(gtx)
+			},
+			func(gtx C) D {
+				item := component.MenuItem(th, &cartButton, "Cart")
+				item.Icon = CartIcon
+				item.Hint = component.MenuHintText(th, "Hint")
+				return item.Layout(gtx)
+			},
+		},
+	}
+	leftMenu component.MenuState = component.MenuState{
+		Options: []func(gtx C) D{
+			func(gtx C) D {
+				return layout.Inset{
+					Left:  unit.Dp(16),
+					Right: unit.Dp(16),
+				}.Layout(gtx, material.Body1(th, "Menus support arbitrary widgets.\nThis is just a label!\nHere's a loader:").Layout)
+			},
+			component.Divider(th).Layout,
+			func(gtx C) D {
+				return layout.Inset{
+					Top:    unit.Dp(4),
+					Bottom: unit.Dp(4),
+					Left:   unit.Dp(16),
+					Right:  unit.Dp(16),
+				}.Layout(gtx, func(gtx C) D {
+					gtx.Constraints.Max.X = gtx.Px(unit.Dp(24))
+					gtx.Constraints.Max.Y = gtx.Px(unit.Dp(24))
+					return material.Loader(th).Layout(gtx)
+				})
+			},
+			component.SubheadingDivider(th, "Colors").Layout,
 			component.MenuItem(th, &redButton, "Red").Layout,
 			component.MenuItem(th, &greenButton, "Green").Layout,
 			component.MenuItem(th, &blueButton, "Blue").Layout,
