@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	gioui.org v0.0.0-20210410094005-495c69018772
-	gioui.org/x v0.0.0-20210405014033-ab05db36ed5b
+	gioui.org/x v0.0.0-20210419013052-6db76265c4e1
 	gioui.org/x/haptic v0.0.0-20210120222453-b55819bc712b
 	gioui.org/x/notify v0.0.0-20210120222453-b55819bc712b
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
