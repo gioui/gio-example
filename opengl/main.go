@@ -119,6 +119,10 @@ func loop(w *app.Window) error {
 			gtx := layout.NewContext(&ops, e)
 			drawUI(th, gtx)
 			w.Run(func() {
+				if ok := C.eglMakeCurrent(ctx.disp, ctx.surf, ctx.surf, ctx.ctx); ok != C.EGL_TRUE {
+					err := fmt.Errorf("eglMakeCurrent failed (%#x)", C.eglGetError())
+					log.Fatal(err)
+				}
 				// Trigger window resize detection in ANGLE.
 				C.eglWaitClient()
 				// Draw custom OpenGL content.
