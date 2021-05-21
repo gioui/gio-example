@@ -19,6 +19,7 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/gpu"
+	"gioui.org/io/pointer"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -117,6 +118,12 @@ func loop(w *app.Window) error {
 			}
 			// Build ops.
 			gtx := layout.NewContext(&ops, e)
+			// Catch pointer events not hitting UI.
+			types := pointer.Move | pointer.Press | pointer.Release
+			pointer.InputOp{Tag: w, Types: types}.Add(gtx.Ops)
+			for _, e := range gtx.Events(w) {
+				log.Println("Event:", e)
+			}
 			drawUI(th, gtx)
 			w.Run(func() {
 				if ok := C.eglMakeCurrent(ctx.disp, ctx.surf, ctx.surf, ctx.ctx); ok != C.EGL_TRUE {
