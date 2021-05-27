@@ -33,7 +33,7 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-type GioRenderer struct {
+type GioNodeRenderer struct {
 	richtext.TextObjects
 
 	Current      richtext.TextObject
@@ -42,33 +42,33 @@ type GioRenderer struct {
 	OrderedIndex int
 }
 
-func NewRenderer(theme *material.Theme) renderer.NodeRenderer {
+func NewNodeRenderer(theme *material.Theme) *GioNodeRenderer {
 	l := material.Body1(theme, "")
-	g := &GioRenderer{
+	g := &GioNodeRenderer{
 		Theme: theme,
 	}
 	g.UpdateCurrent(l)
 	return g
 }
 
-func (g *GioRenderer) CommitCurrent() {
+func (g *GioNodeRenderer) CommitCurrent() {
 	g.TextObjects = append(g.TextObjects, g.Current.DeepCopy())
 }
 
-func (g *GioRenderer) UpdateCurrent(l material.LabelStyle) {
+func (g *GioNodeRenderer) UpdateCurrent(l material.LabelStyle) {
 	g.Current.Font = l.Font
 	g.Current.Color = l.Color
 	g.Current.Size = l.TextSize
 }
 
-func (g *GioRenderer) AppendNewline() {
+func (g *GioNodeRenderer) AppendNewline() {
 	if len(g.TextObjects) < 1 {
 		return
 	}
 	g.TextObjects[len(g.TextObjects)-1].Content += "\n"
 }
 
-func (g *GioRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
+func (g *GioNodeRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 	// blocks
 	//
 	reg.Register(ast.KindDocument, g.renderDocument)
@@ -95,12 +95,12 @@ func (g *GioRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 	reg.Register(ast.KindString, g.renderString)
 }
 
-func (g *GioRenderer) renderDocument(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderDocument(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderDocument")
 	return ast.WalkContinue, nil
 }
 
-func (g *GioRenderer) renderHeading(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderHeading(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderHeading")
 	n := node.(*ast.Heading)
 	if entering {
@@ -128,12 +128,12 @@ func (g *GioRenderer) renderHeading(w util.BufWriter, source []byte, node ast.No
 	return ast.WalkContinue, nil
 }
 
-func (g *GioRenderer) renderBlockquote(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderBlockquote(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderBlockquote")
 	return ast.WalkContinue, nil
 }
 
-func (g *GioRenderer) renderCodeBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderCodeBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderCodeBlock")
 	if entering {
 		g.Current.Font.Variant = "Mono"
@@ -143,7 +143,7 @@ func (g *GioRenderer) renderCodeBlock(w util.BufWriter, source []byte, node ast.
 	return ast.WalkContinue, nil
 }
 
-func (g *GioRenderer) renderFencedCodeBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderFencedCodeBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderFencedCodeBlock")
 	n := node.(*ast.FencedCodeBlock)
 	if entering {
@@ -161,7 +161,7 @@ func (g *GioRenderer) renderFencedCodeBlock(w util.BufWriter, source []byte, nod
 	return ast.WalkContinue, nil
 }
 
-func (g *GioRenderer) renderHTMLBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderHTMLBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderHTMLBlock")
 	if entering {
 		g.Current.Font.Variant = "Mono"
@@ -171,7 +171,7 @@ func (g *GioRenderer) renderHTMLBlock(w util.BufWriter, source []byte, node ast.
 	return ast.WalkContinue, nil
 }
 
-func (g *GioRenderer) renderList(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderList(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderList")
 	n := node.(*ast.List)
 	if entering {
@@ -183,7 +183,7 @@ func (g *GioRenderer) renderList(w util.BufWriter, source []byte, node ast.Node,
 	return ast.WalkContinue, nil
 }
 
-func (g *GioRenderer) renderListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderListItem")
 	if entering {
 		if g.OrderedList {
@@ -199,7 +199,7 @@ func (g *GioRenderer) renderListItem(w util.BufWriter, source []byte, node ast.N
 
 	return ast.WalkContinue, nil
 }
-func (g *GioRenderer) renderParagraph(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderParagraph(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderParagraph")
 	if !entering {
 		g.AppendNewline()
@@ -207,15 +207,15 @@ func (g *GioRenderer) renderParagraph(w util.BufWriter, source []byte, node ast.
 	}
 	return ast.WalkContinue, nil
 }
-func (g *GioRenderer) renderTextBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderTextBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderTextBlock")
 	return ast.WalkContinue, nil
 }
-func (g *GioRenderer) renderThematicBreak(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderThematicBreak(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderThematicBreak")
 	return ast.WalkContinue, nil
 }
-func (g *GioRenderer) renderAutoLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderAutoLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderAutoLink")
 	n := node.(*ast.AutoLink)
 	if entering {
@@ -230,7 +230,7 @@ func (g *GioRenderer) renderAutoLink(w util.BufWriter, source []byte, node ast.N
 	}
 	return ast.WalkContinue, nil
 }
-func (g *GioRenderer) renderCodeSpan(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderCodeSpan(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderCodeSpan")
 	if entering {
 		g.Current.Font.Variant = "Mono"
@@ -239,7 +239,7 @@ func (g *GioRenderer) renderCodeSpan(w util.BufWriter, source []byte, node ast.N
 	}
 	return ast.WalkContinue, nil
 }
-func (g *GioRenderer) renderEmphasis(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderEmphasis(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderEmphasis")
 	n := node.(*ast.Emphasis)
 
@@ -255,14 +255,14 @@ func (g *GioRenderer) renderEmphasis(w util.BufWriter, source []byte, node ast.N
 	}
 	return ast.WalkContinue, nil
 }
-func (g *GioRenderer) renderImage(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderImage(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderImage")
 	return ast.WalkContinue, nil
 }
 
 const urlMetadataKey = "url"
 
-func (g *GioRenderer) renderLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderLink")
 	n := node.(*ast.Link)
 	if entering {
@@ -276,11 +276,11 @@ func (g *GioRenderer) renderLink(w util.BufWriter, source []byte, node ast.Node,
 	}
 	return ast.WalkContinue, nil
 }
-func (g *GioRenderer) renderRawHTML(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderRawHTML(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderRawHTML")
 	return ast.WalkContinue, nil
 }
-func (g *GioRenderer) renderText(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderText(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderText")
 	if !entering {
 		return ast.WalkContinue, nil
@@ -293,7 +293,7 @@ func (g *GioRenderer) renderText(w util.BufWriter, source []byte, node ast.Node,
 
 	return ast.WalkContinue, nil
 }
-func (g *GioRenderer) renderString(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+func (g *GioNodeRenderer) renderString(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderString")
 	if !entering {
 		return ast.WalkContinue, nil
@@ -304,7 +304,7 @@ func (g *GioRenderer) renderString(w util.BufWriter, source []byte, node ast.Nod
 	return ast.WalkContinue, nil
 }
 
-func (g *GioRenderer) Result() richtext.TextObjects {
+func (g *GioNodeRenderer) Result() richtext.TextObjects {
 	o := g.TextObjects
 	g.TextObjects = nil
 	return o
@@ -325,13 +325,13 @@ type (
 	D = layout.Dimensions
 )
 
-func loop(w *app.Window) error {
-	fontCollection := gofont.Collection()
-	shaper := text.NewCache(fontCollection)
-	th := material.NewTheme(fontCollection)
-	nr := NewRenderer(th)
-	var ops op.Ops
+type Renderer struct {
+	md goldmark.Markdown
+	nr *GioNodeRenderer
+}
 
+func NewRenderer(th *material.Theme) *Renderer {
+	nr := NewNodeRenderer(th)
 	md := goldmark.New(
 		goldmark.WithRenderer(
 			renderer.NewRenderer(
@@ -341,6 +341,23 @@ func loop(w *app.Window) error {
 			),
 		),
 	)
+	return &Renderer{md: md, nr: nr}
+}
+
+func (r *Renderer) Render(src []byte) (richtext.TextObjects, error) {
+	if err := r.md.Convert(src, ioutil.Discard); err != nil {
+		return nil, err
+	}
+	return r.nr.Result(), nil
+}
+
+func loop(w *app.Window) error {
+	fontCollection := gofont.Collection()
+	shaper := text.NewCache(fontCollection)
+	th := material.NewTheme(fontCollection)
+	renderer := NewRenderer(th)
+	var ops op.Ops
+
 	var ed widget.Editor
 	var rs component.Resize
 	rs.Ratio = .5
@@ -363,12 +380,10 @@ func loop(w *app.Window) error {
 
 			for _, edEvent := range ed.Events() {
 				if _, ok := edEvent.(widget.ChangeEvent); ok {
-					if err := md.Convert([]byte(ed.Text()), ioutil.Discard); err != nil {
-						panic(err)
-					}
-					rendered = nr.(*GioRenderer).Result()
+					rendered, _ = renderer.Render([]byte(ed.Text()))
 				}
 			}
+
 			rs.Layout(gtx,
 				func(gtx C) D { return inset.Layout(gtx, material.Editor(th, &ed, "markdown").Layout) },
 				func(gtx C) D {
