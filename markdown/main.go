@@ -5,6 +5,7 @@ package main
 // A simple Gio program. See https://gioui.org for more information.
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"io/ioutil"
@@ -35,8 +36,10 @@ import (
 type GioRenderer struct {
 	richtext.TextObjects
 
-	Current richtext.TextObject
-	Theme   *material.Theme
+	Current      richtext.TextObject
+	Theme        *material.Theme
+	OrderedList  bool
+	OrderedIndex int
 }
 
 func NewRenderer(theme *material.Theme) renderer.NodeRenderer {
@@ -170,7 +173,11 @@ func (g *GioRenderer) renderHTMLBlock(w util.BufWriter, source []byte, node ast.
 
 func (g *GioRenderer) renderList(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderList")
-	if !entering {
+	n := node.(*ast.List)
+	if entering {
+		g.OrderedList = n.IsOrdered()
+		g.OrderedIndex = 1
+	} else {
 		g.AppendNewline()
 	}
 	return ast.WalkContinue, nil
@@ -179,7 +186,12 @@ func (g *GioRenderer) renderList(w util.BufWriter, source []byte, node ast.Node,
 func (g *GioRenderer) renderListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderListItem")
 	if entering {
-		g.Current.Content = " • "
+		if g.OrderedList {
+			g.Current.Content = fmt.Sprintf(" %d. ", g.OrderedIndex)
+			g.OrderedIndex++
+		} else {
+			g.Current.Content = " • "
+		}
 		g.CommitCurrent()
 	} else if len(g.TextObjects) > 0 {
 		g.AppendNewline()
