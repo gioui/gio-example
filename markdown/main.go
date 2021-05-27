@@ -25,6 +25,7 @@ import (
 	"gioui.org/x/richtext"
 
 	"gioui.org/font/gofont"
+	"github.com/inkeliz/giohyperlink"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/renderer"
@@ -336,6 +337,7 @@ func loop(w *app.Window) error {
 	rs.Ratio = .5
 	for {
 		e := <-w.Events()
+		giohyperlink.ListenEvents(e)
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
@@ -344,7 +346,7 @@ func loop(w *app.Window) error {
 			for o := rendered.Clicked(); o != nil; o = rendered.Clicked() {
 				log.Println(o)
 				if url := o.GetMetadata(urlMetadataKey); url != "" {
-					log.Println("URL", url)
+					giohyperlink.Open(url)
 				}
 			}
 

@@ -10,7 +10,8 @@ require (
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210311203641-62640a716d48
 	github.com/google/go-github/v24 v24.0.1
-	github.com/yuin/goldmark v1.3.7 // indirect
+	github.com/inkeliz/giohyperlink v0.0.0-20201127153708-cb2dff56ac99
+	github.com/yuin/goldmark v1.3.7
 	golang.org/x/exp v0.0.0-20210126221216-84987778548c
 	golang.org/x/image v0.0.0-20201208152932-35266b937fa6
 	golang.org/x/oauth2 v0.0.0-20210126194326-f9ce19ea3013
