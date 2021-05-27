@@ -5,9 +5,9 @@ package main
 // A simple Gio program. See https://gioui.org for more information.
 
 import (
-	"bytes"
 	"image"
 	"image/color"
+	"io/ioutil"
 	"log"
 	"os"
 
@@ -329,12 +329,11 @@ func loop(w *app.Window) error {
 			),
 		),
 	)
-	var buf bytes.Buffer
 	var ed widget.Editor
 	var rs component.Resize
+	rs.Ratio = .5
 	var rendered richtext.TextObjects
 	inset := layout.UniformInset(unit.Dp(4))
-	rs.Ratio = .5
 	for {
 		e := <-w.Events()
 		giohyperlink.ListenEvents(e)
@@ -350,11 +349,13 @@ func loop(w *app.Window) error {
 				}
 			}
 
-			for range ed.Events() {
-				if err := md.Convert([]byte(ed.Text()), &buf); err != nil {
-					panic(err)
+			for _, edEvent := range ed.Events() {
+				if _, ok := edEvent.(widget.ChangeEvent); ok {
+					if err := md.Convert([]byte(ed.Text()), ioutil.Discard); err != nil {
+						panic(err)
+					}
+					rendered = nr.(*GioRenderer).Result()
 				}
-				rendered = nr.(*GioRenderer).Result()
 			}
 			rs.Layout(gtx,
 				func(gtx C) D { return inset.Layout(gtx, material.Editor(th, &ed, "markdown").Layout) },
