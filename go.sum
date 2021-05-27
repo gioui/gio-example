@@ -38,6 +38,10 @@ gioui.org v0.0.0-20210519204653-f8d201b7c23d h1:G3cXJpxyR/5wTP7MeQPltmoMEi5as4SD
 gioui.org v0.0.0-20210519204653-f8d201b7c23d/go.mod h1:RSH6KIUZ0p2xy5zHDxgAM4zumjgTw83q2ge/PI+yyw8=
 gioui.org/x v0.0.0-20210419013052-6db76265c4e1 h1:NfHFIxNzNY/s7ePtrf9nCKr9f3gYiVS40rAIdbj5Q1k=
 gioui.org/x v0.0.0-20210419013052-6db76265c4e1/go.mod h1:qsAS5EBzGhn3sJ98FJdA+ae+E5/DgmxjySERjjR1Zvg=
+gioui.org/x v0.0.0-20210525183511-a423074bdca1 h1:b22hjOf1B18f3W4gbWJcRvkpDJUUZz92ExiLMd5mPhU=
+gioui.org/x v0.0.0-20210525183511-a423074bdca1/go.mod h1:qsAS5EBzGhn3sJ98FJdA+ae+E5/DgmxjySERjjR1Zvg=
+gioui.org/x v0.0.0-20210527011236-a9a83c3e1381 h1:2HaGDESNuWPb3enL+rjY7YxZhOyA7hBdS41WGdBiAGY=
+gioui.org/x v0.0.0-20210527011236-a9a83c3e1381/go.mod h1:qsAS5EBzGhn3sJ98FJdA+ae+E5/DgmxjySERjjR1Zvg=
 gioui.org/x/haptic v0.0.0-20210120222453-b55819bc712b h1:3lHNKrTHXJCXhtmCVdTInlNuay3jSQ0SVi9JNQTj5yM=
 gioui.org/x/haptic v0.0.0-20210120222453-b55819bc712b/go.mod h1:8zNy+2M/H/zMZtZVh3ZSk7EuPqob+PNtVFzWstzT7ok=
 gioui.org/x/notify v0.0.0-20210120222453-b55819bc712b h1:EhTlhP/Q0lrgDQvHC9qdvXicytUps1sRfIOk28183Ec=
@@ -143,6 +147,8 @@ github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81P
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
+github.com/yuin/goldmark v1.3.7 h1:NSaHgaeJFCtWXCBkBKXw0rhgMuJ0VoE9FB5mWldcrQ4=
+github.com/yuin/goldmark v1.3.7/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
 go.opencensus.io v0.22.2/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=
