@@ -57,6 +57,13 @@ func (g *GioRenderer) UpdateCurrent(l material.LabelStyle) {
 	g.Current.Size = l.TextSize
 }
 
+func (g *GioRenderer) AppendNewline() {
+	if len(g.TextObjects) < 1 {
+		return
+	}
+	g.TextObjects[len(g.TextObjects)-1].Content += "\n"
+}
+
 func (g *GioRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 	// blocks
 	//
@@ -110,6 +117,9 @@ func (g *GioRenderer) renderHeading(w util.BufWriter, source []byte, node ast.No
 		}
 		g.UpdateCurrent(l)
 	} else {
+		l := material.Body1(g.Theme, "")
+		g.UpdateCurrent(l)
+		g.AppendNewline()
 	}
 	return ast.WalkContinue, nil
 }
@@ -121,29 +131,67 @@ func (g *GioRenderer) renderBlockquote(w util.BufWriter, source []byte, node ast
 
 func (g *GioRenderer) renderCodeBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderCodeBlock")
+	if entering {
+		g.Current.Font.Variant = "Mono"
+	} else {
+		g.Current.Font.Variant = ""
+	}
 	return ast.WalkContinue, nil
 }
 
 func (g *GioRenderer) renderFencedCodeBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderFencedCodeBlock")
+	n := node.(*ast.FencedCodeBlock)
+	if entering {
+		g.Current.Font.Variant = "Mono"
+		lines := n.Lines()
+		for i := 0; i < lines.Len(); i++ {
+			line := lines.At(i)
+			g.Current.Content = string(line.Value(source))
+			g.CommitCurrent()
+		}
+	} else {
+		g.Current.Font.Variant = ""
+		g.AppendNewline()
+	}
 	return ast.WalkContinue, nil
 }
 
 func (g *GioRenderer) renderHTMLBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderHTMLBlock")
+	if entering {
+		g.Current.Font.Variant = "Mono"
+	} else {
+		g.Current.Font.Variant = ""
+	}
 	return ast.WalkContinue, nil
 }
 
 func (g *GioRenderer) renderList(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderList")
+	if !entering {
+		g.AppendNewline()
+	}
 	return ast.WalkContinue, nil
 }
+
 func (g *GioRenderer) renderListItem(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderListItem")
+	if entering {
+		g.Current.Content = " • "
+		g.CommitCurrent()
+	} else if len(g.TextObjects) > 0 {
+		g.AppendNewline()
+	}
+
 	return ast.WalkContinue, nil
 }
 func (g *GioRenderer) renderParagraph(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderParagraph")
+	if !entering {
+		g.AppendNewline()
+		g.AppendNewline()
+	}
 	return ast.WalkContinue, nil
 }
 func (g *GioRenderer) renderTextBlock(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
@@ -156,6 +204,17 @@ func (g *GioRenderer) renderThematicBreak(w util.BufWriter, source []byte, node 
 }
 func (g *GioRenderer) renderAutoLink(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	log.Println("renderAutoLink")
+	n := node.(*ast.AutoLink)
+	if entering {
+		url := string(n.URL(source))
+		g.Current.SetMetadata(urlMetadataKey, url)
+		g.Current.Color = g.Theme.ContrastBg
+		g.Current.Content = url
+		g.CommitCurrent()
+	} else {
+		g.Current.SetMetadata(urlMetadataKey, "")
+		g.Current.Color = g.Theme.Fg
+	}
 	return ast.WalkContinue, nil
 }
 func (g *GioRenderer) renderCodeSpan(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
@@ -273,6 +332,7 @@ func loop(w *app.Window) error {
 	var ed widget.Editor
 	var rs component.Resize
 	var rendered richtext.TextObjects
+	inset := layout.UniformInset(unit.Dp(4))
 	rs.Ratio = .5
 	for {
 		e := <-w.Events()
@@ -295,9 +355,11 @@ func loop(w *app.Window) error {
 				rendered = nr.(*GioRenderer).Result()
 			}
 			rs.Layout(gtx,
-				material.Editor(th, &ed, "markdown").Layout,
+				func(gtx C) D { return inset.Layout(gtx, material.Editor(th, &ed, "markdown").Layout) },
 				func(gtx C) D {
-					return rendered.Layout(gtx, shaper)
+					return inset.Layout(gtx, func(gtx C) D {
+						return rendered.Layout(gtx, shaper)
+					})
 				},
 				func(gtx C) D {
 					rect := image.Rectangle{
