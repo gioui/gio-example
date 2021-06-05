@@ -17,3 +17,5 @@ require (
 	golang.org/x/oauth2 v0.0.0-20210126194326-f9ce19ea3013
 	gonum.org/v1/gonum v0.8.2
 )
+
+replace gioui.org/x => ../x
