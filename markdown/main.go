@@ -3,6 +3,12 @@
 package main
 
 // A simple Gio program. See https://gioui.org for more information.
+//
+// This program showcases markdown rendering.
+// The left pane contains a text editor for inputing raw text.
+// The right pane renders the resulting markdown document using richtext.
+//
+// Richtext is fully interactive, links can be clicked, hovered and longpressed.
 
 import (
 	"image"
@@ -30,9 +36,14 @@ import (
 )
 
 func main() {
+	ui := UI{
+		Window:   app.NewWindow(),
+		Renderer: markdown.NewRenderer(),
+		Shaper:   text.NewCache(gofont.Collection()),
+		Theme:    NewTheme(gofont.Collection()),
+	}
 	go func() {
-		w := app.NewWindow()
-		if err := loop(w); err != nil {
+		if err := ui.Loop(); err != nil {
 			log.Fatal(err)
 		}
 		os.Exit(0)
@@ -45,66 +56,115 @@ type (
 	D = layout.Dimensions
 )
 
-func loop(w *app.Window) error {
-	fontCollection := gofont.Collection()
-	shaper := text.NewCache(fontCollection)
-	th := material.NewTheme(fontCollection)
-	renderer := markdown.NewRenderer()
-	var ops op.Ops
+// UI specifies the user interface.
+type UI struct {
+	// External systems.
+	// Window provides access to the OS window.
+	Window *app.Window
+	// Theme contains semantic style data. Extends `material.Theme`.
+	Theme *Theme
+	// Shaper cache of registered fonts.
+	Shaper *text.Cache
+	// Renderer tranforms raw text containing markdown into richtext.
+	Renderer *markdown.Renderer
 
-	var ed widget.Editor
-	var rs component.Resize
-	rs.Ratio = .5
-	var textState richtext.InteractiveText
-	var rendered []richtext.SpanStyle
-	inset := layout.UniformInset(unit.Dp(4))
+	// Core state.
+	// Editor retains raw text in an edit buffer.
+	Editor widget.Editor
+	// TextState retains rich text interactions: clicks, hovers and longpresses.
+	TextState richtext.InteractiveText
+}
+
+// Theme contains semantic style data.
+type Theme struct {
+	// Base theme to extend.
+	Base *material.Theme
+	// cache of processed markdown.
+	cache []richtext.SpanStyle
+}
+
+// NewTheme instantiates a theme, extending material theme.
+func NewTheme(font []text.FontFace) *Theme {
+	return &Theme{
+		Base: material.NewTheme(font),
+	}
+}
+
+// Loop drives the UI until the window is destroyed.
+func (ui UI) Loop() error {
+	var (
+		ops op.Ops
+	)
 	for {
-		e := <-w.Events()
+		e := <-ui.Window.Events()
 		giohyperlink.ListenEvents(e)
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, e)
-			if to := textState.LongPressed(); to != nil {
-				w.Option(app.Title(to.Get(markdown.MetadataURL)))
-			}
-			for o, events := textState.Events(gtx); o != nil; o, events = textState.Events(gtx) {
-				for _, e := range events {
-					switch e.Type {
-					case gesture.TypeClick:
-						if url := o.Get(markdown.MetadataURL); url != "" {
-							giohyperlink.Open(url)
-						}
-					}
-				}
-			}
-
-			for _, edEvent := range ed.Events() {
-				if _, ok := edEvent.(widget.ChangeEvent); ok {
-					rendered, _ = renderer.Render(th, []byte(ed.Text()))
-				}
-			}
-
-			rs.Layout(gtx,
-				func(gtx C) D { return inset.Layout(gtx, material.Editor(th, &ed, "markdown").Layout) },
-				func(gtx C) D {
-					return inset.Layout(gtx, func(gtx C) D {
-						return richtext.Text(&textState, rendered...).Layout(gtx, shaper)
-					})
-				},
-				func(gtx C) D {
-					rect := image.Rectangle{
-						Max: image.Point{
-							X: (gtx.Px(unit.Dp(4))),
-							Y: (gtx.Constraints.Max.Y),
-						},
-					}
-					paint.FillShape(gtx.Ops, color.NRGBA{A: 200}, clip.Rect(rect).Op())
-					return D{Size: rect.Max}
-				},
-			)
+			ui.Layout(gtx)
 			e.Frame(gtx.Ops)
 		}
 	}
+}
+
+// Update processes events from the previous frame, updating state accordingly.
+func (ui *UI) Update(gtx C) {
+	if to := ui.TextState.LongPressed(); to != nil {
+		ui.Window.Option(app.Title(to.Get(markdown.MetadataURL)))
+	}
+	for o, events := ui.TextState.Events(gtx); o != nil; o, events = ui.TextState.Events(gtx) {
+		for _, e := range events {
+			switch e.Type {
+			case gesture.TypeClick:
+				if url := o.Get(markdown.MetadataURL); url != "" {
+					if err := giohyperlink.Open(url); err != nil {
+						// TODO(jfm): display UI element explaining the error to the user.
+						log.Printf("error: opening hyperlink: %v", err)
+					}
+				}
+			}
+		}
+	}
+	for _, event := range ui.Editor.Events() {
+		if _, ok := event.(widget.ChangeEvent); ok {
+			var err error
+			ui.Theme.cache, err = ui.Renderer.Render(ui.Theme.Base, []byte(ui.Editor.Text()))
+			if err != nil {
+				// TODO(jfm): display UI element explaining the error to the user.
+				log.Printf("error: rendering markdown: %v", err)
+			}
+		}
+	}
+}
+
+// Layout renders the current frame.
+func (ui *UI) Layout(gtx C) D {
+	ui.Update(gtx)
+	var (
+		rs = component.Resize{Ratio: 0.5}
+	)
+	return rs.Layout(gtx,
+		func(gtx C) D {
+			return layout.UniformInset(unit.Dp(4)).Layout(gtx, func(gtx C) D {
+				return material.Editor(ui.Theme.Base, &ui.Editor, "markdown").Layout(gtx)
+			})
+		},
+		func(gtx C) D {
+			return layout.UniformInset(unit.Dp(4)).Layout(gtx, func(gtx C) D {
+				return richtext.Text(&ui.TextState, ui.Theme.cache...).Layout(gtx, ui.Shaper)
+			})
+		},
+		func(gtx C) D {
+			rect := image.Rectangle{
+				Max: image.Point{
+					X: (gtx.Px(unit.Dp(4))),
+					Y: (gtx.Constraints.Max.Y),
+				},
+			}
+			paint.FillShape(gtx.Ops, color.NRGBA{A: 200}, clip.Rect(rect).Op())
+			return D{Size: rect.Max}
+		},
+	)
 }
