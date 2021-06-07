@@ -8,7 +8,7 @@ package main
 // The left pane contains a text editor for inputing raw text.
 // The right pane renders the resulting markdown document using richtext.
 //
-// Richtext is fully interactive, links can be clicked, hovered and longpressed.
+// Richtext is fully interactive, links can be clicked, hovered, and longpressed.
 
 import (
 	"image"
@@ -41,6 +41,7 @@ func main() {
 		Renderer: markdown.NewRenderer(),
 		Shaper:   text.NewCache(gofont.Collection()),
 		Theme:    NewTheme(gofont.Collection()),
+		Resize:   component.Resize{Ratio: 0.5},
 	}
 	go func() {
 		if err := ui.Loop(); err != nil {
@@ -73,6 +74,8 @@ type UI struct {
 	Editor widget.Editor
 	// TextState retains rich text interactions: clicks, hovers and longpresses.
 	TextState richtext.InteractiveText
+	// Resize state retains the split between the editor and the rendered text.
+	component.Resize
 }
 
 // Theme contains semantic style data.
@@ -92,9 +95,7 @@ func NewTheme(font []text.FontFace) *Theme {
 
 // Loop drives the UI until the window is destroyed.
 func (ui UI) Loop() error {
-	var (
-		ops op.Ops
-	)
+	var ops op.Ops
 	for {
 		e := <-ui.Window.Events()
 		giohyperlink.ListenEvents(e)
@@ -112,6 +113,9 @@ func (ui UI) Loop() error {
 // Update processes events from the previous frame, updating state accordingly.
 func (ui *UI) Update(gtx C) {
 	if to := ui.TextState.LongPressed(); to != nil {
+		ui.Window.Option(app.Title(to.Get(markdown.MetadataURL)))
+	}
+	if to := ui.TextState.Hovered(); to != nil {
 		ui.Window.Option(app.Title(to.Get(markdown.MetadataURL)))
 	}
 	for o, events := ui.TextState.Events(gtx); o != nil; o, events = ui.TextState.Events(gtx) {
@@ -142,10 +146,7 @@ func (ui *UI) Update(gtx C) {
 // Layout renders the current frame.
 func (ui *UI) Layout(gtx C) D {
 	ui.Update(gtx)
-	var (
-		rs = component.Resize{Ratio: 0.5}
-	)
-	return rs.Layout(gtx,
+	return ui.Resize.Layout(gtx,
 		func(gtx C) D {
 			return layout.UniformInset(unit.Dp(4)).Layout(gtx, func(gtx C) D {
 				return material.Editor(ui.Theme.Base, &ui.Editor, "markdown").Layout(gtx)
