@@ -17,7 +17,6 @@ import (
 	"os"
 
 	"gioui.org/app"
-	"gioui.org/gesture"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -112,22 +111,20 @@ func (ui UI) Loop() error {
 
 // Update processes events from the previous frame, updating state accordingly.
 func (ui *UI) Update(gtx C) {
-	if to := ui.TextState.LongPressed(); to != nil {
-		ui.Window.Option(app.Title(to.Get(markdown.MetadataURL)))
-	}
-	if to := ui.TextState.Hovered(); to != nil {
-		ui.Window.Option(app.Title(to.Get(markdown.MetadataURL)))
-	}
-	for o, events := ui.TextState.Events(gtx); o != nil; o, events = ui.TextState.Events(gtx) {
+	for o, events := ui.TextState.Events(); o != nil; o, events = ui.TextState.Events() {
 		for _, e := range events {
 			switch e.Type {
-			case gesture.TypeClick:
+			case richtext.Click:
 				if url := o.Get(markdown.MetadataURL); url != "" {
 					if err := giohyperlink.Open(url); err != nil {
 						// TODO(jfm): display UI element explaining the error to the user.
 						log.Printf("error: opening hyperlink: %v", err)
 					}
 				}
+			case richtext.Hover:
+			case richtext.LongPress:
+				log.Println("longpress")
+				ui.Window.Option(app.Title(o.Get(markdown.MetadataURL)))
 			}
 		}
 	}
