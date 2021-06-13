@@ -7,6 +7,8 @@ package main
 // This program demonstrates the use of a custom OpenGL ES context with
 // app.Window. It is similar to the GLFW example, but uses Gio's window
 // implementation instead of the one in GLFW.
+//
+// The example runs on macOS and Windows using ANGLE.
 
 import (
 	"errors"
@@ -35,6 +37,8 @@ import (
 
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
+#define EGL_EGLEXT_PROTOTYPES
+#include <EGL/eglext.h>
 
 */
 import "C"
@@ -163,7 +167,18 @@ func drawUI(th *material.Theme, gtx layout.Context) layout.Dimensions {
 }
 
 func createContext(view C.EGLNativeWindowType) (*eglContext, error) {
-	disp := C.eglGetDisplay(C.EGL_DEFAULT_DISPLAY)
+	platformExts := strings.Split(C.GoString(C.eglQueryString(C.EGL_NO_DISPLAY, C.EGL_EXTENSIONS)), " ")
+	platformType := C.EGLint(C.EGL_PLATFORM_ANGLE_TYPE_DEFAULT_ANGLE)
+	if hasExtension(platformExts, "EGL_ANGLE_platform_angle_metal") {
+		// The Metal backend works better than the OpenGL backend.
+		platformType = C.EGL_PLATFORM_ANGLE_TYPE_METAL_ANGLE
+	}
+	attrs := []C.EGLint{
+		C.EGL_PLATFORM_ANGLE_TYPE_ANGLE,
+		platformType,
+		C.EGL_NONE,
+	}
+	disp := C.eglGetPlatformDisplayEXT(C.EGL_PLATFORM_ANGLE_ANGLE, nil, &attrs[0])
 	if disp == 0 {
 		return nil, fmt.Errorf("eglGetPlatformDisplay failed: 0x%x", C.eglGetError())
 	}
