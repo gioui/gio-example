@@ -113,6 +113,7 @@ func loop(w *app.Window) error {
 				if err != nil {
 					log.Fatal(err)
 				}
+				C.eglMakeCurrent(ctx.disp, nil, nil, nil)
 			})
 		case system.DestroyEvent:
 			return e.Err
@@ -146,6 +147,7 @@ func loop(w *app.Window) error {
 				if ok := C.eglSwapBuffers(ctx.disp, ctx.surf); ok != C.EGL_TRUE {
 					log.Fatal(fmt.Errorf("swap failed: %v", C.eglGetError()))
 				}
+				C.eglMakeCurrent(ctx.disp, nil, nil, nil)
 			})
 
 			// Process non-drawing ops.
