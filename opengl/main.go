@@ -169,7 +169,8 @@ func drawUI(th *material.Theme, gtx layout.Context) layout.Dimensions {
 }
 
 func createContext(view C.EGLNativeWindowType) (*eglContext, error) {
-	platformExts := strings.Split(C.GoString(C.eglQueryString(C.EGL_NO_DISPLAY, C.EGL_EXTENSIONS)), " ")
+	var EGL_NO_DISPLAY C.EGLDisplay
+	platformExts := strings.Split(C.GoString(C.eglQueryString(EGL_NO_DISPLAY, C.EGL_EXTENSIONS)), " ")
 	platformType := C.EGLint(C.EGL_PLATFORM_ANGLE_TYPE_DEFAULT_ANGLE)
 	if hasExtension(platformExts, "EGL_ANGLE_platform_angle_metal") {
 		// The Metal backend works better than the OpenGL backend.
