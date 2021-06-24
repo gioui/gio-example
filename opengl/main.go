@@ -11,8 +11,11 @@ package main
 // The example runs on macOS and Windows using ANGLE.
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"image"
+	"image/png"
 	"log"
 	"os"
 	"runtime"
@@ -36,7 +39,7 @@ import (
 #cgo LDFLAGS: -lEGL -lGLESv2
 
 #include <EGL/egl.h>
-#include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
 #define EGL_EGLEXT_PROTOTYPES
 #include <EGL/eglext.h>
 
@@ -67,7 +70,7 @@ func main() {
 	app.Main()
 }
 
-var button widget.Clickable
+var btnScreenshot widget.Clickable
 
 func loop(w *app.Window) error {
 	// OpenGL stores the current context in thread local storage.
@@ -147,6 +150,13 @@ func loop(w *app.Window) error {
 				if ok := C.eglSwapBuffers(ctx.disp, ctx.surf); ok != C.EGL_TRUE {
 					log.Fatal(fmt.Errorf("swap failed: %v", C.eglGetError()))
 				}
+
+				if btnScreenshot.Clicked() {
+					if err := screenshot(gioCtx, e.Size, gtx.Ops); err != nil {
+						log.Fatal(err)
+					}
+				}
+
 				C.eglMakeCurrent(ctx.disp, nil, nil, nil)
 			})
 
@@ -157,6 +167,41 @@ func loop(w *app.Window) error {
 	return nil
 }
 
+func screenshot(ctx gpu.GPU, size image.Point, ops *op.Ops) error {
+	var tex C.GLuint
+	C.glGenTextures(1, &tex)
+	defer C.glDeleteTextures(1, &tex)
+	C.glBindTexture(C.GL_TEXTURE_2D, tex)
+	C.glTexImage2D(C.GL_TEXTURE_2D, 0, C.GL_RGBA, C.GLint(size.X), C.GLint(size.Y), 0, C.GL_RGBA, C.GL_UNSIGNED_BYTE, nil)
+	var fbo C.GLuint
+	C.glGenFramebuffers(1, &fbo)
+	defer C.glDeleteFramebuffers(1, &fbo)
+	C.glBindFramebuffer(C.GL_FRAMEBUFFER, fbo)
+	defer C.glBindFramebuffer(C.GL_FRAMEBUFFER, 0)
+	C.glFramebufferTexture2D(C.GL_FRAMEBUFFER, C.GL_COLOR_ATTACHMENT0, C.GL_TEXTURE_2D, tex, 0)
+	if st := C.glCheckFramebufferStatus(C.GL_FRAMEBUFFER); st != C.GL_FRAMEBUFFER_COMPLETE {
+		return fmt.Errorf("screenshot: framebuffer incomplete (%#x)", st)
+	}
+	drawGL()
+	ctx.Collect(size, ops)
+	if err := ctx.Frame(); err != nil {
+		return fmt.Errorf("screenshot: %w", err)
+	}
+	r := image.Rectangle{Max: size}
+	ss := image.NewRGBA(r)
+	C.glReadPixels(C.GLint(r.Min.X), C.GLint(r.Min.Y), C.GLint(r.Dx()), C.GLint(r.Dy()), C.GL_RGBA, C.GL_UNSIGNED_BYTE, unsafe.Pointer(&ss.Pix[0]))
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, ss); err != nil {
+		return fmt.Errorf("screenshot: %w", err)
+	}
+	const file = "screenshot.png"
+	if err := os.WriteFile(file, buf.Bytes(), 0644); err != nil {
+		return fmt.Errorf("screenshot: %w", err)
+	}
+	fmt.Printf("wrote %q\n", file)
+	return nil
+}
+
 func drawGL() {
 	C.glClearColor(.5, .5, 0, 1)
 	C.glClear(C.GL_COLOR_BUFFER_BIT | C.GL_DEPTH_BUFFER_BIT)
@@ -164,7 +209,7 @@ func drawGL() {
 
 func drawUI(th *material.Theme, gtx layout.Context) layout.Dimensions {
 	return layout.Center.Layout(gtx,
-		material.Button(th, &button, "Button").Layout,
+		material.Button(th, &btnScreenshot, "Screenshot").Layout,
 	)
 }
 
