@@ -3,7 +3,7 @@ module gioui.org/example
 go 1.16
 
 require (
-	gioui.org v0.0.0-20210612180752-0e592f8bc6b3
+	gioui.org v0.0.0-20210626160534-a87206c3647c
 	gioui.org/x v0.0.0-20210419013052-6db76265c4e1
 	gioui.org/x/haptic v0.0.0-20210120222453-b55819bc712b
 	gioui.org/x/notify v0.0.0-20210120222453-b55819bc712b

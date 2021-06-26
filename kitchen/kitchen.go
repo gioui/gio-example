@@ -318,6 +318,7 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 						})
 					})
 				}),
+				layout.Rigid(material.ProgressCircle(th, progress).Layout),
 			)
 		},
 		material.ProgressBar(th, progress).Layout,

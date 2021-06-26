@@ -34,8 +34,8 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20201218220906-28db891af037/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 gioui.org v0.0.0-20210116085804-99bfa6a33cdf/go.mod h1:Y+uS7hHMvku1Q+ooaoq6fYD5B2LGoT8JtFgvmYmRzTw=
 gioui.org v0.0.0-20210402191542-ce7f0da06ee3/go.mod h1:RSH6KIUZ0p2xy5zHDxgAM4zumjgTw83q2ge/PI+yyw8=
-gioui.org v0.0.0-20210612180752-0e592f8bc6b3 h1:hiIdcMrjArBJ0YDQafZJph9jIOnHNdtxVKXuszV17Bg=
-gioui.org v0.0.0-20210612180752-0e592f8bc6b3/go.mod h1:RSH6KIUZ0p2xy5zHDxgAM4zumjgTw83q2ge/PI+yyw8=
+gioui.org v0.0.0-20210626160534-a87206c3647c h1:PUxsHY4Ig4hn1gXO1iuJzplNdjSEzQbMOagao20UHOU=
+gioui.org v0.0.0-20210626160534-a87206c3647c/go.mod h1:RSH6KIUZ0p2xy5zHDxgAM4zumjgTw83q2ge/PI+yyw8=
 gioui.org/x v0.0.0-20210419013052-6db76265c4e1 h1:NfHFIxNzNY/s7ePtrf9nCKr9f3gYiVS40rAIdbj5Q1k=
 gioui.org/x v0.0.0-20210419013052-6db76265c4e1/go.mod h1:qsAS5EBzGhn3sJ98FJdA+ae+E5/DgmxjySERjjR1Zvg=
 gioui.org/x/haptic v0.0.0-20210120222453-b55819bc712b h1:3lHNKrTHXJCXhtmCVdTInlNuay3jSQ0SVi9JNQTj5yM=
