@@ -92,17 +92,25 @@ func loop(w *app.Window) error {
 					)
 				}),
 				layout.Flexed(1, func(gtx C) D {
+					longAxisSum := 0
+					longAxisElements := 0
 					// Track how many items we are laying out
-					var visibleCount int
 					dims := list.Layout(gtx, length, func(gtx C, index int) D {
-						visibleCount++
-						return layout.Center.Layout(gtx, material.H3(th, "List item #"+strconv.Itoa(index)).Layout)
+						d := layout.Center.Layout(gtx, material.H3(th, "List item #"+strconv.Itoa(index)).Layout)
+						longAxisSum += d.Size.Y
+						longAxisElements++
+						return d
 					})
+					meanElementHeight := float32(longAxisSum) / float32(longAxisElements)
+					visibleCount := list.Position.Count
+					pixelLength := meanElementHeight * float32(length)
 					// Compute (using the heuristic that each item is the same vertical height)
 					// the fraction of all items that are currently visible
-					visibleFraction := float32(visibleCount) / float32(length)
+					visiblePixels := float32(visibleCount)*meanElementHeight - float32(list.Position.Offset) + float32(list.Position.OffsetLast)
+					visibleFraction := visiblePixels / pixelLength
 					// Compute how far through the list items we have scrolled
-					scrollDepth := float32(list.Position.First) / float32(length)
+					offset := (float32(list.Position.First) * meanElementHeight) + float32(list.Position.Offset)
+					scrollDepth := offset / (float32(length) * meanElementHeight)
 
 					// Lay out the scroll bar
 					bar := scroll.DefaultBar(&indicator, scrollDepth, visibleFraction)
