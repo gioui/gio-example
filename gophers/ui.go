@@ -36,7 +36,7 @@ import (
 type UI struct {
 	fab          *widget.Clickable
 	fabIcon      *widget.Icon
-	usersList    *layout.List
+	usersList    *widget.List
 	users        []*user
 	userClicks   []gesture.Click
 	selectedUser *userPage
@@ -51,7 +51,7 @@ type UI struct {
 
 type userPage struct {
 	user        *user
-	commitsList *layout.List
+	commitsList *widget.List
 	commits     []*github.Commit
 }
 
@@ -79,8 +79,10 @@ func newUI(fetchCommits func(string)) *UI {
 	u := &UI{
 		fetchCommits: fetchCommits,
 	}
-	u.usersList = &layout.List{
-		Axis: layout.Vertical,
+	u.usersList = &widget.List{
+		List: layout.List{
+			Axis: layout.Vertical,
+		},
 	}
 	u.fab = new(widget.Clickable)
 	u.edit2 = &widget.Editor{
@@ -153,7 +155,7 @@ func (u *UI) Layout(gtx layout.Context) {
 func (u *UI) newUserPage(user *user) *userPage {
 	up := &userPage{
 		user:        user,
-		commitsList: &layout.List{Axis: layout.Vertical},
+		commitsList: &widget.List{List: layout.List{Axis: layout.Vertical}},
 	}
 	u.fetchCommits(user.login)
 	return up
@@ -164,7 +166,7 @@ func (up *userPage) Layout(gtx layout.Context) {
 	if l.Dragging() {
 		key.SoftKeyboardOp{Show: false}.Add(gtx.Ops)
 	}
-	l.Layout(gtx, len(up.commits), func(gtx C, i int) D {
+	material.List(theme, l).Layout(gtx, len(up.commits), func(gtx C, i int) D {
 		return up.commit(gtx, i)
 	})
 }
@@ -253,7 +255,7 @@ func (u *UI) layoutContributors(gtx layout.Context) layout.Dimensions {
 	if l.Dragging() {
 		key.SoftKeyboardOp{Show: false}.Add(gtx.Ops)
 	}
-	return l.Layout(gtx, len(u.users), func(gtx C, i int) D {
+	return material.List(theme, l).Layout(gtx, len(u.users), func(gtx C, i int) D {
 		return u.user(gtx, i)
 	})
 }
