@@ -548,7 +548,7 @@ type Page struct {
 
 	// laying each page out within a layout.List enables scrolling for the page
 	// content.
-	layout.List
+	widget.List
 }
 
 var (
@@ -813,7 +813,7 @@ func loop(w *app.Window) error {
 							}),
 							layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 								page := &pages[nav.CurrentNavDestination().(int)]
-								return page.List.Layout(gtx, 1, func(gtx C, _ int) D {
+								return material.List(th, &page.List).Layout(gtx, 1, func(gtx C, _ int) D {
 									return layout.UniformInset(unit.Dp(4)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 										return page.layout(gtx)
 									})
