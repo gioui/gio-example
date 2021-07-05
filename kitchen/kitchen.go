@@ -182,8 +182,10 @@ var (
 	flatBtn           = new(widget.Clickable)
 	disableBtn        = new(widget.Clickable)
 	radioButtonsGroup = new(widget.Enum)
-	list              = &layout.List{
-		Axis: layout.Vertical,
+	list              = &widget.List{
+		List: layout.List{
+			Axis: layout.Vertical,
+		},
 	}
 	progress            = float32(0)
 	progressIncrementer chan float32
@@ -212,10 +214,8 @@ func (b iconAndTextButton) Layout(gtx layout.Context) layout.Dimensions {
 					var d D
 					if icon != nil {
 						size := gtx.Px(unit.Dp(56)) - 2*gtx.Px(unit.Dp(16))
-						b.icon.Layout(gtx, unit.Px(float32(size)))
-						d = layout.Dimensions{
-							Size: image.Point{X: size, Y: size},
-						}
+						gtx.Constraints = layout.Exact(image.Pt(size, size))
+						d = b.icon.Layout(gtx)
 					}
 					return d
 				})
@@ -372,7 +372,7 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 		},
 	}
 
-	return list.Layout(gtx, len(widgets), func(gtx C, i int) D {
+	return material.List(th, list).Layout(gtx, len(widgets), func(gtx C, i int) D {
 		return layout.UniformInset(unit.Dp(16)).Layout(gtx, widgets[i])
 	})
 }
