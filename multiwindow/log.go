@@ -18,14 +18,14 @@ type Log struct {
 	lines   []string
 
 	close widget.Clickable
-	list  layout.List
+	list  widget.List
 }
 
 // NewLog crates a new log view.
 func NewLog() *Log {
 	return &Log{
 		addLine: make(chan string, 100),
-		list:    layout.List{Axis: layout.Vertical},
+		list:    widget.List{List: layout.List{Axis: layout.Vertical}},
 	}
 }
 
@@ -77,7 +77,7 @@ func (log *Log) Layout(w *Window, th *material.Theme, gtx layout.Context) {
 	layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 		layout.Rigid(material.Button(th, &log.close, "Close").Layout),
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-			return log.list.Layout(gtx, len(log.lines), func(gtx layout.Context, i int) layout.Dimensions {
+			return material.List(th, &log.list).Layout(gtx, len(log.lines), func(gtx layout.Context, i int) layout.Dimensions {
 				return material.Body1(th, log.lines[i]).Layout(gtx)
 			})
 		}),
