@@ -15,14 +15,14 @@ type Letters struct {
 	log *Log
 
 	items []*LetterListItem
-	list  layout.List
+	list  widget.List
 }
 
 // NewLetters creates a new letters view with the provided log.
 func NewLetters(log *Log) *Letters {
 	view := &Letters{
 		log:  log,
-		list: layout.List{Axis: layout.Vertical},
+		list: widget.List{List: layout.List{Axis: layout.Vertical}},
 	}
 	for text := 'a'; text <= 'z'; text++ {
 		view.items = append(view.items, &LetterListItem{Text: string(text)})
@@ -39,7 +39,7 @@ func (v *Letters) Run(w *Window) error {
 // Layout handles drawing the letters view.
 func (v *Letters) Layout(gtx layout.Context) layout.Dimensions {
 	th := v.win.App.Theme
-	return v.list.Layout(gtx, len(v.items), func(gtx layout.Context, index int) layout.Dimensions {
+	return material.List(th, &v.list).Layout(gtx, len(v.items), func(gtx layout.Context, index int) layout.Dimensions {
 		item := v.items[index]
 		for item.Click.Clicked() {
 			v.log.Printf("opening %s view", item.Text)
