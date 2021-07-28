@@ -212,7 +212,7 @@ func (b iconAndTextButton) Layout(gtx layout.Context) layout.Dimensions {
 			layIcon := layout.Rigid(func(gtx C) D {
 				return layout.Inset{Right: textIconSpacer}.Layout(gtx, func(gtx C) D {
 					var d D
-					if icon != nil {
+					if b.icon != nil {
 						size := gtx.Px(unit.Dp(56)) - 2*gtx.Px(unit.Dp(16))
 						gtx.Constraints = layout.Exact(image.Pt(size, size))
 						d = b.icon.Layout(gtx)
