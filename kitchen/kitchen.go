@@ -215,7 +215,7 @@ func (b iconAndTextButton) Layout(gtx layout.Context) layout.Dimensions {
 					if b.icon != nil {
 						size := gtx.Px(unit.Dp(56)) - 2*gtx.Px(unit.Dp(16))
 						gtx.Constraints = layout.Exact(image.Pt(size, size))
-						d = b.icon.Layout(gtx)
+						d = b.icon.Layout(gtx, b.theme.ContrastFg)
 					}
 					return d
 				})
