@@ -5,18 +5,18 @@ package main
 // A simple Gio program. See https://gioui.org for more information.
 
 import (
-	//	"image/color"
-	"log"
-	"time"
+	"fmt"
+	"os"
 
 	"gioui.org/app"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/unit"
 
-	//	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"gioui.org/x/component"
 	"gioui.org/x/notify"
 
 	"gioui.org/font/gofont"
@@ -24,71 +24,65 @@ import (
 
 func main() {
 	go func() {
-		w := app.NewWindow()
-		if err := loop(w); err != nil {
-			log.Fatal(err)
+		w := app.NewWindow(
+			app.Title("notify"),
+			app.Size(unit.Dp(800), unit.Dp(600)))
+
+		var ops op.Ops
+		for event := range w.Events() {
+			switch event := event.(type) {
+			case system.DestroyEvent:
+				os.Exit(0)
+			case system.FrameEvent:
+				event.Frame(frame(layout.NewContext(&ops, event)))
+			}
 		}
 	}()
 	app.Main()
 }
 
-func loop(w *app.Window) error {
-	th := material.NewTheme(gofont.Collection())
-	var ops op.Ops
-	first := true
-	notificationRequests := make(chan struct{})
-	var button widget.Clickable
-	var err error
-	for {
-		e := <-w.Events()
-		switch e := e.(type) {
-		case system.DestroyEvent:
-			return e.Err
-		case system.FrameEvent:
-			if button.Clicked() {
-				notificationRequests <- struct{}{}
-			}
-			gtx := layout.NewContext(&ops, e)
+type (
+	// C quick alias for Context.
+	C = layout.Context
+	// D quick alias for Dimensions.
+	D = layout.Dimensions
+)
 
-			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					text := "notification errors will appear here"
-					if err != nil {
-						text = err.Error()
-					}
-					return material.Body1(th, text).Layout(gtx)
-				}),
-				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-					return material.Button(th, &button, "Send Notification").Layout(gtx)
-				}),
-			)
-
-			e.Frame(gtx.Ops)
-			if first {
-				first = false
-				go func() {
-					mgr, e := notify.NewManager()
-					if e != nil {
-						log.Printf("manager creation failed: %v", e)
-						err = e
-					}
-					for range notificationRequests {
-						log.Println("trying to send notification")
-						notif, e := mgr.CreateNotification("hello!", "IS GIO OUT THERE?")
-						if e != nil {
-							log.Printf("notification send failed: %v", e)
-							err = e
-							continue
-						}
-						go func() {
-							time.Sleep(time.Second * 10)
-							if err = notif.Cancel(); err != nil {
-								log.Printf("failed cancelling: %v", err)
-							}
-						}()
-					}
-				}()
-			}
+var (
+	th       = material.NewTheme(gofont.Collection())
+	notifier = func() notify.Manager {
+		n, err := notify.NewManager()
+		if err != nil {
+			panic(fmt.Errorf("init notification manager: %w", err))
 		}
+		return n
+	}()
+	editor    component.TextField
+	notifyBtn widget.Clickable
+)
+
+// frame lays out the entire frame and returns the reusltant ops buffer.
+func frame(gtx C) *op.Ops {
+	if notifyBtn.Clicked() {
+		msg := "This is a notification send from gio."
+		if txt := editor.Text(); txt != "" {
+			msg = txt
+		}
+		go notifier.CreateNotification("Hello Gio!", msg)
 	}
+	layout.Center.Layout(gtx, func(gtx C) D {
+		gtx.Constraints.Max.X = gtx.Px(unit.Dp(300))
+		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+			layout.Rigid(func(gtx C) D {
+				return editor.Layout(gtx, th, "enter a notification message")
+			}),
+			layout.Rigid(func(gtx C) D {
+				return layout.Spacer{Height: unit.Dp(10)}.Layout(gtx)
+			}),
+			layout.Rigid(func(gtx C) D {
+				return material.Button(th, &notifyBtn, "notify").Layout(gtx)
+			}),
+		)
+	})
+	return gtx.Ops
 }
