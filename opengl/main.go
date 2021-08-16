@@ -52,12 +52,6 @@ type eglContext struct {
 	surf C.EGLSurface
 }
 
-const (
-	// needDepthBuffer must be true when the program needs a depth buffer, or
-	// when using the old non-compute Gio renderer.
-	needDepthBuffer = true
-)
-
 func main() {
 	go func() {
 		// Set CustomRenderer so we can provide our own rendering context.
@@ -145,7 +139,7 @@ func loop(w *app.Window) error {
 
 				// Render drawing ops.
 				gioCtx.Collect(e.Size, gtx.Ops)
-				gioCtx.Frame()
+				gioCtx.Frame(gpu.OpenGLRenderTarget{})
 
 				if ok := C.eglSwapBuffers(ctx.disp, ctx.surf); ok != C.EGL_TRUE {
 					log.Fatal(fmt.Errorf("swap failed: %v", C.eglGetError()))
@@ -184,7 +178,7 @@ func screenshot(ctx gpu.GPU, size image.Point, ops *op.Ops) error {
 	}
 	drawGL()
 	ctx.Collect(size, ops)
-	if err := ctx.Frame(); err != nil {
+	if err := ctx.Frame(gpu.OpenGLRenderTarget{}); err != nil {
 		return fmt.Errorf("screenshot: %w", err)
 	}
 	r := image.Rectangle{Max: size}
@@ -247,9 +241,6 @@ func createContext(view C.EGLNativeWindowType) (*eglContext, error) {
 	if srgb {
 		// Some drivers need alpha for sRGB framebuffers to work.
 		attribs = append(attribs, C.EGL_ALPHA_SIZE, 8)
-	}
-	if needDepthBuffer {
-		attribs = append(attribs, C.EGL_DEPTH_SIZE, 16)
 	}
 	attribs = append(attribs, C.EGL_NONE)
 	var (

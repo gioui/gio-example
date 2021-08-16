@@ -34,10 +34,13 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20201218220906-28db891af037/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 gioui.org v0.0.0-20210116085804-99bfa6a33cdf/go.mod h1:Y+uS7hHMvku1Q+ooaoq6fYD5B2LGoT8JtFgvmYmRzTw=
 gioui.org v0.0.0-20210729070555-8cec7e04eb71/go.mod h1:N4QK6T0gTQc7ogB7rniAyYQb8/klqI6hQkqV+HAh5Mw=
-gioui.org v0.0.0-20210804105805-1efe68c1540b h1:WoK7TEkeZdluAyzsuGnqod+/PTyrUVoF81Fyhsb4R/k=
-gioui.org v0.0.0-20210804105805-1efe68c1540b/go.mod h1:N4QK6T0gTQc7ogB7rniAyYQb8/klqI6hQkqV+HAh5Mw=
-gioui.org/cpu v0.0.0-20210727122813-41509bcd3462 h1:JZyB+d8tPExZHNZwMiGKeeAVd0mkFTc3Zsmegdn178M=
+gioui.org v0.0.0-20210816162232-c7ea90c4e213 h1:03HXLQj+ojkqxJgzfqUgUQ443CYZj+oNCdPHiTrsO/E=
+gioui.org v0.0.0-20210816162232-c7ea90c4e213/go.mod h1:9eROMr3ULdKcO1qCQTTbs9ZSuzCBQdyD6SIVFaM4z14=
 gioui.org/cpu v0.0.0-20210727122813-41509bcd3462/go.mod h1:DkhBDuHokSMOUxX5LZQ7IcxyJJzs3OON8Z5ojaXUXxo=
+gioui.org/cpu v0.0.0-20210808092351-bfe733dd3334 h1:1xK224B5DnjlPKCfVDTl7+olrzgAXn4ym6dum3l34rs=
+gioui.org/cpu v0.0.0-20210808092351-bfe733dd3334/go.mod h1:A8M0Cn5o+vY5LTMlnRoK3O5kG+rH0kWfJjeKd9QpBmQ=
+gioui.org/shader v0.0.0-20210816161847-c12352edbd45 h1:tWCgnOK33iYKNvQ4ctNHBknZ6r273Na82wcTOFc29ZM=
+gioui.org/shader v0.0.0-20210816161847-c12352edbd45/go.mod h1:mWdiME581d/kV7/iEhLmUgUK5iZ09XR5XpduXzbePVM=
 gioui.org/x v0.0.0-20210804152830-6815ab60d717 h1:iRI8QLSxwEkJJI+WdpMvUYNP3wavU5GVkijmmFzjLdo=
 gioui.org/x v0.0.0-20210804152830-6815ab60d717/go.mod h1:+BOtudS1JLP5YKhna9BFi32SrO/Hm7IkBPjFQJQrn6g=
 gioui.org/x/haptic v0.0.0-20210120222453-b55819bc712b h1:3lHNKrTHXJCXhtmCVdTInlNuay3jSQ0SVi9JNQTj5yM=

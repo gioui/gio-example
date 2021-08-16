@@ -91,11 +91,11 @@ func main() {
 	var queue router.Router
 	var ops op.Ops
 	th := material.NewTheme(gofont.Collection())
-	gpu, err := gpu.New(gpu.OpenGL{ES: !desktopGL})
+	gpuCtx, err := gpu.New(gpu.OpenGL{ES: !desktopGL})
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer gpu.Release()
+	defer gpuCtx.Release()
 
 	registerCallbacks(window, &queue)
 	for !window.ShouldClose() {
@@ -116,8 +116,8 @@ func main() {
 		}
 		drawOpenGL()
 		draw(gtx, th)
-		gpu.Collect(sz, gtx.Ops)
-		gpu.Frame()
+		gpuCtx.Collect(sz, gtx.Ops)
+		gpuCtx.Frame(gpu.OpenGLRenderTarget{})
 		queue.Frame(gtx.Ops)
 		window.SwapBuffers()
 	}
@@ -133,10 +133,10 @@ var (
 func drawOpenGL() {
 	if desktopGL {
 		gl.ClearColor(0, float32(green), 0, 1)
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		gl.Clear(gl.COLOR_BUFFER_BIT)
 	} else {
 		gles2.ClearColor(0, float32(green), 0, 1)
-		gles2.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		gles2.Clear(gl.COLOR_BUFFER_BIT)
 	}
 }
 
