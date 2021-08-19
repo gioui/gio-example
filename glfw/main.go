@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Unlicense OR MIT
 
 // GLFW doesn't build on OpenBSD and FreeBSD.
+//go:build !openbsd && !freebsd && !android && !ios && !js
 // +build !openbsd,!freebsd,!android,!ios,!js
 
 // The glfw example demonstrates integration of Gio into a foreign
