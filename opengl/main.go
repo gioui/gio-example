@@ -179,7 +179,7 @@ func screenshot(ctx gpu.GPU, size image.Point, ops *op.Ops) error {
 	}
 	drawGL()
 	ctx.Collect(size, ops)
-	if err := ctx.Frame(gpu.OpenGLRenderTarget{}); err != nil {
+	if err := ctx.Frame(gpu.OpenGLRenderTarget{V: uint(fbo)}); err != nil {
 		return fmt.Errorf("screenshot: %w", err)
 	}
 	r := image.Rectangle{Max: size}
