@@ -86,6 +86,7 @@ func loop(w *app.Window) error {
 					gioCtx = nil
 				}
 				if ctx != nil {
+					C.eglMakeCurrent(ctx.disp, nil, nil, nil)
 					ctx.Release()
 					ctx = nil
 				}
@@ -99,6 +100,8 @@ func loop(w *app.Window) error {
 					log.Fatal(err)
 				}
 				ctx = c
+				// eglMakeCurrent binds a context to an operating system thread. Prevent Go from switching thread.
+				runtime.LockOSThread()
 				if ok := C.eglMakeCurrent(ctx.disp, ctx.surf, ctx.surf, ctx.ctx); ok != C.EGL_TRUE {
 					err := fmt.Errorf("eglMakeCurrent failed (%#x)", C.eglGetError())
 					log.Fatal(err)
@@ -111,7 +114,6 @@ func loop(w *app.Window) error {
 				if err != nil {
 					log.Fatal(err)
 				}
-				C.eglMakeCurrent(ctx.disp, nil, nil, nil)
 			})
 		case system.DestroyEvent:
 			return e.Err
@@ -129,10 +131,6 @@ func loop(w *app.Window) error {
 			}
 			drawUI(th, gtx)
 			w.Run(func() {
-				if ok := C.eglMakeCurrent(ctx.disp, ctx.surf, ctx.surf, ctx.ctx); ok != C.EGL_TRUE {
-					err := fmt.Errorf("eglMakeCurrent failed (%#x)", C.eglGetError())
-					log.Fatal(err)
-				}
 				// Trigger window resize detection in ANGLE.
 				C.eglWaitClient()
 				// Draw custom OpenGL content.
@@ -140,7 +138,9 @@ func loop(w *app.Window) error {
 
 				// Render drawing ops.
 				gioCtx.Collect(e.Size, gtx.Ops)
-				gioCtx.Frame(gpu.OpenGLRenderTarget{})
+				if err := gioCtx.Frame(gpu.OpenGLRenderTarget{}); err != nil {
+					log.Fatal(fmt.Errorf("render failed: %v", err))
+				}
 
 				if ok := C.eglSwapBuffers(ctx.disp, ctx.surf); ok != C.EGL_TRUE {
 					log.Fatal(fmt.Errorf("swap failed: %v", C.eglGetError()))
@@ -151,8 +151,6 @@ func loop(w *app.Window) error {
 						log.Fatal(err)
 					}
 				}
-
-				C.eglMakeCurrent(ctx.disp, nil, nil, nil)
 			})
 
 			// Process non-drawing ops.
