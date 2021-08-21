@@ -3,13 +3,19 @@
 //go:build darwin || windows
 // +build darwin windows
 
-package main
-
 // This program demonstrates the use of a custom OpenGL ES context with
 // app.Window. It is similar to the GLFW example, but uses Gio's window
 // implementation instead of the one in GLFW.
 //
-// The example runs on macOS and Windows using ANGLE.
+// The example runs on macOS and Windows using ANGLE:
+//
+// $ CGO_CFLAGS=-I<path-to-ANGLE>/include CGO_LDFLAGS=-L<path-to-angle-libraries> go build -o opengl.exe ./opengl
+//
+// You'll need the ANGLE libraries (EGL and GLESv2) in your library search path. On macOS:
+//
+// $ DYLD_LIBRARY_PATH=<path-to-ANGLE-libraries> ./opengl.exe
+//
+package main
 
 import (
 	"bytes"
