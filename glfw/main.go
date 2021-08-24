@@ -117,8 +117,7 @@ func main() {
 		}
 		drawOpenGL()
 		draw(gtx, th)
-		gpuCtx.Collect(sz, gtx.Ops)
-		gpuCtx.Frame(gpu.OpenGLRenderTarget{})
+		gpuCtx.Frame(gtx.Ops, gpu.OpenGLRenderTarget{}, sz)
 		queue.Frame(gtx.Ops)
 		window.SwapBuffers()
 	}

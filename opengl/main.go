@@ -143,8 +143,7 @@ func loop(w *app.Window) error {
 				drawGL()
 
 				// Render drawing ops.
-				gioCtx.Collect(e.Size, gtx.Ops)
-				if err := gioCtx.Frame(gpu.OpenGLRenderTarget{}); err != nil {
+				if err := gioCtx.Frame(gtx.Ops, gpu.OpenGLRenderTarget{}, e.Size); err != nil {
 					log.Fatal(fmt.Errorf("render failed: %v", err))
 				}
 
@@ -182,8 +181,7 @@ func screenshot(ctx gpu.GPU, size image.Point, ops *op.Ops) error {
 		return fmt.Errorf("screenshot: framebuffer incomplete (%#x)", st)
 	}
 	drawGL()
-	ctx.Collect(size, ops)
-	if err := ctx.Frame(gpu.OpenGLRenderTarget{V: uint(fbo)}); err != nil {
+	if err := ctx.Frame(ops, gpu.OpenGLRenderTarget{V: uint(fbo)}, size); err != nil {
 		return fmt.Errorf("screenshot: %w", err)
 	}
 	r := image.Rectangle{Max: size}
