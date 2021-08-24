@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: Unlicense OR MIT
 
-//go:build darwin || windows
-// +build darwin windows
+//go:build darwin || windows || linux
+// +build darwin windows linux
 
 // This program demonstrates the use of a custom OpenGL ES context with
 // app.Window. It is similar to the GLFW example, but uses Gio's window
 // implementation instead of the one in GLFW.
+//
+// The example runs on Linux using the normal EGL and X11 libraries, so
+// no additional libraries need to be installed.
 //
 // The example runs on macOS and Windows using ANGLE:
 //
@@ -101,7 +104,7 @@ func loop(w *app.Window) error {
 				if view == nilv {
 					return
 				}
-				c, err := createContext(view)
+				c, err := createContext(e)
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -210,20 +213,9 @@ func drawUI(th *material.Theme, gtx layout.Context) layout.Dimensions {
 	)
 }
 
-func createContext(view C.EGLNativeWindowType) (*eglContext, error) {
-	var EGL_NO_DISPLAY C.EGLDisplay
-	platformExts := strings.Split(C.GoString(C.eglQueryString(EGL_NO_DISPLAY, C.EGL_EXTENSIONS)), " ")
-	platformType := C.EGLint(C.EGL_PLATFORM_ANGLE_TYPE_DEFAULT_ANGLE)
-	if hasExtension(platformExts, "EGL_ANGLE_platform_angle_metal") {
-		// The Metal backend works better than the OpenGL backend.
-		platformType = C.EGL_PLATFORM_ANGLE_TYPE_METAL_ANGLE
-	}
-	attrs := []C.EGLint{
-		C.EGL_PLATFORM_ANGLE_TYPE_ANGLE,
-		platformType,
-		C.EGL_NONE,
-	}
-	disp := C.eglGetPlatformDisplayEXT(C.EGL_PLATFORM_ANGLE_ANGLE, nil, &attrs[0])
+func createContext(ve app.ViewEvent) (*eglContext, error) {
+	view := nativeViewFor(ve)
+	disp := getDisplay(ve)
 	if disp == 0 {
 		return nil, fmt.Errorf("eglGetPlatformDisplay failed: 0x%x", C.eglGetError())
 	}
