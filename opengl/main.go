@@ -77,9 +77,6 @@ func main() {
 var btnScreenshot widget.Clickable
 
 func loop(w *app.Window) error {
-	// OpenGL stores the current context in thread local storage.
-	runtime.LockOSThread()
-
 	th := material.NewTheme(gofont.Collection())
 	var ops op.Ops
 	var (
