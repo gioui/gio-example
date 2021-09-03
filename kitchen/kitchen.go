@@ -67,7 +67,6 @@ func main() {
 		for {
 			time.Sleep(time.Second)
 			progressIncrementer <- 0.1
-			//pprof.Lookup("goroutine").WriteTo(os.Stdout, 1)
 		}
 	}()
 
