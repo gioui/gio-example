@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"gioui.org/example/x/outlay/fan/playing"
+	"gioui.org/example/outlay/fan/playing"
 )
 
 type Phase uint8

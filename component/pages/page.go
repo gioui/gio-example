@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"gioui.org/example/x/component/icon"
+	"gioui.org/example/component/icon"
 	"gioui.org/layout"
 	"gioui.org/op/paint"
 	"gioui.org/widget/material"

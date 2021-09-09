@@ -10,9 +10,9 @@ import (
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
 
-	alo "gioui.org/example/x/component/applayout"
-	"gioui.org/example/x/component/icon"
-	page "gioui.org/example/x/component/pages"
+	alo "gioui.org/example/component/applayout"
+	"gioui.org/example/component/icon"
+	page "gioui.org/example/component/pages"
 )
 
 type (

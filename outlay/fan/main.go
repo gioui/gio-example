@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"gioui.org/app"
-	"gioui.org/example/x/outlay/fan/playing"
-	xwidget "gioui.org/example/x/outlay/fan/widget"
-	"gioui.org/example/x/outlay/fan/widget/boring"
+	"gioui.org/example/outlay/fan/playing"
+	xwidget "gioui.org/example/outlay/fan/widget"
+	"gioui.org/example/outlay/fan/widget/boring"
 	"gioui.org/font/gofont"
 	"gioui.org/io/system"
 	"gioui.org/layout"

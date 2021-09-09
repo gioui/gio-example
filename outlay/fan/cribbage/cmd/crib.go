@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"gioui.org/example/x/outlay/fan/cribbage"
+	"gioui.org/example/outlay/fan/cribbage"
 )
 
 func main() {

@@ -13,8 +13,8 @@ import (
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
 
-	"gioui.org/example/x/component/icon"
-	page "gioui.org/example/x/component/pages"
+	"gioui.org/example/component/icon"
+	page "gioui.org/example/component/pages"
 )
 
 type (
