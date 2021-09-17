@@ -20,6 +20,7 @@ import (
 	"gioui.org/app"
 	"gioui.org/f32"
 	"gioui.org/font/gofont"
+	"gioui.org/gesture"
 	"gioui.org/gpu/headless"
 	"gioui.org/io/pointer"
 	"gioui.org/io/router"
@@ -36,8 +37,10 @@ import (
 	"golang.org/x/exp/shiny/materialdesign/icons"
 )
 
-var screenshot = flag.String("screenshot", "", "save a screenshot to a file and exit")
-var disable = flag.Bool("disable", false, "disable all widgets")
+var (
+	screenshot = flag.String("screenshot", "", "save a screenshot to a file and exit")
+	disable    = flag.Bool("disable", false, "disable all widgets")
+)
 
 type iconAndTextButton struct {
 	theme  *material.Theme
@@ -112,6 +115,7 @@ func saveScreenshot(f string) error {
 
 func loop(w *app.Window) error {
 	th := material.NewTheme(gofont.Collection())
+	var shatter Shatter
 
 	var ops op.Ops
 	for {
@@ -132,7 +136,11 @@ func loop(w *app.Window) error {
 						transformTime = time.Time{}
 					}
 				}
-				transformedKitchen(gtx, th)
+
+				paint.Fill(gtx.Ops, color.NRGBA{A: 255})
+				shatter.Layout(gtx, func(gtx C) D {
+					return transformedKitchen(gtx, th)
+				})
 				e.Frame(gtx.Ops)
 			}
 		case p := <-progressIncrementer:
@@ -235,6 +243,7 @@ func (b iconAndTextButton) Layout(gtx layout.Context) layout.Dimensions {
 }
 
 func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
+	paint.FillShape(gtx.Ops, color.NRGBA{R: 255, G: 255, B: 255, A: 255}, clip.Rect{Max: gtx.Constraints.Max}.Op())
 	for _, e := range lineEditor.Events() {
 		if e, ok := e.(widget.SubmitEvent); ok {
 			topLabel = e.Text
@@ -432,3 +441,139 @@ esteemed his fine skill and ability in teaching others the principles
 of philosophy as the least of his endowments. It was from him that I
 learned how to receive from friends what are thought favours without
 seeming humbled by the giver or insensible to the gift.`
+
+type Fragment struct {
+	A, B, C      f32.Point
+	Velocity     f32.Point
+	AngV         float32
+	Displacement f32.Point
+	AngDisp      float32
+}
+
+func (f *Fragment) Layout(gtx C, call op.CallOp) {
+	defer op.Save(gtx.Ops).Load()
+	f.Displacement = f.Displacement.Add(f.Velocity)
+	f.AngDisp += f.AngV
+	for f.AngDisp > 2*math.Pi {
+		f.AngDisp -= 2 * math.Pi
+	}
+	for f.AngDisp < 0 {
+		f.AngDisp += 2 * math.Pi
+	}
+	var p clip.Path
+	p.Begin(gtx.Ops)
+	p.MoveTo(f.A)
+	p.LineTo(f.B)
+	p.LineTo(f.C)
+	p.Close()
+	o := clip.Outline{Path: p.End()}
+	op.Affine(
+		f32.Affine2D{}.Rotate(f.center(), f.AngDisp).Offset(f.Displacement),
+	).Add(gtx.Ops)
+	o.Op().Add(gtx.Ops)
+	call.Add(gtx.Ops)
+}
+
+func max(x float32, xs ...float32) float32 {
+	for _, o := range xs {
+		if o > x {
+			x = o
+		}
+	}
+	return x
+}
+
+func min(x float32, xs ...float32) float32 {
+	for _, o := range xs {
+		if o < x {
+			x = o
+		}
+	}
+	return x
+}
+
+func (f *Fragment) center() f32.Point {
+	maxX := max(f.A.X, f.B.X, f.C.X)
+	maxY := max(f.A.Y, f.B.Y, f.C.Y)
+	minX := min(f.A.X, f.B.X, f.C.X)
+	minY := min(f.A.Y, f.B.Y, f.C.Y)
+	width := maxX - minX
+	height := maxY - minY
+	return f32.Point{
+		X: minX + (width * .5),
+		Y: minY + (height * .5),
+	}
+}
+
+// Shatter lays out another widget with a passthrough click area on top.
+// The first click will cause the presentation of the provided widget
+// to break into moving, spinning fragments of UI.
+type Shatter struct {
+	gesture.Click
+	broken    bool
+	origin    f32.Point
+	fragments []Fragment
+}
+
+func (s *Shatter) Layout(gtx C, w layout.Widget) D {
+	macro := op.Record(gtx.Ops)
+	constraints := gtx.Constraints
+	dims := layout.Stack{}.Layout(gtx,
+		layout.Stacked(func(gtx C) D {
+			gtx.Constraints = constraints
+			return w(gtx)
+		}),
+		layout.Expanded(func(gtx C) D {
+			if !s.broken {
+				pointer.PassOp{Pass: true}.Add(gtx.Ops)
+				pointer.Rect(image.Rectangle{Max: gtx.Constraints.Min}).Add(gtx.Ops)
+				s.Click.Add(gtx.Ops)
+			}
+			return D{Size: gtx.Constraints.Min}
+		}),
+	)
+	call := macro.Stop()
+
+	for _, click := range s.Click.Events(gtx) {
+		switch click.Type {
+		case gesture.TypeClick:
+			if !s.broken {
+				s.origin = click.Position
+				s.broken = true
+				s.chooseFragments(gtx)
+			}
+		}
+	}
+
+	if !s.broken {
+		call.Add(gtx.Ops)
+		return dims
+	}
+	op.InvalidateOp{}.Add(gtx.Ops)
+	for i := range s.fragments {
+		f := &s.fragments[i]
+		f.Layout(gtx, call)
+	}
+
+	return dims
+}
+
+func (s *Shatter) chooseFragments(gtx C) {
+	s.fragments = s.fragments[:0]
+	bounds := layout.FPt(gtx.Constraints.Max)
+	// UL
+	s.fragments = append(s.fragments, Fragment{
+		A:        f32.Pt(0, 0),
+		B:        f32.Pt(bounds.X, 0),
+		C:        f32.Pt(0, bounds.Y),
+		Velocity: f32.Pt(-1/30, 0),
+		AngV:     math.Pi / 1000,
+	})
+	s.fragments = append(s.fragments, Fragment{
+		A:        f32.Pt(0, bounds.Y),
+		B:        bounds,
+		C:        f32.Pt(bounds.X, 0),
+		Velocity: f32.Pt(1/30, 0),
+		AngV:     -(math.Pi / 1000),
+	})
+}
