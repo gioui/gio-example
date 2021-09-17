@@ -34,8 +34,8 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20201218220906-28db891af037/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 gioui.org v0.0.0-20210116085804-99bfa6a33cdf/go.mod h1:Y+uS7hHMvku1Q+ooaoq6fYD5B2LGoT8JtFgvmYmRzTw=
 gioui.org v0.0.0-20210729070555-8cec7e04eb71/go.mod h1:N4QK6T0gTQc7ogB7rniAyYQb8/klqI6hQkqV+HAh5Mw=
-gioui.org v0.0.0-20210829183248-460499a5debf h1:ilcc7ocrjFO+ya9d85cHV1tm56IdZGA9GQHrtI/WK4U=
-gioui.org v0.0.0-20210829183248-460499a5debf/go.mod h1:BTldRXnY5mrUrYZCdWyDwyMzyUzpfZN1cF4MMRrOt9w=
+gioui.org v0.0.0-20210917064713-799ee3374d9f h1:vX5lrU4uvAqSdzxpn90YqtQXn6UncjE7/taRbCrQtbc=
+gioui.org v0.0.0-20210917064713-799ee3374d9f/go.mod h1:BTldRXnY5mrUrYZCdWyDwyMzyUzpfZN1cF4MMRrOt9w=
 gioui.org/cpu v0.0.0-20210727122813-41509bcd3462/go.mod h1:DkhBDuHokSMOUxX5LZQ7IcxyJJzs3OON8Z5ojaXUXxo=
 gioui.org/cpu v0.0.0-20210808092351-bfe733dd3334/go.mod h1:A8M0Cn5o+vY5LTMlnRoK3O5kG+rH0kWfJjeKd9QpBmQ=
 gioui.org/cpu v0.0.0-20210817075930-8d6a761490d2 h1:AGDDxsJE1RpcXTAxPG2B4jrwVUJGFDjINIPi1jtO6pc=
