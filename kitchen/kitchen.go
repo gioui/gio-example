@@ -14,6 +14,7 @@ import (
 	"io/ioutil"
 	"log"
 	"math"
+	"math/rand"
 	"os"
 	"time"
 
@@ -33,6 +34,7 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"github.com/esimov/triangle"
 
 	"golang.org/x/exp/shiny/materialdesign/icons"
 )
@@ -492,17 +494,19 @@ func min(x float32, xs ...float32) float32 {
 	return x
 }
 
-func (f *Fragment) center() f32.Point {
-	maxX := max(f.A.X, f.B.X, f.C.X)
-	maxY := max(f.A.Y, f.B.Y, f.C.Y)
-	minX := min(f.A.X, f.B.X, f.C.X)
-	minY := min(f.A.Y, f.B.Y, f.C.Y)
-	width := maxX - minX
-	height := maxY - minY
+func mid(a, b f32.Point) f32.Point {
 	return f32.Point{
-		X: minX + (width * .5),
-		Y: minY + (height * .5),
+		X: (max(a.X, b.X) - min(a.X, b.X)) * .5,
+		Y: (max(a.Y, b.Y) - min(a.Y, b.Y)) * .5,
 	}
+}
+
+func (f *Fragment) center() f32.Point {
+	return f32.Point{
+		X: (f.A.X + f.B.X + f.C.X) / 3,
+		Y: (f.A.Y + f.B.Y + f.C.Y) / 3,
+	}
+	return f.A
 }
 
 // Shatter lays out another widget with a passthrough click area on top.
@@ -513,6 +517,7 @@ type Shatter struct {
 	broken    bool
 	origin    f32.Point
 	fragments []Fragment
+	triangle.Delaunay
 }
 
 func (s *Shatter) Layout(gtx C, w layout.Widget) D {
@@ -540,7 +545,7 @@ func (s *Shatter) Layout(gtx C, w layout.Widget) D {
 			if !s.broken {
 				s.origin = click.Position
 				s.broken = true
-				s.chooseFragments(gtx)
+				s.chooseFragments(gtx, click.Position)
 			}
 		}
 	}
@@ -558,22 +563,50 @@ func (s *Shatter) Layout(gtx C, w layout.Widget) D {
 	return dims
 }
 
-func (s *Shatter) chooseFragments(gtx C) {
+func randomPoints(n int, in image.Point) []image.Point {
+	out := make([]image.Point, n)
+	for i := range out {
+		out[i] = image.Point{
+			X: rand.Intn(in.X),
+			Y: rand.Intn(in.Y),
+		}
+	}
+	return out
+}
+
+func (s *Shatter) chooseFragments(gtx C, clickPos f32.Point) {
 	s.fragments = s.fragments[:0]
-	bounds := layout.FPt(gtx.Constraints.Max)
-	// UL
-	s.fragments = append(s.fragments, Fragment{
-		A:        f32.Pt(0, 0),
-		B:        f32.Pt(bounds.X, 0),
-		C:        f32.Pt(0, bounds.Y),
-		Velocity: f32.Pt(-1/30, 0),
-		AngV:     math.Pi / 1000,
+
+	var points []image.Point
+	points = append(points, image.Point{
+		X: int(clickPos.X),
+		Y: int(clickPos.Y),
 	})
-	s.fragments = append(s.fragments, Fragment{
-		A:        f32.Pt(0, bounds.Y),
-		B:        bounds,
-		C:        f32.Pt(bounds.X, 0),
-		Velocity: f32.Pt(1/30, 0),
-		AngV:     -(math.Pi / 1000),
-	})
+
+	points = append(points, randomPoints(10, gtx.Constraints.Max)...)
+
+	triangles := s.Delaunay.Init(gtx.Constraints.Max.X, gtx.Constraints.Max.Y).Insert(points).GetTriangles()
+
+	for _, t := range triangles {
+		f := Fragment{
+			A:    Pt(t.Nodes[0]),
+			B:    Pt(t.Nodes[1]),
+			C:    Pt(t.Nodes[2]),
+			AngV: math.Pi / 500 * (.5 - rand.Float32()),
+		}
+		center := f.center()
+		vec := center.Sub(clickPos)
+		f.Velocity = vec.Mul(1 / Distance(f32.Point{}, vec)).Mul(3)
+		s.fragments = append(s.fragments, f)
+	}
+}
+
+func Pt(n triangle.Node) f32.Point {
+	return f32.Pt(float32(n.X), float32(n.Y))
+}
+
+func Distance(a, b f32.Point) float32 {
+	deltaX := float64(b.X - a.X)
+	deltaY := float64(b.Y - a.Y)
+	return float32(math.Sqrt(deltaX*deltaX + deltaY*deltaY))
 }
