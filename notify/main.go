@@ -50,8 +50,8 @@ type (
 
 var (
 	th       = material.NewTheme(gofont.Collection())
-	notifier = func() notify.Manager {
-		n, err := notify.NewManager()
+	notifier = func() notify.Notifier {
+		n, err := notify.NewNotifier()
 		if err != nil {
 			panic(fmt.Errorf("init notification manager: %w", err))
 		}
