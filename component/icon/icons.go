@@ -59,3 +59,8 @@ var EditIcon *widget.Icon = func() *widget.Icon {
 	icon, _ := widget.NewIcon(icons.ContentCreate)
 	return icon
 }()
+
+var VisibilityIcon *widget.Icon = func() *widget.Icon {
+	icon, _ := widget.NewIcon(icons.ActionVisibility)
+	return icon
+}()

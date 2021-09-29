@@ -9,6 +9,7 @@ import (
 	page "gioui.org/example/component/pages"
 	"gioui.org/example/component/pages/about"
 	"gioui.org/example/component/pages/appbar"
+	"gioui.org/example/component/pages/discloser"
 	"gioui.org/example/component/pages/menu"
 	"gioui.org/example/component/pages/navdrawer"
 	"gioui.org/example/component/pages/textfield"
@@ -45,7 +46,8 @@ func loop(w *app.Window) error {
 	router.Register(1, navdrawer.New(&router))
 	router.Register(2, textfield.New(&router))
 	router.Register(3, menu.New(&router))
-	router.Register(4, about.New(&router))
+	router.Register(4, discloser.New(&router))
+	router.Register(5, about.New(&router))
 
 	for {
 		select {
