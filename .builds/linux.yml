@@ -16,6 +16,7 @@ packages:
  - libxinerama-dev
  - libxi-dev
  - libxxf86vm-dev
+ - libvulkan-dev
 sources:
  - https://git.sr.ht/~eliasnaur/gio-example
 environment:
