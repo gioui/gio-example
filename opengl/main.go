@@ -116,7 +116,7 @@ func loop(w *app.Window) error {
 					return C.GoString((*C.char)(unsafe.Pointer(C.glGetString(e))))
 				}
 				fmt.Printf("GL_VERSION: %s\nGL_RENDERER: %s\n", glGetString(C.GL_VERSION), glGetString(C.GL_RENDERER))
-				gioCtx, err = gpu.New(gpu.OpenGL{ES: true})
+				gioCtx, err = gpu.New(gpu.OpenGL{ES: true, Shared: true})
 				if err != nil {
 					log.Fatal(err)
 				}

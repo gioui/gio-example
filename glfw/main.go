@@ -92,7 +92,7 @@ func main() {
 	var queue router.Router
 	var ops op.Ops
 	th := material.NewTheme(gofont.Collection())
-	gpuCtx, err := gpu.New(gpu.OpenGL{ES: !desktopGL})
+	gpuCtx, err := gpu.New(gpu.OpenGL{ES: !desktopGL, Shared: true})
 	if err != nil {
 		log.Fatal(err)
 	}
