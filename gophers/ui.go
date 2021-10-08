@@ -86,7 +86,7 @@ func newUI(fetchCommits func(string)) *UI {
 	}
 	u.fab = new(widget.Clickable)
 	u.edit2 = &widget.Editor{
-		//Alignment: text.End,
+		// Alignment: text.End,
 		SingleLine: true,
 	}
 	var err error
@@ -96,8 +96,8 @@ func newUI(fetchCommits func(string)) *UI {
 	}
 	u.edit2.SetText("Single line editor. Edit me!")
 	u.edit = &widget.Editor{
-		//Alignment: text.End,
-		//SingleLine: true,
+		// Alignment: text.End,
+		// SingleLine: true,
 	}
 	u.edit.SetText(longTextSample)
 	return u
@@ -303,9 +303,10 @@ func (u *UI) user(gtx layout.Context, index int) layout.Dimensions {
 			}),
 		)
 	})
-	pointer.Rect(image.Rectangle{Max: dims.Size}).Add(gtx.Ops)
+	pr := pointer.Rect(image.Rectangle{Max: dims.Size}).Push(gtx.Ops)
 	click := &u.userClicks[index]
 	click.Add(gtx.Ops)
+	pr.Pop()
 	return dims
 }
 
@@ -347,8 +348,7 @@ func baseline() layout.Flex {
 	return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Baseline}
 }
 
-type clipCircle struct {
-}
+type clipCircle struct{}
 
 func (c *clipCircle) Layout(gtx layout.Context, w layout.Widget) layout.Dimensions {
 	m := op.Record(gtx.Ops)

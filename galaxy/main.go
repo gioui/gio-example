@@ -125,10 +125,12 @@ var PlayIcon = func() *widget.Icon {
 	ic, _ := widget.NewIcon(icons.AVPlayArrow)
 	return ic
 }()
+
 var PauseIcon = func() *widget.Icon {
 	ic, _ := widget.NewIcon(icons.AVPause)
 	return ic
 }()
+
 var ClearIcon = func() *widget.Icon {
 	ic, _ := widget.NewIcon(icons.ContentClear)
 	return ic
@@ -323,14 +325,13 @@ func layoutSelectionLayer(gtx C) D {
 	if selecting {
 		paint.FillShape(gtx.Ops, color.NRGBA{R: 255, A: 100}, clip.Rect(selected).Op())
 	}
-	stack := op.Save(gtx.Ops)
-	pointer.Rect(image.Rectangle{Max: gtx.Constraints.Max}).Add(gtx.Ops)
+	pr := pointer.Rect(image.Rectangle{Max: gtx.Constraints.Max}).Push(gtx.Ops)
 	pointer.CursorNameOp{Name: pointer.CursorCrossHair}.Add(gtx.Ops)
 	pointer.InputOp{
 		Tag:   &selected,
 		Types: pointer.Press | pointer.Release | pointer.Drag,
 	}.Add(gtx.Ops)
-	stack.Load()
+	pr.Pop()
 
 	return D{Size: gtx.Constraints.Max}
 }
