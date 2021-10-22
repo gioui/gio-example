@@ -150,7 +150,6 @@ func transformedKitchen(gtx layout.Context, th *material.Theme) layout.Dimension
 		dt := float32(gtx.Now.Sub(transformTime).Seconds())
 		angle := dt * .1
 		op.InvalidateOp{}.Add(gtx.Ops)
-		defer op.Save(gtx.Ops).Load()
 		tr := f32.Affine2D{}
 		tr = tr.Rotate(f32.Pt(300, 20), -angle)
 		scale := 1.0 - dt*.5
@@ -260,14 +259,13 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 			gtx.Constraints.Max.Y = gtx.Constraints.Min.Y
 
 			dr := image.Rectangle{Max: gtx.Constraints.Min}
-			defer op.Save(gtx.Ops).Load()
 			paint.LinearGradientOp{
 				Stop1:  layout.FPt(dr.Min),
 				Stop2:  layout.FPt(dr.Max),
 				Color1: color.NRGBA{R: 0x10, G: 0xff, B: 0x10, A: 0xFF},
 				Color2: color.NRGBA{R: 0x10, G: 0x10, B: 0xff, A: 0xFF},
 			}.Add(gtx.Ops)
-			clip.Rect(dr).Add(gtx.Ops)
+			defer clip.Rect(dr).Push(gtx.Ops).Pop()
 			paint.PaintOp{}.Add(gtx.Ops)
 			return layout.Dimensions{
 				Size: gtx.Constraints.Max,
