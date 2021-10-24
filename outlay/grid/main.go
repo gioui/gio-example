@@ -173,9 +173,9 @@ func (ui *UI) Layout(gtx layout.Context) layout.Dimensions {
 				}
 				return layout.Stack{}.Layout(gtx,
 					layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-						clip.UniformRRect(f32.Rectangle{
+						defer clip.UniformRRect(f32.Rectangle{
 							Max: layout.FPt(gtx.Constraints.Min),
-						}, 0).Add(gtx.Ops)
+						}, 0).Push(gtx.Ops).Pop()
 						paint.Fill(gtx.Ops, color.NRGBA{A: 64})
 						return layout.Dimensions{}
 					}),
@@ -185,18 +185,18 @@ func (ui *UI) Layout(gtx layout.Context) layout.Dimensions {
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			pt := image.Point{X: gtx.Constraints.Max.X, Y: 4}
-			clip.UniformRRect(f32.Rectangle{
+			defer clip.UniformRRect(f32.Rectangle{
 				Max: layout.FPt(pt),
-			}, 0).Add(gtx.Ops)
+			}, 0).Push(gtx.Ops).Pop()
 			paint.Fill(gtx.Ops, ui.theme.Palette.ContrastBg)
 			return layout.Dimensions{Size: pt}
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return layout.Stack{}.Layout(gtx,
 				layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-					clip.UniformRRect(f32.Rectangle{
+					defer clip.UniformRRect(f32.Rectangle{
 						Max: layout.FPt(image.Pt(gtx.Constraints.Max.X, gtx.Constraints.Min.Y)),
-					}, 0).Add(gtx.Ops)
+					}, 0).Push(gtx.Ops).Pop()
 					paint.Fill(gtx.Ops, color.NRGBA{A: 24})
 					return layout.Dimensions{}
 				}),

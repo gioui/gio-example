@@ -143,8 +143,7 @@ func fill(gtx layout.Context, col1, col2 color.NRGBA) {
 		Color1: col1,
 		Color2: col2,
 	}.Add(gtx.Ops)
-	defer op.Save(gtx.Ops).Load()
-	clip.Rect(dr).Add(gtx.Ops)
+	defer clip.Rect(dr).Push(gtx.Ops).Pop()
 	paint.PaintOp{}.Add(gtx.Ops)
 }
 

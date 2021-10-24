@@ -149,7 +149,7 @@ func (c *cell) Layout(gtx layout.Context, th *material.Theme, x, y int) layout.D
 	if c.click.Clicked() {
 		c.clicked = !c.clicked
 	}
-	clip.Rect{Max: dims.Size}.Add(gtx.Ops)
+	defer clip.Rect{Max: dims.Size}.Push(gtx.Ops).Pop()
 	col := color.NRGBA{R: 255, G: 255, B: 255, A: 255}
 	if c.clicked {
 		col = color.NRGBA{R: 128, G: 128, B: 128, A: 255}

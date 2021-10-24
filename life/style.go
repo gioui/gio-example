@@ -59,7 +59,7 @@ func (board BoardStyle) Layout(gtx layout.Context) layout.Dimensions {
 		p.LineTo(f32.Pt(c.X, c.Y+cellSize))
 		p.Close()
 	}
-	clip.Outline{Path: p.End()}.Op().Add(gtx.Ops)
+	defer clip.Outline{Path: p.End()}.Op().Push(gtx.Ops).Pop()
 
 	// Paint the shape with a black color.
 	paint.ColorOp{Color: color.NRGBA{A: 0xFF}}.Add(gtx.Ops)
