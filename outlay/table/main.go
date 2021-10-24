@@ -133,7 +133,6 @@ func (t *uiTable) Layout(gtx layout.Context) layout.Dimensions {
 }
 
 func (c *cell) Layout(gtx layout.Context, th *material.Theme, x, y int) layout.Dimensions {
-	defer op.Save(gtx.Ops).Load()
 	var txt string
 	if y < 0 {
 		txt = fmt.Sprintf("item %d", x)

@@ -9,9 +9,9 @@ import (
 	"gioui.org/f32"        // f32 is used for shape calculations.
 	"gioui.org/io/pointer" // system is used for system events (e.g. closing the window).
 	"gioui.org/layout"     // layout is used for layouting widgets.
-	"gioui.org/op"         // op is used for recording different operations.
-	"gioui.org/op/clip"    // clip is used to draw the cell shape.
-	"gioui.org/op/paint"   // paint is used to paint the cells.
+	// op is used for recording different operations.
+	"gioui.org/op/clip"  // clip is used to draw the cell shape.
+	"gioui.org/op/paint" // paint is used to paint the cells.
 )
 
 // BoardStyle draws Board with rectangles.
@@ -22,8 +22,6 @@ type BoardStyle struct {
 
 // Layout draws the Board and accepts input for adding alive cells.
 func (board BoardStyle) Layout(gtx layout.Context) layout.Dimensions {
-	defer op.Save(gtx.Ops).Load()
-
 	// Calculate the board size based on the cell size in pixels.
 	size := board.Size.Mul(board.CellSizePx)
 	gtx.Constraints = layout.Exact(size)

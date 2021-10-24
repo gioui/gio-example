@@ -351,7 +351,6 @@ type (
 // Layout renders the star into the gtx assuming that it is visible within the
 // provided viewport. Stars outside of the viewport will be skipped.
 func (s Star) Layout(gtx layout.Context, view *viewport) layout.Dimensions {
-	defer op.Save(gtx.Ops).Load()
 	px := gtx.Px(s.Size)
 	if view != nil {
 		if s.X < view.offset.X || s.X > view.offset.X+view.size.X {
@@ -367,7 +366,7 @@ func (s Star) Layout(gtx layout.Context, view *viewport) layout.Dimensions {
 	x := s.X*float32(gtx.Constraints.Max.X) - rr
 	y := s.Y*float32(gtx.Constraints.Max.Y) - rr
 
-	op.Offset(f32.Pt(x, y)).Add(gtx.Ops)
+	defer op.Offset(f32.Pt(x, y)).Push(gtx.Ops).Pop()
 	rect := f32.Rectangle{
 		Max: f32.Pt(float32(px), float32(px)),
 	}

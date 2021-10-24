@@ -82,7 +82,6 @@ func (c *CardStyle) Layout(gtx C) D {
 					}),
 					layout.Stacked(func(gtx C) D {
 						return layout.UniformInset(unit.Dp(2)).Layout(gtx, func(gtx C) D {
-							defer op.Save(gtx.Ops).Load()
 							gtx.Constraints.Min = gtx.Constraints.Max
 							origin := f32.Point{
 								X: float32(gtx.Constraints.Max.X / 2),
@@ -94,7 +93,7 @@ func (c *CardStyle) Layout(gtx C) D {
 								return face.Layout(gtx)
 							})
 							c.layoutCorner(gtx)
-							op.Affine(f32.Affine2D{}.Rotate(origin, math.Pi)).Add(gtx.Ops)
+							defer op.Affine(f32.Affine2D{}.Rotate(origin, math.Pi)).Push(gtx.Ops).Pop()
 							c.layoutCorner(gtx)
 
 							return D{Size: gtx.Constraints.Max}
