@@ -140,8 +140,10 @@ The controls below allow you to see the various features available in our App Ba
 						if p.bottomBar.Changed() {
 							if p.bottomBar.Value {
 								p.Router.ModalNavDrawer.Anchor = component.Bottom
+								p.Router.AppBar.Anchor = component.Bottom
 							} else {
 								p.Router.ModalNavDrawer.Anchor = component.Top
+								p.Router.AppBar.Anchor = component.Top
 							}
 							p.Router.BottomBar = p.bottomBar.Value
 						}
