@@ -275,7 +275,7 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 			in := layout.UniformInset(unit.Dp(8))
 			return layout.Flex{Alignment: layout.Middle}.Layout(gtx,
 				layout.Rigid(func(gtx C) D {
-					return in.Layout(gtx, material.IconButton(th, iconButton, icon).Layout)
+					return in.Layout(gtx, material.IconButton(th, iconButton, icon, "Add Icon Button").Layout)
 				}),
 				layout.Rigid(func(gtx C) D {
 					return in.Layout(gtx, iconAndTextButton{theme: th, icon: icon, word: "Icon", button: iconTextButton}.Layout)
@@ -327,7 +327,7 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 				),
 				layout.Rigid(func(gtx C) D {
 					return layout.Inset{Left: unit.Dp(16)}.Layout(gtx,
-						material.Switch(th, swtch).Layout,
+						material.Switch(th, swtch, "Example Switch").Layout,
 					)
 				}),
 				layout.Rigid(func(gtx C) D {

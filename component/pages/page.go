@@ -105,7 +105,7 @@ func (r *Router) Layout(gtx layout.Context, th *material.Theme) layout.Dimension
 		)
 	})
 	bar := layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-		return r.AppBar.Layout(gtx, th)
+		return r.AppBar.Layout(gtx, th, "Menu", "Actions")
 	})
 	flex := layout.Flex{Axis: layout.Vertical}
 	if r.BottomBar {

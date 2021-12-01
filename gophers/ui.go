@@ -244,7 +244,7 @@ func (u *UI) layoutUsers(gtx layout.Context) {
 			return in.Layout(gtx, func(gtx C) D {
 				for u.fab.Clicked() {
 				}
-				return material.IconButton(theme, u.fab, u.fabIcon).Layout(gtx)
+				return material.IconButton(theme, u.fab, u.fabIcon, "Floating Action Button Example").Layout(gtx)
 			})
 		}),
 	)

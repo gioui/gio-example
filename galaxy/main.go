@@ -262,9 +262,9 @@ func layoutControls(gtx C) D {
 				layout.Rigid(func(gtx C) D {
 					var btn material.IconButtonStyle
 					if playing {
-						btn = material.IconButton(th, &play, PauseIcon)
+						btn = material.IconButton(th, &play, PauseIcon, "Pause Simulation")
 					} else {
-						btn = material.IconButton(th, &play, PlayIcon)
+						btn = material.IconButton(th, &play, PlayIcon, "Play Simulation")
 					}
 					return btn.Layout(gtx)
 				}),
@@ -272,7 +272,7 @@ func layoutControls(gtx C) D {
 					if view == nil {
 						gtx = gtx.Disabled()
 					}
-					return material.IconButton(th, &clear, ClearIcon).Layout(gtx)
+					return material.IconButton(th, &clear, ClearIcon, "Reset Viewport").Layout(gtx)
 				}),
 			)
 		})

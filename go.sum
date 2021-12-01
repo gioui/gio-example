@@ -32,15 +32,16 @@ cloud.google.com/go/storage v1.8.0/go.mod h1:Wv1Oy7z6Yz3DshWRJFhqM/UCfaWIRTdp0RX
 cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9ullr3+Kg0=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20201218220906-28db891af037/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
-gioui.org v0.0.0-20211026101311-9cf7cc75f468 h1:8lKC0jESs/gMz+kYbJWzFB1bkwMdlux36LYvBB9UDtw=
 gioui.org v0.0.0-20211026101311-9cf7cc75f468/go.mod h1:yoWOxPng6WkDpsud+NRmkoftmyWn3rkKsYGEcWHpjTI=
+gioui.org v0.0.0-20211201162354-9a5298914282 h1:AhBq0mtPYfXW7XyJ5ixFi7VA0/gwPC7HykpTTHTR9Lc=
+gioui.org v0.0.0-20211201162354-9a5298914282/go.mod h1:yoWOxPng6WkDpsud+NRmkoftmyWn3rkKsYGEcWHpjTI=
 gioui.org/cpu v0.0.0-20210808092351-bfe733dd3334/go.mod h1:A8M0Cn5o+vY5LTMlnRoK3O5kG+rH0kWfJjeKd9QpBmQ=
 gioui.org/cpu v0.0.0-20210817075930-8d6a761490d2 h1:AGDDxsJE1RpcXTAxPG2B4jrwVUJGFDjINIPi1jtO6pc=
 gioui.org/cpu v0.0.0-20210817075930-8d6a761490d2/go.mod h1:A8M0Cn5o+vY5LTMlnRoK3O5kG+rH0kWfJjeKd9QpBmQ=
 gioui.org/shader v1.0.6 h1:cvZmU+eODFR2545X+/8XucgZdTtEjR3QWW6W65b0q5Y=
 gioui.org/shader v1.0.6/go.mod h1:mWdiME581d/kV7/iEhLmUgUK5iZ09XR5XpduXzbePVM=
-gioui.org/x v0.0.0-20211026153228-b2be7df93f1d h1:3sIo0icDUyCCQMtEUb3dibsQdEvaKKIQYAzAQ464n8c=
-gioui.org/x v0.0.0-20211026153228-b2be7df93f1d/go.mod h1:Pdz7OMbL3H8Tinx3gDO7OZj8l9DOsLJ3VWZb+05hg3M=
+gioui.org/x v0.0.0-20211201170442-0eb3fcddb9ec h1:0+3zD3KsYZTX5yrd80utcG8VBZ/QLIemnkKFQEHn14A=
+gioui.org/x v0.0.0-20211201170442-0eb3fcddb9ec/go.mod h1:Xu4qsdcdrC0yk+YUJgXq/cboLbAlXnz1Z7t3FleroWA=
 gioui.org/x/haptic v0.0.0-20211026153228-b2be7df93f1d h1:STs/yWuTq94H6uZpYjCGDqf9jOL2nKk9XvRXQDGN9A8=
 gioui.org/x/haptic v0.0.0-20211026153228-b2be7df93f1d/go.mod h1:w2dqWCKeE0sQ2k+CabGA7RTVz5F1a8lWrUKAfhU4UOg=
 gioui.org/x/notify v0.0.0-20211026153228-b2be7df93f1d h1:eQOhEn/U/SgtFXlYsYQjuPBVNkFAR7vx8ekXpl6g0G4=
@@ -355,6 +356,7 @@ github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9de
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
+github.com/yuin/goldmark v1.4.0/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/etcd v0.0.0-20191023171146-3cf2f69b5738/go.mod h1:dnLIgRNXwCJa5e+c6mIZCrds/GIG4ncV9HhK5PX7jPg=
 go.opencensus.io v0.20.1/go.mod h1:6WKK9ahsWS3RSO+PY9ZHZUfv2irvY6gN279GOPZjmmk=

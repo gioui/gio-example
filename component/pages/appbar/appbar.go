@@ -148,7 +148,7 @@ The controls below allow you to see the various features available in our App Ba
 							p.Router.BottomBar = p.bottomBar.Value
 						}
 
-						return material.Switch(th, &p.bottomBar).Layout(gtx)
+						return material.Switch(th, &p.bottomBar, "Use Bottom App Bar").Layout(gtx)
 					})
 			}),
 			layout.Rigid(func(gtx C) D {
@@ -162,7 +162,7 @@ The controls below allow you to see the various features available in our App Ba
 								p.Router.AppBar.NavigationIcon = icon.MenuIcon
 							}
 						}
-						return material.Switch(th, &p.customNavIcon).Layout(gtx)
+						return material.Switch(th, &p.customNavIcon, "Use Custom Navigation Icon").Layout(gtx)
 					})
 			}),
 			layout.Rigid(func(gtx C) D {

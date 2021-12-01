@@ -72,7 +72,7 @@ The controls below allow you to see the various features available in our Naviga
 								p.Router.NavAnim.Disappear(gtx.Now)
 							}
 						}
-						return material.Switch(th, &p.nonModalDrawer).Layout(gtx)
+						return material.Switch(th, &p.nonModalDrawer, "Use Non-Modal Navigation Drawer").Layout(gtx)
 					})
 			}),
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
