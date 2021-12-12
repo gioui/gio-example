@@ -2,13 +2,14 @@ package main
 
 import (
 	"gioui.org/app"
-	video "gioui.org/example/video/player"
+	"gioui.org/example/video/ui"
+	"gioui.org/io/key"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"log"
 	"os"
-	"path/filepath"
+	"time"
 )
 
 func main() {
@@ -21,14 +22,9 @@ func main() {
 	}()
 	app.Main()
 }
+
 func loop(window *app.Window) (err error) {
-	videoPath, err := os.Getwd()
-	if err != nil {
-		log.Fatalln(err)
-	}
-	videoPath = filepath.Join(videoPath, "gio.mp4")
-	p := video.Player{Filepath: videoPath}
-	go p.Start()
+	player := ui.Player{Window: window}
 
 	var ops op.Ops
 
@@ -45,8 +41,57 @@ func loop(window *app.Window) (err error) {
 				}
 			case system.FrameEvent:
 				gtx := layout.NewContext(&ops, e)
-				p.Layout(gtx)
+				player.Layout(gtx)
 				e.Frame(gtx.Ops)
+			case key.Event:
+				if e.Name == "→" && e.Modifiers == 0x0 && e.State == 0x0 {
+					player.RightKeyPressed = true
+					player.RightKeyLastUpdated = time.Now().UnixMilli()
+				}
+				if e.Name == "→" && e.Modifiers == 0x0 && e.State == 0x1 {
+					player.RightKeyPressed = false
+					player.RightKeyLastUpdated = time.Now().UnixMilli()
+				}
+				if e.Name == "↑" && e.Modifiers == 0x0 && e.State == 0x0 {
+					player.UpKeyPressed = true
+					player.UpKeyLastUpdated = time.Now().UnixMilli()
+				}
+				if e.Name == "↑" && e.Modifiers == 0x0 && e.State == 0x1 {
+					player.UpKeyPressed = false
+					player.RightKeyLastUpdated = time.Now().UnixMilli()
+				}
+				if e.Name == "←" && e.Modifiers == 0x0 && e.State == 0x0 {
+					player.LeftKeyPressed = true
+					player.LeftKeyLastUpdated = time.Now().UnixMilli()
+				}
+				if e.Name == "←" && e.Modifiers == 0x0 && e.State == 0x1 {
+					player.LeftKeyPressed = false
+					player.RightKeyLastUpdated = time.Now().UnixMilli()
+				}
+				if e.Name == "↓" && e.Modifiers == 0x0 && e.State == 0x0 {
+					player.DownKeyPressed = true
+					player.DownKeyLastUpdated = time.Now().UnixMilli()
+				}
+				if e.Name == "↓" && e.Modifiers == 0x0 && e.State == 0x1 {
+					player.DownKeyPressed = false
+					player.RightKeyLastUpdated = time.Now().UnixMilli()
+				}
+				if e.Name == "Space" && e.Modifiers == 0x0 && e.State == 0x0 {
+					player.SpaceKeyPressed = true
+					player.SpaceKeyLastUpdated = time.Now().UnixMilli()
+				}
+				if e.Name == "Space" && e.Modifiers == 0x0 && e.State == 0x1 {
+					player.SpaceKeyPressed = false
+					player.SpaceKeyLastUpdated = time.Now().UnixMilli()
+				}
+				if e.Name == "⎋" && e.Modifiers == 0x0 && e.State == 0x0 {
+					player.EscKeyPressed = true
+					player.EscKeyLastUpdated = time.Now().UnixMilli()
+				}
+				if e.Name == "⎋" && e.Modifiers == 0x0 && e.State == 0x1 {
+					player.EscKeyPressed = false
+					player.EscKeyLastUpdated = time.Now().UnixMilli()
+				}
 			}
 		}
 	}
