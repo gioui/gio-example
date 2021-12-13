@@ -58,7 +58,7 @@ func loop(window *app.Window) (err error) {
 				}
 				if e.Name == "↑" && e.Modifiers == 0x0 && e.State == 0x1 {
 					player.UpKeyPressed = false
-					player.RightKeyLastUpdated = time.Now().UnixMilli()
+					player.UpKeyLastUpdated = time.Now().UnixMilli()
 				}
 				if e.Name == "←" && e.Modifiers == 0x0 && e.State == 0x0 {
 					player.LeftKeyPressed = true
@@ -66,7 +66,7 @@ func loop(window *app.Window) (err error) {
 				}
 				if e.Name == "←" && e.Modifiers == 0x0 && e.State == 0x1 {
 					player.LeftKeyPressed = false
-					player.RightKeyLastUpdated = time.Now().UnixMilli()
+					player.LeftKeyLastUpdated = time.Now().UnixMilli()
 				}
 				if e.Name == "↓" && e.Modifiers == 0x0 && e.State == 0x0 {
 					player.DownKeyPressed = true
@@ -74,7 +74,7 @@ func loop(window *app.Window) (err error) {
 				}
 				if e.Name == "↓" && e.Modifiers == 0x0 && e.State == 0x1 {
 					player.DownKeyPressed = false
-					player.RightKeyLastUpdated = time.Now().UnixMilli()
+					player.DownKeyLastUpdated = time.Now().UnixMilli()
 				}
 				if e.Name == "Space" && e.Modifiers == 0x0 && e.State == 0x0 {
 					player.SpaceKeyPressed = true
@@ -93,6 +93,8 @@ func loop(window *app.Window) (err error) {
 					player.EscKeyLastUpdated = time.Now().UnixMilli()
 				}
 			}
+		default:
+
 		}
 	}
 }

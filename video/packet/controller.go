@@ -49,30 +49,31 @@ func (p *Controller) LoadFile(filePath string) {
 	if p.timeChan == nil || p.videoChan == nil {
 		log.Fatalln("timeChan and videoChan are required and cannot be nil")
 	}
-
-	if p.done != nil {
-		select {
-		case p.done <- true:
-		default:
+	go func() {
+		if p.done != nil {
+			select {
+			case p.done <- true:
+			default:
+			}
+			close(p.done)
 		}
-		close(p.done)
-	}
-	p.done = make(chan bool, 10)
-	p.filePath = filePath
-	p.videosPath = make(map[int64]string, 0)
-	p.encodingState.setState(Idle, "Idle")
-	p.decodingVideoState.setState(Idle, "Idle")
-	p.decodingAudioState.setState(Idle, "Idle")
-	p.encode()
-	if p.encodingState.Status() != Success {
-		return
-	}
-	p.decodeAudio(p.done)
-	if p.decodingAudioState.Status() != Success {
-		return
-	}
-	if p.OnAudioDecodingSuccess != nil {
-		p.OnAudioDecodingSuccess(p.audios)
-	}
-	go p.decodeVideo(p.done)
+		p.done = make(chan bool, 10)
+		p.filePath = filePath
+		p.videosPath = make(map[int64]string, 0)
+		p.encodingState.setState(Idle, "Idle")
+		p.decodingVideoState.setState(Idle, "Idle")
+		p.decodingAudioState.setState(Idle, "Idle")
+		p.encode()
+		if p.encodingState.Status() != Success {
+			return
+		}
+		p.decodeAudio(p.done)
+		if p.decodingAudioState.Status() != Success {
+			return
+		}
+		if p.OnAudioDecodingSuccess != nil {
+			p.OnAudioDecodingSuccess(p.audios)
+		}
+		go p.decodeVideo(p.done)
+	}()
 }
