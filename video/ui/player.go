@@ -91,7 +91,10 @@ func (p *Player) SetCurrentView(v CurrentView) {
 
 func (p *Player) OnVideoPathChanged() {
 	if p.IsPathValid() {
-		go p.player.LoadFile(p.FilePath())
+		go func() {
+			p.player.LoadFile(p.FilePath())
+			p.uiSeekerWidget.Value = 0
+		}()
 		p.audioOffset = DefaultAudioOffset
 	}
 }

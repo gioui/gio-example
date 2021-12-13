@@ -10,7 +10,7 @@
 ## Video Player
 ### The following keys should work
 1. Keyboard Arrows
-2. Double Click for toggling full screen
+2. Double-click on video screen for toggling full screen
 3. Space bar
 4. All ui buttons
 

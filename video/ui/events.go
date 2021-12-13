@@ -100,6 +100,14 @@ func (p *Player) handleUIEvents(gtx C) {
 		}
 	}
 
+	if p.EscKeyPressed && p.EscKeyLastUpdated != 0 {
+		p.lastHoveredTime = time.Now().UnixMilli()
+		p.EscKeyLastUpdated = 0
+		if p.isFullScreen {
+			p.Window.Option(app.Windowed.Option())
+		}
+	}
+
 	for _, ev := range gtx.Events(&p.lastHoveredTime) {
 		switch ev := ev.(type) {
 		case pointer.Event:
