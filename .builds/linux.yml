@@ -19,6 +19,11 @@ packages:
  - libvulkan-dev
  - ffmpeg
  - libasound2-dev
+ - libswscale-dev
+ - libavcodec-dev
+ - libavformat-dev
+ - libswresample-dev
+ - libavutil-dev
 sources:
  - https://git.sr.ht/~eliasnaur/gio-example
 environment:
