@@ -44,8 +44,8 @@ gioui.org/cpu v0.0.0-20210817075930-8d6a761490d2/go.mod h1:A8M0Cn5o+vY5LTMlnRoK3
 gioui.org/shader v1.0.2/go.mod h1:mWdiME581d/kV7/iEhLmUgUK5iZ09XR5XpduXzbePVM=
 gioui.org/shader v1.0.6 h1:cvZmU+eODFR2545X+/8XucgZdTtEjR3QWW6W65b0q5Y=
 gioui.org/shader v1.0.6/go.mod h1:mWdiME581d/kV7/iEhLmUgUK5iZ09XR5XpduXzbePVM=
-gioui.org/x v0.0.0-20211201170442-0eb3fcddb9ec h1:0+3zD3KsYZTX5yrd80utcG8VBZ/QLIemnkKFQEHn14A=
-gioui.org/x v0.0.0-20211201170442-0eb3fcddb9ec/go.mod h1:Xu4qsdcdrC0yk+YUJgXq/cboLbAlXnz1Z7t3FleroWA=
+gioui.org/x v0.0.0-20211220145358-cf2b1f072816 h1:kAr/dw69javs70ghMWkDNk5fzRJjTodiDWWxvNcR1ao=
+gioui.org/x v0.0.0-20211220145358-cf2b1f072816/go.mod h1:Xu4qsdcdrC0yk+YUJgXq/cboLbAlXnz1Z7t3FleroWA=
 gioui.org/x/haptic v0.0.0-20211026153228-b2be7df93f1d h1:STs/yWuTq94H6uZpYjCGDqf9jOL2nKk9XvRXQDGN9A8=
 gioui.org/x/haptic v0.0.0-20211026153228-b2be7df93f1d/go.mod h1:w2dqWCKeE0sQ2k+CabGA7RTVz5F1a8lWrUKAfhU4UOg=
 gioui.org/x/notify v0.0.0-20211026153228-b2be7df93f1d h1:eQOhEn/U/SgtFXlYsYQjuPBVNkFAR7vx8ekXpl6g0G4=
