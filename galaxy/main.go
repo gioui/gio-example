@@ -325,7 +325,7 @@ func layoutSelectionLayer(gtx C) D {
 	if selecting {
 		paint.FillShape(gtx.Ops, color.NRGBA{R: 255, A: 100}, clip.Rect(selected).Op())
 	}
-	pr := pointer.Rect(image.Rectangle{Max: gtx.Constraints.Max}).Push(gtx.Ops)
+	pr := clip.Rect(image.Rectangle{Max: gtx.Constraints.Max}).Push(gtx.Ops)
 	pointer.CursorNameOp{Name: pointer.CursorCrossHair}.Add(gtx.Ops)
 	pointer.InputOp{
 		Tag:   &selected,

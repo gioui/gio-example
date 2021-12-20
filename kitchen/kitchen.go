@@ -99,7 +99,8 @@ func saveScreenshot(f string) error {
 	th := material.NewTheme(gofont.Collection())
 	kitchen(gtx, th)
 	w.Frame(gtx.Ops)
-	img, err := w.Screenshot()
+	img := image.NewRGBA(image.Rectangle{Max: sz})
+	err = w.Screenshot(img)
 	if err != nil {
 		return err
 	}

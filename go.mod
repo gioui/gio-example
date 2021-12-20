@@ -3,10 +3,12 @@ module gioui.org/example
 go 1.16
 
 require (
-	gioui.org v0.0.0-20211201162354-9a5298914282
-	gioui.org/x v0.0.0-20211220145358-cf2b1f072816
-	gioui.org/x/haptic v0.0.0-20211026153228-b2be7df93f1d
-	gioui.org/x/notify v0.0.0-20211026153228-b2be7df93f1d
+	gioui.org v0.0.0-20220105104929-8d8aeef66bef
+	gioui.org/x v0.0.0-20220105205654-261c7273d121
+	gioui.org/x/explorer v0.0.0-20220105205654-261c7273d121
+	gioui.org/x/haptic v0.0.0-20220105205654-261c7273d121
+	gioui.org/x/notify v0.0.0-20220105205654-261c7273d121
+	gioui.org/x/pref v0.0.0-20220105205654-261c7273d121 // indirect
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210311203641-62640a716d48
 	github.com/google/go-github/v24 v24.0.1

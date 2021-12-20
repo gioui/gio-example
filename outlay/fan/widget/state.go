@@ -6,6 +6,7 @@ import (
 	"gioui.org/io/pointer"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/op/clip"
 )
 
 type (
@@ -39,7 +40,7 @@ func (c *HoverState) Hovering(gtx C) bool {
 }
 
 func (c *HoverState) Layout(gtx C) D {
-	defer pointer.Rect(image.Rectangle{Max: gtx.Constraints.Max}).Push(gtx.Ops).Pop()
+	defer clip.Rect(image.Rectangle{Max: gtx.Constraints.Max}).Push(gtx.Ops).Pop()
 	pointer.InputOp{
 		Tag:   c,
 		Types: pointer.Enter | pointer.Leave,

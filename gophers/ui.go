@@ -15,7 +15,6 @@ import (
 	"gioui.org/font/gofont"
 	"gioui.org/gesture"
 	"gioui.org/io/key"
-	"gioui.org/io/pointer"
 	"gioui.org/io/profile"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -303,7 +302,7 @@ func (u *UI) user(gtx layout.Context, index int) layout.Dimensions {
 			}),
 		)
 	})
-	pr := pointer.Rect(image.Rectangle{Max: dims.Size}).Push(gtx.Ops)
+	pr := clip.Rect(image.Rectangle{Max: dims.Size}).Push(gtx.Ops)
 	click := &u.userClicks[index]
 	click.Add(gtx.Ops)
 	pr.Pop()

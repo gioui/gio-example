@@ -9,6 +9,7 @@ import (
 	"gioui.org/f32"        // f32 is used for shape calculations.
 	"gioui.org/io/pointer" // system is used for system events (e.g. closing the window).
 	"gioui.org/layout"     // layout is used for layouting widgets.
+
 	// op is used for recording different operations.
 	"gioui.org/op/clip"  // clip is used to draw the cell shape.
 	"gioui.org/op/paint" // paint is used to paint the cells.
@@ -36,7 +37,7 @@ func (board BoardStyle) Layout(gtx layout.Context) layout.Dimensions {
 		}
 	}
 	// Register to listen for pointer Drag events.
-	pr := pointer.Rect(image.Rectangle{Max: size}).Push(gtx.Ops)
+	pr := clip.Rect(image.Rectangle{Max: size}).Push(gtx.Ops)
 	pointer.InputOp{Tag: board.Board, Types: pointer.Drag}.Add(gtx.Ops)
 	pr.Pop()
 
