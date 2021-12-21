@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -128,6 +129,9 @@ func (p *Controller) encode() {
 	}
 
 	endTimeStr := strings.Split(string(b), "\n")[0]
+	if runtime.GOOS == "windows" {
+		endTimeStr = strings.Split(string(b), "\r\n")[0]
+	}
 	endTimeFl, err := strconv.ParseFloat(endTimeStr, 64)
 	if err != nil {
 		message = err.Error()
