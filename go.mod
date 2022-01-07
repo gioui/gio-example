@@ -4,11 +4,7 @@ go 1.16
 
 require (
 	gioui.org v0.0.0-20220105104929-8d8aeef66bef
-	gioui.org/x v0.0.0-20220105205654-261c7273d121
-	gioui.org/x/explorer v0.0.0-20220105205654-261c7273d121
-	gioui.org/x/haptic v0.0.0-20220105205654-261c7273d121
-	gioui.org/x/notify v0.0.0-20220105205654-261c7273d121
-	gioui.org/x/pref v0.0.0-20220105205654-261c7273d121 // indirect
+	gioui.org/x v0.0.0-20220105211426-ffad81642756
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210311203641-62640a716d48
 	github.com/google/go-github/v24 v24.0.1
