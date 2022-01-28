@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: Unlicense OR MIT
 
-//go:build darwin || windows || linux
-// +build darwin windows linux
+//go:build darwin || windows || (linux && nowayland)
+// +build darwin windows linux,nowayland
 
 // This program demonstrates the use of a custom OpenGL ES context with
 // app.Window. It is similar to the GLFW example, but uses Gio's window
 // implementation instead of the one in GLFW.
 //
 // The example runs on Linux using the normal EGL and X11 libraries, so
-// no additional libraries need to be installed.
+// no additional libraries need to be installed. However, it must be
+// build with -tags nowayland until app.ViewEvent is implemented for
+// Wayland.
 //
 // The example runs on macOS and Windows using ANGLE:
 //

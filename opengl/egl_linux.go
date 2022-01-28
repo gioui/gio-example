@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: Unlicense OR MIT
+
+//go:build linux && nowayland
+// +build linux,nowayland
+
 package main
 
 import "gioui.org/app"
