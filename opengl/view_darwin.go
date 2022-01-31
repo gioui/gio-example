@@ -3,6 +3,8 @@
 package main
 
 import (
+	"image"
+
 	"gioui.org/app"
 )
 
@@ -11,6 +13,6 @@ import (
 */
 import "C"
 
-func nativeViewFor(e app.ViewEvent) C.EGLNativeWindowType {
-	return C.EGLNativeWindowType(e.Layer)
+func nativeViewFor(e app.ViewEvent, _ image.Point) (C.EGLNativeWindowType, func()) {
+	return C.EGLNativeWindowType(e.Layer), func() {}
 }

@@ -3,6 +3,7 @@
 package main
 
 import (
+	"image"
 	"unsafe"
 
 	"gioui.org/app"
@@ -13,6 +14,6 @@ import (
 */
 import "C"
 
-func nativeViewFor(e app.ViewEvent) C.EGLNativeWindowType {
-	return C.EGLNativeWindowType(unsafe.Pointer(e.HWND))
+func nativeViewFor(e app.ViewEvent, _ image.Point) (C.EGLNativeWindowType, func()) {
+	return C.EGLNativeWindowType(unsafe.Pointer(e.HWND)), func() {}
 }

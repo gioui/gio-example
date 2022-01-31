@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Unlicense OR MIT
 
-//go:build darwin || windows || (linux && nowayland)
-// +build darwin windows linux,nowayland
+//go:build darwin || windows || linux
+// +build darwin windows linux
 
 // This program demonstrates the use of a custom OpenGL ES context with
 // app.Window. It is similar to the GLFW example, but uses Gio's window
@@ -59,9 +59,10 @@ import (
 import "C"
 
 type eglContext struct {
-	disp C.EGLDisplay
-	ctx  C.EGLContext
-	surf C.EGLSurface
+	disp    C.EGLDisplay
+	ctx     C.EGLContext
+	surf    C.EGLSurface
+	cleanup func()
 }
 
 func main() {
@@ -84,49 +85,59 @@ func loop(w *app.Window) error {
 	var (
 		ctx    *eglContext
 		gioCtx gpu.GPU
+		ve     app.ViewEvent
+		init   bool
+		size   image.Point
 	)
+
+	recreateContext := func() {
+		w.Run(func() {
+			if gioCtx != nil {
+				gioCtx.Release()
+				gioCtx = nil
+			}
+			if ctx != nil {
+				C.eglMakeCurrent(ctx.disp, nil, nil, nil)
+				ctx.Release()
+				ctx = nil
+			}
+			c, err := createContext(ve, size)
+			if err != nil {
+				log.Fatal(err)
+			}
+			ctx = c
+			// eglMakeCurrent binds a context to an operating system thread. Prevent Go from switching thread.
+			runtime.LockOSThread()
+			if ok := C.eglMakeCurrent(ctx.disp, ctx.surf, ctx.surf, ctx.ctx); ok != C.EGL_TRUE {
+				err := fmt.Errorf("eglMakeCurrent failed (%#x)", C.eglGetError())
+				log.Fatal(err)
+			}
+			glGetString := func(e C.GLenum) string {
+				return C.GoString((*C.char)(unsafe.Pointer(C.glGetString(e))))
+			}
+			fmt.Printf("GL_VERSION: %s\nGL_RENDERER: %s\n", glGetString(C.GL_VERSION), glGetString(C.GL_RENDERER))
+			gioCtx, err = gpu.New(gpu.OpenGL{ES: true, Shared: true})
+			if err != nil {
+				log.Fatal(err)
+			}
+		})
+	}
 	for e := range w.Events() {
 		switch e := e.(type) {
 		case app.ViewEvent:
-			w.Run(func() {
-				if gioCtx != nil {
-					gioCtx.Release()
-					gioCtx = nil
-				}
-				if ctx != nil {
-					C.eglMakeCurrent(ctx.disp, nil, nil, nil)
-					ctx.Release()
-					ctx = nil
-				}
-				view := nativeViewFor(e)
-				var nilv C.EGLNativeWindowType
-				if view == nilv {
-					return
-				}
-				c, err := createContext(e)
-				if err != nil {
-					log.Fatal(err)
-				}
-				ctx = c
-				// eglMakeCurrent binds a context to an operating system thread. Prevent Go from switching thread.
-				runtime.LockOSThread()
-				if ok := C.eglMakeCurrent(ctx.disp, ctx.surf, ctx.surf, ctx.ctx); ok != C.EGL_TRUE {
-					err := fmt.Errorf("eglMakeCurrent failed (%#x)", C.eglGetError())
-					log.Fatal(err)
-				}
-				glGetString := func(e C.GLenum) string {
-					return C.GoString((*C.char)(unsafe.Pointer(C.glGetString(e))))
-				}
-				fmt.Printf("GL_VERSION: %s\nGL_RENDERER: %s\n", glGetString(C.GL_VERSION), glGetString(C.GL_RENDERER))
-				gioCtx, err = gpu.New(gpu.OpenGL{ES: true, Shared: true})
-				if err != nil {
-					log.Fatal(err)
-				}
-			})
+			ve = e
+			init = true
+			if size != (image.Point{}) {
+				recreateContext()
+			}
 		case system.DestroyEvent:
 			return e.Err
 		case system.FrameEvent:
-			if gioCtx == nil {
+			if init && size != e.Size {
+				size = e.Size
+				recreateContext()
+			}
+			if gioCtx == nil || !init {
 				break
 			}
 			// Build ops.
@@ -212,8 +223,12 @@ func drawUI(th *material.Theme, gtx layout.Context) layout.Dimensions {
 	)
 }
 
-func createContext(ve app.ViewEvent) (*eglContext, error) {
-	view := nativeViewFor(ve)
+func createContext(ve app.ViewEvent, size image.Point) (*eglContext, error) {
+	view, cleanup := nativeViewFor(ve, size)
+	var nilv C.EGLNativeWindowType
+	if view == nilv {
+		return nil, fmt.Errorf("failed creating native view")
+	}
 	disp := getDisplay(ve)
 	if disp == 0 {
 		return nil, fmt.Errorf("eglGetPlatformDisplay failed: 0x%x", C.eglGetError())
@@ -267,7 +282,7 @@ func createContext(ve app.ViewEvent) (*eglContext, error) {
 	if surf == nil {
 		return nil, fmt.Errorf("eglCreateWindowSurface failed (0x%x)", C.eglGetError())
 	}
-	return &eglContext{disp: disp, ctx: ctx, surf: surf}, nil
+	return &eglContext{disp: disp, ctx: ctx, surf: surf, cleanup: cleanup}, nil
 }
 
 func (c *eglContext) Release() {
@@ -276,6 +291,9 @@ func (c *eglContext) Release() {
 	}
 	if c.surf != nil {
 		C.eglDestroySurface(c.disp, c.surf)
+	}
+	if c.cleanup != nil {
+		c.cleanup()
 	}
 	*c = eglContext{}
 }
