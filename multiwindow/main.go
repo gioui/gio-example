@@ -16,12 +16,11 @@ import (
 	"sync"
 
 	"gioui.org/app"
+	"gioui.org/font/gofont"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/widget/material"
-
-	"gioui.org/font/gofont"
 )
 
 func main() {
@@ -52,8 +51,6 @@ type Application struct {
 	Context context.Context
 	// Shutdown shuts down all windows.
 	Shutdown func()
-	// Theme is the application wide theme.
-	Theme *material.Theme
 	// active keeps track the open windows, such that application
 	// can shut down, when all of them are closed.
 	active sync.WaitGroup
@@ -64,8 +61,6 @@ func NewApplication(ctx context.Context) *Application {
 	return &Application{
 		Context:  ctx,
 		Shutdown: cancel,
-
-		Theme: material.NewTheme(gofont.Collection()),
 	}
 }
 
@@ -101,11 +96,13 @@ type View interface {
 }
 
 // WidgetView allows to use layout.Widget as a view.
-type WidgetView func(gtx layout.Context) layout.Dimensions
+type WidgetView func(gtx layout.Context, th *material.Theme) layout.Dimensions
 
 // Run displays the widget with default handling.
 func (view WidgetView) Run(w *Window) error {
 	var ops op.Ops
+
+	th := material.NewTheme(gofont.Collection())
 
 	applicationClose := w.App.Context.Done()
 	for {
@@ -118,7 +115,7 @@ func (view WidgetView) Run(w *Window) error {
 				return e.Err
 			case system.FrameEvent:
 				gtx := layout.NewContext(&ops, e)
-				view(gtx)
+				view(gtx, th)
 				e.Frame(gtx.Ops)
 			}
 		}

@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 
+	"gioui.org/font/gofont"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -44,6 +45,8 @@ func (log *Log) Printf(format string, args ...interface{}) {
 func (log *Log) Run(w *Window) error {
 	var ops op.Ops
 
+	th := material.NewTheme(gofont.Collection())
+
 	applicationClose := w.App.Context.Done()
 	for {
 		select {
@@ -59,7 +62,7 @@ func (log *Log) Run(w *Window) error {
 				return e.Err
 			case system.FrameEvent:
 				gtx := layout.NewContext(&ops, e)
-				log.Layout(w, w.App.Theme, gtx)
+				log.Layout(w, th, gtx)
 				e.Frame(gtx.Ops)
 			}
 		}

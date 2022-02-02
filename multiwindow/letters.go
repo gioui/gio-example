@@ -11,7 +11,7 @@ import (
 
 // Letters displays a clickable list of text items that open a new window.
 type Letters struct {
-	win *Window
+	App *Application
 	log *Log
 
 	items []*LetterListItem
@@ -32,13 +32,12 @@ func NewLetters(log *Log) *Letters {
 
 // Run implements Window.Run method.
 func (v *Letters) Run(w *Window) error {
-	v.win = w
+	v.App = w.App
 	return WidgetView(v.Layout).Run(w)
 }
 
 // Layout handles drawing the letters view.
-func (v *Letters) Layout(gtx layout.Context) layout.Dimensions {
-	th := v.win.App.Theme
+func (v *Letters) Layout(gtx layout.Context, th *material.Theme) layout.Dimensions {
 	return material.List(th, &v.list).Layout(gtx, len(v.items), func(gtx layout.Context, index int) layout.Dimensions {
 		item := v.items[index]
 		for item.Click.Clicked() {
@@ -47,9 +46,9 @@ func (v *Letters) Layout(gtx layout.Context) layout.Dimensions {
 			bigText := material.H1(th, item.Text)
 			size := bigText.TextSize
 			size.V *= 2
-			v.win.App.NewWindow(item.Text,
-				WidgetView(func(gtx layout.Context) layout.Dimensions {
-					return layout.Center.Layout(gtx, bigText.Layout)
+			v.App.NewWindow(item.Text,
+				WidgetView(func(gtx layout.Context, th *material.Theme) layout.Dimensions {
+					return layout.Center.Layout(gtx, material.H1(th, item.Text).Layout)
 				}),
 				app.Size(size, size),
 			)
