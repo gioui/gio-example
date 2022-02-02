@@ -71,7 +71,7 @@ func (log *Log) Layout(w *Window, th *material.Theme, gtx layout.Context) {
 	// This is here to demonstrate programmatic closing of a window,
 	// however it's probably better to use OS close button instead.
 	for log.close.Clicked() {
-		w.Window.Close()
+		w.Window.Perform(system.ActionClose)
 	}
 
 	layout.Flex{Axis: layout.Vertical}.Layout(gtx,
