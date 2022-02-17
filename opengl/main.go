@@ -23,6 +23,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
@@ -32,11 +33,11 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"time"
 	"unsafe"
 
 	"gioui.org/app"
 	"gioui.org/gpu"
-	"gioui.org/io/pointer"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -122,6 +123,8 @@ func loop(w *app.Window) error {
 			}
 		})
 	}
+	start := time.Now()
+	log.SetOutput(bufio.NewWriter(log.Writer()))
 	for e := range w.Events() {
 		switch e := e.(type) {
 		case app.ViewEvent:
@@ -133,6 +136,10 @@ func loop(w *app.Window) error {
 		case system.DestroyEvent:
 			return e.Err
 		case system.FrameEvent:
+			now := time.Now()
+			done := now.Sub(start)
+			start = now
+			log.Println(done)
 			if init && size != e.Size {
 				size = e.Size
 				recreateContext()
@@ -142,12 +149,6 @@ func loop(w *app.Window) error {
 			}
 			// Build ops.
 			gtx := layout.NewContext(&ops, e)
-			// Catch pointer events not hitting UI.
-			types := pointer.Move | pointer.Press | pointer.Release
-			pointer.InputOp{Tag: w, Types: types}.Add(gtx.Ops)
-			for _, e := range gtx.Events(w) {
-				log.Println("Event:", e)
-			}
 			drawUI(th, gtx)
 			w.Run(func() {
 				// Trigger window resize detection in ANGLE.
@@ -170,6 +171,7 @@ func loop(w *app.Window) error {
 					}
 				}
 			})
+			op.InvalidateOp{}.Add(gtx.Ops)
 
 			// Process non-drawing ops.
 			e.Frame(gtx.Ops)
