@@ -106,22 +106,23 @@ func loop(w *app.Window) error {
 				log.Fatal(err)
 			}
 			ctx = c
-			// eglMakeCurrent binds a context to an operating system thread. Prevent Go from switching thread.
-			runtime.LockOSThread()
-			if ok := C.eglMakeCurrent(ctx.disp, ctx.surf, ctx.surf, ctx.ctx); ok != C.EGL_TRUE {
-				err := fmt.Errorf("eglMakeCurrent failed (%#x)", C.eglGetError())
-				log.Fatal(err)
-			}
-			glGetString := func(e C.GLenum) string {
-				return C.GoString((*C.char)(unsafe.Pointer(C.glGetString(e))))
-			}
-			fmt.Printf("GL_VERSION: %s\nGL_RENDERER: %s\n", glGetString(C.GL_VERSION), glGetString(C.GL_RENDERER))
-			gioCtx, err = gpu.New(gpu.OpenGL{ES: true, Shared: true})
-			if err != nil {
-				log.Fatal(err)
-			}
 		})
+		if ok := C.eglMakeCurrent(ctx.disp, ctx.surf, ctx.surf, ctx.ctx); ok != C.EGL_TRUE {
+			err := fmt.Errorf("eglMakeCurrent failed (%#x)", C.eglGetError())
+			log.Fatal(err)
+		}
+		glGetString := func(e C.GLenum) string {
+			return C.GoString((*C.char)(unsafe.Pointer(C.glGetString(e))))
+		}
+		fmt.Printf("GL_VERSION: %s\nGL_RENDERER: %s\n", glGetString(C.GL_VERSION), glGetString(C.GL_RENDERER))
+		var err error
+		gioCtx, err = gpu.New(gpu.OpenGL{ES: true, Shared: true})
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
+	// eglMakeCurrent binds a context to an operating system thread. Prevent Go from switching thread.
+	runtime.LockOSThread()
 	for e := range w.Events() {
 		switch e := e.(type) {
 		case app.ViewEvent:
@@ -149,27 +150,25 @@ func loop(w *app.Window) error {
 				log.Println("Event:", e)
 			}
 			drawUI(th, gtx)
-			w.Run(func() {
-				// Trigger window resize detection in ANGLE.
-				C.eglWaitClient()
-				// Draw custom OpenGL content.
-				drawGL()
+			// Trigger window resize detection in ANGLE.
+			C.eglWaitClient()
+			// Draw custom OpenGL content.
+			drawGL()
 
-				// Render drawing ops.
-				if err := gioCtx.Frame(gtx.Ops, gpu.OpenGLRenderTarget{}, e.Size); err != nil {
-					log.Fatal(fmt.Errorf("render failed: %v", err))
-				}
+			// Render drawing ops.
+			if err := gioCtx.Frame(gtx.Ops, gpu.OpenGLRenderTarget{}, e.Size); err != nil {
+				log.Fatal(fmt.Errorf("render failed: %v", err))
+			}
 
-				if ok := C.eglSwapBuffers(ctx.disp, ctx.surf); ok != C.EGL_TRUE {
-					log.Fatal(fmt.Errorf("swap failed: %v", C.eglGetError()))
-				}
+			if ok := C.eglSwapBuffers(ctx.disp, ctx.surf); ok != C.EGL_TRUE {
+				log.Fatal(fmt.Errorf("swap failed: %v", C.eglGetError()))
+			}
 
-				if btnScreenshot.Clicked() {
-					if err := screenshot(gioCtx, e.Size, gtx.Ops); err != nil {
-						log.Fatal(err)
-					}
+			if btnScreenshot.Clicked() {
+				if err := screenshot(gioCtx, e.Size, gtx.Ops); err != nil {
+					log.Fatal(err)
 				}
-			})
+			}
 
 			// Process non-drawing ops.
 			e.Frame(gtx.Ops)
