@@ -3,8 +3,8 @@ module gioui.org/example
 go 1.16
 
 require (
-	gioui.org v0.0.0-20220131180029-7204632c39d4
-	gioui.org/x v0.0.0-20220201115349-8fb85f1fee87
+	gioui.org v0.0.0-20220301130546-cdb288d1f98a
+	gioui.org/x v0.0.0-20220301163640-8b9099e590c1
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210311203641-62640a716d48
 	github.com/google/go-github/v24 v24.0.1

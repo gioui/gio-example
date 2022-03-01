@@ -106,8 +106,6 @@ func (ui *UI) Run(w *app.Window) error {
 			}
 		}
 	}
-
-	return nil
 }
 
 // Layout displays the main program layout.
