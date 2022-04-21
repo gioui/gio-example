@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	gioui.org v0.0.0-20220331105829-a1b5ff059c07
+	gioui.org/cmd v0.0.0-20211103131231-1d0769ae89a5
 	gioui.org/x v0.0.0-20220318131752-bc7801f4bd03
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210311203641-62640a716d48
