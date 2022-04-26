@@ -38,8 +38,8 @@ eliasnaur.com/font v0.0.0-20220124212145-832bb8fc08c3/go.mod h1:OYVuxibdk9OSLX8v
 gioui.org v0.0.0-20210910062418-d5d0a75a9bcb/go.mod h1:BTldRXnY5mrUrYZCdWyDwyMzyUzpfZN1cF4MMRrOt9w=
 gioui.org v0.0.0-20211103131231-1d0769ae89a5/go.mod h1:yoWOxPng6WkDpsud+NRmkoftmyWn3rkKsYGEcWHpjTI=
 gioui.org v0.0.0-20220318070519-8833a6738a3b/go.mod h1:STpXvjqWkldjsUG7qy4sQTHz+QegDh6jTdmkaQuriq0=
-gioui.org v0.0.0-20220331105829-a1b5ff059c07 h1:9BdOhoKqRiItOl87wZfQUL2YZNm+6Yyp1f1iEiJUh+U=
-gioui.org v0.0.0-20220331105829-a1b5ff059c07/go.mod h1:b8vBukexG6eYuXZa14asjLAWJ+JjbZ/ophEnS2FjYUg=
+gioui.org v0.0.0-20220425071242-aa14056350d6 h1:IOBG1/6CNzMhaPLLsPFgAVIC2ttGpbr15k3K3YnyreE=
+gioui.org v0.0.0-20220425071242-aa14056350d6/go.mod h1:A0rb8LTFy1Hhi6/2zppz6CRiGJLAk0akcD1p+77l+fg=
 gioui.org/cmd v0.0.0-20211103131231-1d0769ae89a5 h1:745EIA9yw5pYHXNPS6hv+gX7UKhoQUIR0X4rrhYXaqo=
 gioui.org/cmd v0.0.0-20211103131231-1d0769ae89a5/go.mod h1:qrH3h4nt/PyIqx/XabL/eJ5cXQnQ0ERHqC3VEXx/Rmg=
 gioui.org/cpu v0.0.0-20210808092351-bfe733dd3334/go.mod h1:A8M0Cn5o+vY5LTMlnRoK3O5kG+rH0kWfJjeKd9QpBmQ=
@@ -171,8 +171,9 @@ github.com/go-logr/logr v0.4.0/go.mod h1:z6/tIYblkpsD+a4lm/fGIIU9mZ+XfAiaFtq7xTg
 github.com/go-sql-driver/mysql v1.4.0/go.mod h1:zAC/RDZ24gD3HViQzih4MyKcchzm+sOG5ZlKdlhCg5w=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/go-test/deep v1.0.2-0.20181118220953-042da051cf31/go.mod h1:wGDj63lr65AM2AQyKZd/NYHGb0R+1RLqB8NKt3aSFNA=
-github.com/go-text/typesetting v0.0.0-20220112121102-58fe93c84506 h1:1TPz/Gn/MsXwJ6bEtI9wdkPcQYr2X3V9I+wz4wPYUdY=
 github.com/go-text/typesetting v0.0.0-20220112121102-58fe93c84506/go.mod h1:R0mlTNeyszZ/tKQhbZA7SRGjx+OHsmNzgN2jTV7yZcs=
+github.com/go-text/typesetting v0.0.0-20220411150340-35994bc27a7b h1:WINlj3ANt+CVrO2B4NGDHRlPvEWZPxjhb7z+JKypwXI=
+github.com/go-text/typesetting v0.0.0-20220411150340-35994bc27a7b/go.mod h1:ZNYu5saGoMOqtkVH5T8onTwhzenDUVszI+5WFHJRaxQ=
 github.com/go-toast/toast v0.0.0-20190211030409-01e6764cf0a4 h1:qZNfIGkIANxGv/OqtnntR4DfOY2+BgwR60cAcu/i3SE=
 github.com/go-toast/toast v0.0.0-20190211030409-01e6764cf0a4/go.mod h1:kW3HQ4UdaAyrUCSSDR4xUzBKW6O2iA4uHhk7AtyYp10=
 github.com/gobwas/httphead v0.0.0-20180130184737-2c6c146eadee h1:s+21KNqlpePfkah2I+gwHF8xmJWRjooY+5248k6m4A0=
