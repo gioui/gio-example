@@ -16,4 +16,4 @@ require (
 	gonum.org/v1/gonum v0.8.2
 )
 
-replace gioui.org => git.sr.ht/~whereswaldon/gio v0.0.0-20220213191753-f35f9331b351
+replace gioui.org => ../gio

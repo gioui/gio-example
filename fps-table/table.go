@@ -103,12 +103,6 @@ var headingText = []string{"Start", "End", "Frames", "FPS"}
 func layoutTable(th *material.Theme, gtx C, timings []FrameTiming, grid *widget.Grid) D {
 	// Configure width based on available space and a minimum size.
 	widthUnit := float32(max(gtx.Constraints.Max.X/3, gtx.Px(unit.Dp(200))))
-	widths := []unit.Value{
-		unit.Px(widthUnit),
-		unit.Px(widthUnit),
-		unit.Px(widthUnit * .5),
-		unit.Px(widthUnit * .5),
-	}
 	border := widget.Border{
 		Color: color.NRGBA{A: 255},
 		Width: unit.Px(1),
@@ -134,30 +128,45 @@ func layoutTable(th *material.Theme, gtx C, timings []FrameTiming, grid *widget.
 	macro := op.Record(gtx.Ops)
 	dims := inset.Layout(gtx, headingLabel.Layout)
 	_ = macro.Stop()
-	cellHeight := unit.Px(float32(dims.Size.Y))
 	gtx.Constraints = orig
 
-	return material.Table(th, grid).Layout(gtx, len(timings), cellHeight, widths, func(gtx C, row, col int) D {
-		return inset.Layout(gtx, func(gtx C) D {
-			timing := timings[row]
-			switch col {
-			case 0:
-				dataLabel.Text = timing.Start.Format("15:04:05.000000")
-			case 1:
-				dataLabel.Text = timing.End.Format("15:04:05.000000")
-			case 2:
-				dataLabel.Text = strconv.Itoa(timing.FrameCount)
-			case 3:
-				dataLabel.Text = strconv.FormatFloat(timing.FramesPerSecond, 'f', 2, 64)
+	return material.Table(th, grid).Layout(gtx, len(timings), 4, func( axis layout.Axis, index int) int {
+		switch axis {
+		case layout.Horizontal:
+			switch index {
+			case 0, 1:
+				return int(widthUnit)
+			case 2, 3:
+				return int(widthUnit * .5)
+			default:
+				return 0
 			}
-			return dataLabel.Layout(gtx)
-		})
-	}, func(gtx C, col int) D {
-		return border.Layout(gtx, func(gtx C) D {
+		default:
+			return dims.Size.Y
+		}
+	},
+		func(gtx C, row, col int) D {
 			return inset.Layout(gtx, func(gtx C) D {
-				headingLabel.Text = headingText[col]
-				return headingLabel.Layout(gtx)
+    			                log.Println("cell", row, col)
+				timing := timings[row]
+				switch col {
+				case 0:
+					dataLabel.Text = timing.Start.Format("15:04:05.000000")
+				case 1:
+					dataLabel.Text = timing.End.Format("15:04:05.000000")
+				case 2:
+					dataLabel.Text = strconv.Itoa(timing.FrameCount)
+				case 3:
+					dataLabel.Text = strconv.FormatFloat(timing.FramesPerSecond, 'f', 2, 64)
+				}
+				return dataLabel.Layout(gtx)
+			})
+		}, func(gtx C, col int) D {
+			return border.Layout(gtx, func(gtx C) D {
+				return inset.Layout(gtx, func(gtx C) D {
+					headingLabel.Text = headingText[col]
+					return headingLabel.Layout(gtx)
+				})
 			})
 		})
-	})
 }

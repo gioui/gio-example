@@ -37,22 +37,13 @@ type (
 	D = layout.Dimensions
 )
 
-func calcWidths(gtx C, widths []unit.Value, quantity int, size unit.Value) []unit.Value {
-	widths = widths[:0]
-	for i := 0; i < quantity; i++ {
-		widths = append(widths, size)
-	}
-	return widths
-}
-
 func loop(w *app.Window) error {
 	th := material.NewTheme(gofont.Collection())
 	var (
 		ops  op.Ops
 		grid widget.Grid
 	)
-	sideLength := 100
-	widths := make([]unit.Value, 0, 100)
+	sideLength := 1000
 	cellSize := unit.Dp(10)
 	for {
 		e := <-w.Events()
@@ -61,12 +52,15 @@ func loop(w *app.Window) error {
 			return e.Err
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, e)
-			widths = calcWidths(gtx, widths, sideLength, cellSize)
-			material.Grid(th, &grid).Layout(gtx, sideLength, cellSize, widths, func(gtx C, row, col int) D {
-				c := color.NRGBA{R: uint8(3 * row), G: uint8(5 * col), B: uint8(row * col), A: 255}
-				paint.FillShape(gtx.Ops, c, clip.Rect{Max: gtx.Constraints.Max}.Op())
-				return D{Size: gtx.Constraints.Max}
-			})
+			material.Grid(th, &grid).Layout(gtx, sideLength, sideLength,
+				func(axis layout.Axis, index int) int {
+					return gtx.Px(cellSize)
+				},
+				func(gtx C, row, col int) D {
+					c := color.NRGBA{R: uint8(3 * row), G: uint8(5 * col), B: uint8(row * col), A: 255}
+					paint.FillShape(gtx.Ops, c, clip.Rect{Max: gtx.Constraints.Max}.Op())
+					return D{Size: gtx.Constraints.Max}
+				})
 			e.Frame(gtx.Ops)
 		}
 	}
