@@ -9,7 +9,6 @@ import (
 	"strconv"
 
 	"gioui.org/app"
-	"gioui.org/f32"
 	"gioui.org/font/gofont"
 	"gioui.org/io/system"
 	"gioui.org/layout"
@@ -72,19 +71,19 @@ type uiTab struct {
 }
 
 var (
-	vWrap = outlay.GridWrap{
+	vWrap = outlay.FlowWrap{
 		Axis:      layout.Vertical,
 		Alignment: layout.End,
 	}
-	hWrap = outlay.GridWrap{
+	hWrap = outlay.FlowWrap{
 		Axis:      layout.Horizontal,
 		Alignment: layout.End,
 	}
-	vGrid = outlay.Grid{
+	vGrid = outlay.Flow{
 		Num:  11,
 		Axis: layout.Vertical,
 	}
-	hGrid = outlay.Grid{
+	hGrid = outlay.Flow{
 		Num:  11,
 		Axis: layout.Horizontal,
 	}
@@ -173,8 +172,8 @@ func (ui *UI) Layout(gtx layout.Context) layout.Dimensions {
 				}
 				return layout.Stack{}.Layout(gtx,
 					layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-						defer clip.UniformRRect(f32.Rectangle{
-							Max: layout.FPt(gtx.Constraints.Min),
+						defer clip.UniformRRect(image.Rectangle{
+							Max: gtx.Constraints.Min,
 						}, 0).Push(gtx.Ops).Pop()
 						paint.Fill(gtx.Ops, color.NRGBA{A: 64})
 						return layout.Dimensions{}
@@ -185,8 +184,8 @@ func (ui *UI) Layout(gtx layout.Context) layout.Dimensions {
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			pt := image.Point{X: gtx.Constraints.Max.X, Y: 4}
-			defer clip.UniformRRect(f32.Rectangle{
-				Max: layout.FPt(pt),
+			defer clip.UniformRRect(image.Rectangle{
+				Max: pt,
 			}, 0).Push(gtx.Ops).Pop()
 			paint.Fill(gtx.Ops, ui.theme.Palette.ContrastBg)
 			return layout.Dimensions{Size: pt}
@@ -194,8 +193,8 @@ func (ui *UI) Layout(gtx layout.Context) layout.Dimensions {
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return layout.Stack{}.Layout(gtx,
 				layout.Expanded(func(gtx layout.Context) layout.Dimensions {
-					defer clip.UniformRRect(f32.Rectangle{
-						Max: layout.FPt(image.Pt(gtx.Constraints.Max.X, gtx.Constraints.Min.Y)),
+					defer clip.UniformRRect(image.Rectangle{
+						Max: image.Pt(gtx.Constraints.Max.X, gtx.Constraints.Min.Y),
 					}, 0).Push(gtx.Ops).Pop()
 					paint.Fill(gtx.Ops, color.NRGBA{A: 24})
 					return layout.Dimensions{}

@@ -40,13 +40,15 @@ var DefaultPalette = &CardPalette{
 type CardStyle struct {
 	*material.Theme
 	playing.Card
-	Height unit.Value
+	Height unit.Dp
 	*CardPalette
 }
 
-const cardHeightToWidth = 14.0 / 9.0
-const cardRadiusToWidth = 1.0 / 16.0
-const borderWidth = 0.005
+const (
+	cardHeightToWidth = 14.0 / 9.0
+	cardRadiusToWidth = 1.0 / 16.0
+	borderWidth       = 0.005
+)
 
 func (c *CardStyle) Palette() *CardPalette {
 	if c.CardPalette == nil {
@@ -56,12 +58,12 @@ func (c *CardStyle) Palette() *CardPalette {
 }
 
 func (c *CardStyle) Layout(gtx C) D {
-	gtx.Constraints.Max.Y = gtx.Px(c.Height)
+	gtx.Constraints.Max.Y = gtx.Dp(c.Height)
 	gtx.Constraints.Max.X = int(float32(gtx.Constraints.Max.Y) / cardHeightToWidth)
 	outerRadius := float32(gtx.Constraints.Max.X) * cardRadiusToWidth
 	innerRadius := (1 - borderWidth) * outerRadius
 
-	borderWidth := c.Height.Scale(borderWidth)
+	borderWidth := c.Height * borderWidth
 	return layout.Stack{}.Layout(gtx,
 		layout.Expanded(func(gtx C) D {
 			return Rect{

@@ -340,7 +340,7 @@ func layoutSelectionLayer(gtx C) D {
 type Star struct {
 	X, Y  float32
 	Speed float32
-	Size  unit.Value
+	Size  unit.Dp
 }
 
 type (
@@ -351,7 +351,7 @@ type (
 // Layout renders the star into the gtx assuming that it is visible within the
 // provided viewport. Stars outside of the viewport will be skipped.
 func (s Star) Layout(gtx layout.Context, view *viewport) layout.Dimensions {
-	px := gtx.Px(s.Size)
+	px := gtx.Dp(s.Size)
 	if view != nil {
 		if s.X < view.offset.X || s.X > view.offset.X+view.size.X {
 			return D{}
@@ -362,13 +362,13 @@ func (s Star) Layout(gtx layout.Context, view *viewport) layout.Dimensions {
 		s.X = (s.X - view.offset.X) / view.size.X
 		s.Y = (s.Y - view.offset.Y) / view.size.Y
 	}
-	rr := float32(px / 2)
-	x := s.X*float32(gtx.Constraints.Max.X) - rr
-	y := s.Y*float32(gtx.Constraints.Max.Y) - rr
+	rr := px / 2
+	x := int(s.X*float32(gtx.Constraints.Max.X)) - rr
+	y := int(s.Y*float32(gtx.Constraints.Max.Y)) - rr
 
-	defer op.Offset(f32.Pt(x, y)).Push(gtx.Ops).Pop()
-	rect := f32.Rectangle{
-		Max: f32.Pt(float32(px), float32(px)),
+	defer op.Offset(image.Pt(x, y)).Push(gtx.Ops).Pop()
+	rect := image.Rectangle{
+		Max: image.Pt(px, px),
 	}
 	fill := color.NRGBA{R: 0xff, G: 128, B: 0xff, A: 50}
 	fill.R = 255 - uint8(255*s.Speed)

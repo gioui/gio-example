@@ -157,7 +157,7 @@ func (ui *UI) Layout(gtx C) D {
 		func(gtx C) D {
 			rect := image.Rectangle{
 				Max: image.Point{
-					X: (gtx.Px(unit.Dp(4))),
+					X: (gtx.Dp(unit.Dp(4))),
 					Y: (gtx.Constraints.Max.Y),
 				},
 			}

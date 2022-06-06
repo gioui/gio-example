@@ -82,8 +82,8 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 							Left:   unit.Dp(16),
 							Right:  unit.Dp(16),
 						}.Layout(gtx, func(gtx C) D {
-							gtx.Constraints.Max.X = gtx.Px(unit.Dp(24))
-							gtx.Constraints.Max.Y = gtx.Px(unit.Dp(24))
+							gtx.Constraints.Max.X = gtx.Dp(unit.Dp(24))
+							gtx.Constraints.Max.Y = gtx.Dp(unit.Dp(24))
 							return material.Loader(th).Layout(gtx)
 						})
 					},

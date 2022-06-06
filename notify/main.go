@@ -71,7 +71,7 @@ func frame(gtx C) *op.Ops {
 		go notifier.CreateNotification("Hello Gio!", msg)
 	}
 	layout.Center.Layout(gtx, func(gtx C) D {
-		gtx.Constraints.Max.X = gtx.Px(unit.Dp(300))
+		gtx.Constraints.Max.X = gtx.Dp(unit.Dp(300))
 		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 			layout.Rigid(func(gtx C) D {
 				return editor.Layout(gtx, th, "enter a notification message")

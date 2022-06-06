@@ -91,7 +91,7 @@ func loop(w *app.Window) error {
 			fan.WidthRadians = width.Value * 2 * math.Pi
 			if useRadius.Changed() || radius.Changed() {
 				if useRadius.Value {
-					r := cards[0].Height.Scale(radius.Value * 2)
+					r := cards[0].Height * unit.Dp(radius.Value*2)
 					fan.HollowRadius = &r
 				} else {
 					fan.HollowRadius = nil

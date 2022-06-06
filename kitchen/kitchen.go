@@ -35,8 +35,10 @@ import (
 	"golang.org/x/exp/shiny/materialdesign/icons"
 )
 
-var screenshot = flag.String("screenshot", "", "save a screenshot to a file and exit")
-var disable = flag.Bool("disable", false, "disable all widgets")
+var (
+	screenshot = flag.String("screenshot", "", "save a screenshot to a file and exit")
+	disable    = flag.Bool("disable", false, "disable all widgets")
+)
 
 type iconAndTextButton struct {
 	theme  *material.Theme
@@ -107,7 +109,7 @@ func saveScreenshot(f string) error {
 	if err := png.Encode(&buf, img); err != nil {
 		return err
 	}
-	return ioutil.WriteFile(f, buf.Bytes(), 0666)
+	return ioutil.WriteFile(f, buf.Bytes(), 0o666)
 }
 
 func loop(w *app.Window) error {
@@ -212,7 +214,7 @@ func (b iconAndTextButton) Layout(gtx layout.Context) layout.Dimensions {
 				return layout.Inset{Right: textIconSpacer}.Layout(gtx, func(gtx C) D {
 					var d D
 					if b.icon != nil {
-						size := gtx.Px(unit.Dp(56)) - 2*gtx.Px(unit.Dp(16))
+						size := gtx.Dp(unit.Dp(56)) - 2*gtx.Dp(unit.Dp(16))
 						gtx.Constraints = layout.Exact(image.Pt(size, size))
 						d = b.icon.Layout(gtx, b.theme.ContrastFg)
 					}
@@ -243,19 +245,19 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 	widgets := []layout.Widget{
 		material.H3(th, topLabel).Layout,
 		func(gtx C) D {
-			gtx.Constraints.Max.Y = gtx.Px(unit.Dp(200))
+			gtx.Constraints.Max.Y = gtx.Dp(unit.Dp(200))
 			return material.Editor(th, editor, "Hint").Layout(gtx)
 		},
 		func(gtx C) D {
 			e := material.Editor(th, lineEditor, "Hint")
 			e.Font.Style = text.Italic
-			border := widget.Border{Color: color.NRGBA{A: 0xff}, CornerRadius: unit.Dp(8), Width: unit.Px(2)}
+			border := widget.Border{Color: color.NRGBA{A: 0xff}, CornerRadius: unit.Dp(8), Width: unit.Dp(2)}
 			return border.Layout(gtx, func(gtx C) D {
 				return layout.UniformInset(unit.Dp(8)).Layout(gtx, e.Layout)
 			})
 		},
 		func(gtx C) D {
-			gtx.Constraints.Min.Y = gtx.Px(unit.Dp(50))
+			gtx.Constraints.Min.Y = gtx.Dp(unit.Dp(50))
 			gtx.Constraints.Max.Y = gtx.Constraints.Min.Y
 
 			dr := image.Rectangle{Max: gtx.Constraints.Min}

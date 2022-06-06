@@ -11,7 +11,6 @@ import (
 	"log"
 	"runtime"
 
-	"gioui.org/f32"
 	"gioui.org/font/gofont"
 	"gioui.org/gesture"
 	"gioui.org/io/key"
@@ -178,7 +177,7 @@ func (up *userPage) commit(gtx layout.Context, index int) layout.Dimensions {
 	return in.Layout(gtx, func(gtx C) D {
 		return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
 			layout.Rigid(func(gtx C) D {
-				sz := gtx.Px(unit.Dp(48))
+				sz := gtx.Dp(unit.Dp(48))
 				cc := clipCircle{}
 				return cc.Layout(gtx, func(gtx C) D {
 					gtx.Constraints = layout.Exact(gtx.Constraints.Constrain(image.Point{X: sz, Y: sz}))
@@ -200,7 +199,7 @@ func (u *UI) layoutUsers(gtx layout.Context) {
 				layout.Rigid(func(gtx C) D {
 					gtx.Constraints.Min.X = gtx.Constraints.Max.X
 					return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx C) D {
-						sz := gtx.Px(unit.Dp(200))
+						sz := gtx.Dp(unit.Dp(200))
 						cs := gtx.Constraints
 						gtx.Constraints = layout.Exact(cs.Constrain(image.Point{X: sz, Y: sz}))
 						return material.Editor(theme, u.edit, "Hint").Layout(gtx)
@@ -269,7 +268,7 @@ func (u *UI) user(gtx layout.Context, index int) layout.Dimensions {
 				cc := clipCircle{}
 				return in.Layout(gtx, func(gtx C) D {
 					return cc.Layout(gtx, func(gtx C) D {
-						dim := gtx.Px(unit.Dp(48))
+						dim := gtx.Dp(unit.Dp(48))
 						sz := image.Point{X: dim, Y: dim}
 						gtx.Constraints = layout.Exact(gtx.Constraints.Constrain(sz))
 						return user.layoutAvatar(gtx)
@@ -317,7 +316,7 @@ func (u *user) layoutAvatar(gtx layout.Context) layout.Dimensions {
 		u.avatarOp = paint.NewImageOp(img)
 	}
 	img := widget.Image{Src: u.avatarOp}
-	img.Scale = float32(sz) / float32(gtx.Px(unit.Dp(float32(sz))))
+	img.Scale = float32(sz) / float32(gtx.Dp(unit.Dp(float32(sz))))
 	return img.Layout(gtx)
 }
 
@@ -357,10 +356,9 @@ func (c *clipCircle) Layout(gtx layout.Context, w layout.Widget) layout.Dimensio
 	if dy := dims.Size.Y; dy > max {
 		max = dy
 	}
-	szf := float32(max)
-	rr := szf * .5
+	rr := max / 2
 	defer clip.RRect{
-		Rect: f32.Rectangle{Max: f32.Point{X: szf, Y: szf}},
+		Rect: image.Rectangle{Max: image.Point{X: max, Y: max}},
 		NE:   rr, NW: rr, SE: rr, SW: rr,
 	}.Push(gtx.Ops).Pop()
 	call.Add(gtx.Ops)

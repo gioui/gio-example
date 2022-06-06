@@ -51,8 +51,10 @@ func loop(w *app.Window) error {
 	}
 }
 
-var tabs Tabs
-var slider Slider
+var (
+	tabs   Tabs
+	slider Slider
+)
 
 type Tabs struct {
 	list     layout.List
@@ -95,7 +97,7 @@ func drawTabs(gtx layout.Context, th *material.Theme) layout.Dimensions {
 				return layout.Stack{Alignment: layout.S}.Layout(gtx,
 					layout.Stacked(func(gtx C) D {
 						dims := material.Clickable(gtx, &t.btn, func(gtx C) D {
-							return layout.UniformInset(unit.Sp(12)).Layout(gtx,
+							return layout.UniformInset(unit.Dp(12)).Layout(gtx,
 								material.H6(th, t.Title).Layout,
 							)
 						})
@@ -106,7 +108,7 @@ func drawTabs(gtx layout.Context, th *material.Theme) layout.Dimensions {
 						if tabs.selected != tabIdx {
 							return layout.Dimensions{}
 						}
-						tabHeight := gtx.Px(unit.Dp(4))
+						tabHeight := gtx.Dp(unit.Dp(4))
 						tabRect := image.Rect(0, 0, tabWidth, tabHeight)
 						paint.FillShape(gtx.Ops, th.Palette.ContrastBg, clip.Rect(tabRect).Op())
 						return layout.Dimensions{
