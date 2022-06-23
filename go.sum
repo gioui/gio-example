@@ -38,8 +38,8 @@ eliasnaur.com/font v0.0.0-20220215125817-de715634c840/go.mod h1:OYVuxibdk9OSLX8v
 gioui.org v0.0.0-20210910062418-d5d0a75a9bcb/go.mod h1:BTldRXnY5mrUrYZCdWyDwyMzyUzpfZN1cF4MMRrOt9w=
 gioui.org v0.0.0-20211103131231-1d0769ae89a5/go.mod h1:yoWOxPng6WkDpsud+NRmkoftmyWn3rkKsYGEcWHpjTI=
 gioui.org v0.0.0-20220429101739-35b70e15c9e5/go.mod h1:lR+IVRz1+uf9mN/gD5oj05sr/vb1aSoctAqDRevt90M=
-gioui.org v0.0.0-20220607102828-5cf916c0753c h1:NnSe6ebWNvFkRu13Ouo1ENvZRsZBqY1rETAPrRJGRCU=
-gioui.org v0.0.0-20220607102828-5cf916c0753c/go.mod h1:WHoHbUjH91BJS2xkfps2AhKxji+9o3xwfsphGsCBfnM=
+gioui.org v0.0.0-20220625174046-3f38e67ce0ca h1:rwL1JJOHEgt6/DDO7kUugMBMA3orwRSfBl0woF6sFG0=
+gioui.org v0.0.0-20220625174046-3f38e67ce0ca/go.mod h1:WHoHbUjH91BJS2xkfps2AhKxji+9o3xwfsphGsCBfnM=
 gioui.org/cmd v0.0.0-20211103131231-1d0769ae89a5 h1:745EIA9yw5pYHXNPS6hv+gX7UKhoQUIR0X4rrhYXaqo=
 gioui.org/cmd v0.0.0-20211103131231-1d0769ae89a5/go.mod h1:qrH3h4nt/PyIqx/XabL/eJ5cXQnQ0ERHqC3VEXx/Rmg=
 gioui.org/cpu v0.0.0-20210808092351-bfe733dd3334/go.mod h1:A8M0Cn5o+vY5LTMlnRoK3O5kG+rH0kWfJjeKd9QpBmQ=
