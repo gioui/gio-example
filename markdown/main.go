@@ -131,7 +131,7 @@ func (ui *UI) Update(gtx C) {
 	for _, event := range ui.Editor.Events() {
 		if _, ok := event.(widget.ChangeEvent); ok {
 			var err error
-			ui.Theme.cache, err = ui.Renderer.Render(ui.Theme.Base, []byte(ui.Editor.Text()))
+			ui.Theme.cache, err = ui.Renderer.Render([]byte(ui.Editor.Text()))
 			if err != nil {
 				// TODO(jfm): display UI element explaining the error to the user.
 				log.Printf("error: rendering markdown: %v", err)
