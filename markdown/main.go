@@ -115,7 +115,7 @@ func (ui *UI) Update(gtx C) {
 		for _, e := range events {
 			switch e.Type {
 			case richtext.Click:
-				if url := o.Get(markdown.MetadataURL); url != "" {
+				if url, ok := o.Get(markdown.MetadataURL).(string); ok && url != "" {
 					if err := giohyperlink.Open(url); err != nil {
 						// TODO(jfm): display UI element explaining the error to the user.
 						log.Printf("error: opening hyperlink: %v", err)
@@ -124,7 +124,9 @@ func (ui *UI) Update(gtx C) {
 			case richtext.Hover:
 			case richtext.LongPress:
 				log.Println("longpress")
-				ui.Window.Option(app.Title(o.Get(markdown.MetadataURL)))
+				if url, ok := o.Get(markdown.MetadataURL).(string); ok && url != "" {
+					ui.Window.Option(app.Title(url))
+				}
 			}
 		}
 	}

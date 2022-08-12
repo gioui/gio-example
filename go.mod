@@ -5,7 +5,7 @@ go 1.17
 require (
 	gioui.org v0.0.0-20220807212605-65a4366e4468
 	gioui.org/cmd v0.0.0-20211103131231-1d0769ae89a5
-	gioui.org/x v0.0.0-20220803202424-02a5084a3ebd
+	gioui.org/x v0.0.0-20220812201728-6e5ccb802ed1
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210311203641-62640a716d48
 	github.com/google/go-github/v24 v24.0.1

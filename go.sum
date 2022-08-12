@@ -55,6 +55,8 @@ gioui.org/x v0.0.0-20220606121947-8732bd398e12 h1:r4j13mgOtjajMWtQj52MJBoa84uRkW
 gioui.org/x v0.0.0-20220606121947-8732bd398e12/go.mod h1:8XMNUPk+xNpfAHkIGWcHGTfXjtdcyA1hxsWGmF9gogU=
 gioui.org/x v0.0.0-20220803202424-02a5084a3ebd h1:DATWEhL4YJs73tMeC1cgXS70XJU7Xas/tM5acH5EQT0=
 gioui.org/x v0.0.0-20220803202424-02a5084a3ebd/go.mod h1:0apkSvH2FYyzQyIxgGpp9JgFI/3+plcgKXeI9dLSOSU=
+gioui.org/x v0.0.0-20220812201728-6e5ccb802ed1 h1:+R1nar5r/WgYNxUInuqX1seYAjn/xxZUuL2QHZ6L9yA=
+gioui.org/x v0.0.0-20220812201728-6e5ccb802ed1/go.mod h1:0apkSvH2FYyzQyIxgGpp9JgFI/3+plcgKXeI9dLSOSU=
 git.wow.st/gmp/jni v0.0.0-20200827154156-014cd5c7c4c0/go.mod h1:+axXBRUTIDlCeE73IKeD/os7LoEnTKdkp8/gQOFjqyo=
 git.wow.st/gmp/jni v0.0.0-20210610011705-34026c7e22d0 h1:bGG/g4ypjrCJoSvFrP5hafr9PPB5aw8SjcOWWila7ZI=
 git.wow.st/gmp/jni v0.0.0-20210610011705-34026c7e22d0/go.mod h1:+axXBRUTIDlCeE73IKeD/os7LoEnTKdkp8/gQOFjqyo=
