@@ -4,16 +4,17 @@ go 1.18
 
 require (
 	gioui.org v0.0.0-20220830130127-276b7eefdd65
-	gioui.org/cmd v0.0.0-20211103131231-1d0769ae89a5
-	gioui.org/x v0.0.0-20220830200111-48391e74323b
+	gioui.org/cmd v0.0.0-20220818080936-02068d6340fc
+	gioui.org/x v0.0.0-20220905194003-1a8b0f45f199
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210311203641-62640a716d48
 	github.com/google/go-github/v24 v24.0.1
-	github.com/inkeliz/giohyperlink v0.0.0-20211125170138-7c983051483f
-	golang.org/x/exp v0.0.0-20210722180016-6781d3edade3
+	github.com/inkeliz/giohyperlink v0.0.0-20220903215451-2ac5d54abdce
+	golang.org/x/exp v0.0.0-20220906200021-fcb1a314c389
+	golang.org/x/exp/shiny v0.0.0-20220906200021-fcb1a314c389
 	golang.org/x/image v0.0.0-20220722155232-062f8c9fd539
-	golang.org/x/oauth2 v0.0.0-20210126194326-f9ce19ea3013
-	gonum.org/v1/gonum v0.8.2
+	golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be
+	gonum.org/v1/gonum v0.12.0
 )
 
 require (
@@ -29,17 +30,15 @@ require (
 	github.com/go-toast/toast v0.0.0-20190211030409-01e6764cf0a4 // indirect
 	github.com/godbus/dbus/v5 v5.0.6 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
-	github.com/google/go-cmp v0.5.6 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
-	github.com/yuin/goldmark v1.4.0 // indirect
-	golang.org/x/mod v0.4.2 // indirect
-	golang.org/x/net v0.0.0-20210510120150-4163338589ed // indirect
-	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9 // indirect
+	github.com/yuin/goldmark v1.4.13 // indirect
+	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
+	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.0.0-20220825204002-c680a09ffe64 // indirect
 	golang.org/x/text v0.3.7 // indirect
-	golang.org/x/tools v0.1.0 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	golang.org/x/tools v0.1.12 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
-	google.golang.org/protobuf v1.25.0 // indirect
+	google.golang.org/protobuf v1.23.0 // indirect
 )
