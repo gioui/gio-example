@@ -38,7 +38,7 @@ func main() {
 	ui := UI{
 		Window:   app.NewWindow(),
 		Renderer: markdown.NewRenderer(),
-		Shaper:   text.NewCache(gofont.Collection()),
+		Shaper:   text.NewShaper(gofont.Collection()),
 		Theme:    NewTheme(gofont.Collection()),
 		Resize:   component.Resize{Ratio: 0.5},
 	}
@@ -64,7 +64,7 @@ type UI struct {
 	// Theme contains semantic style data. Extends `material.Theme`.
 	Theme *Theme
 	// Shaper cache of registered fonts.
-	Shaper *text.Cache
+	Shaper *text.Shaper
 	// Renderer tranforms raw text containing markdown into richtext.
 	Renderer *markdown.Renderer
 

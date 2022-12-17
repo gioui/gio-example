@@ -363,10 +363,10 @@ func (s Star) Layout(gtx layout.Context, view *viewport) layout.Dimensions {
 		s.Y = (s.Y - view.offset.Y) / view.size.Y
 	}
 	rr := px / 2
-	x := int(s.X*float32(gtx.Constraints.Max.X)) - rr
-	y := int(s.Y*float32(gtx.Constraints.Max.Y)) - rr
+	x := s.X*float32(gtx.Constraints.Max.X) - float32(rr)
+	y := s.Y*float32(gtx.Constraints.Max.Y) - float32(rr)
+	defer op.Affine(f32.Affine2D{}.Offset(f32.Pt(x, y))).Push(gtx.Ops).Pop()
 
-	defer op.Offset(image.Pt(x, y)).Push(gtx.Ops).Pop()
 	rect := image.Rectangle{
 		Max: image.Pt(px, px),
 	}

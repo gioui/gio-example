@@ -161,7 +161,7 @@ func (u *UI) newUserPage(user *user) *userPage {
 
 func (up *userPage) Layout(gtx layout.Context) {
 	l := up.commitsList
-	if l.Dragging() {
+	if l.List.Dragging() {
 		key.SoftKeyboardOp{Show: false}.Add(gtx.Ops)
 	}
 	material.List(theme, l).Layout(gtx, len(up.commits), func(gtx C, i int) D {
@@ -250,7 +250,7 @@ func (u *UI) layoutUsers(gtx layout.Context) {
 
 func (u *UI) layoutContributors(gtx layout.Context) layout.Dimensions {
 	l := u.usersList
-	if l.Dragging() {
+	if l.List.Dragging() {
 		key.SoftKeyboardOp{Show: false}.Add(gtx.Ops)
 	}
 	return material.List(theme, l).Layout(gtx, len(u.users), func(gtx C, i int) D {
