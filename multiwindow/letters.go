@@ -5,7 +5,6 @@ package main
 import (
 	"gioui.org/app"
 	"gioui.org/layout"
-	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 )
@@ -45,13 +44,12 @@ func (v *Letters) Layout(gtx layout.Context, th *material.Theme) layout.Dimensio
 			v.log.Printf("opening %s view", item.Text)
 
 			bigText := material.H1(th, item.Text)
-			size := bigText.TextSize
-			sizeDp := unit.Dp((float32(size) * 2 * gtx.Metric.PxPerSp) / gtx.Metric.PxPerDp)
+			size := 2 * gtx.Metric.SpToDp(bigText.TextSize)
 			v.App.NewWindow(item.Text,
 				WidgetView(func(gtx layout.Context, th *material.Theme) layout.Dimensions {
 					return layout.Center.Layout(gtx, material.H1(th, item.Text).Layout)
 				}),
-				app.Size(sizeDp, sizeDp),
+				app.Size(size, size),
 			)
 		}
 		return material.Button(th, &item.Click, item.Text).Layout(gtx)
