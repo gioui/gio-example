@@ -4,9 +4,10 @@ go 1.18
 
 require (
 	eliasnaur.com/font v0.0.0-20220215125817-de715634c840
-	gioui.org v0.0.0-20221216233230-5d1d1df2061c
+	gioui.org v0.0.0-20230101161950-e9bce02b24f0
 	gioui.org/cmd v0.0.0-20220818080936-02068d6340fc
 	gioui.org/x v0.0.0-20221217001840-a2b41ad69d71
+	git.sr.ht/~gioverse/chat v0.0.0-20221202192918-bc1dd00a8468
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210311203641-62640a716d48
 	github.com/google/go-github/v24 v24.0.1

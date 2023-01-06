@@ -2,6 +2,8 @@ eliasnaur.com/font v0.0.0-20220215125817-de715634c840 h1:HovVBbKkUnf7OFR0qZy1PRB
 eliasnaur.com/font v0.0.0-20220215125817-de715634c840/go.mod h1:OYVuxibdk9OSLX8vAqydtRPP87PyTFcT9uH3MlEGBQA=
 gioui.org v0.0.0-20221216233230-5d1d1df2061c h1:5sweSGj5cjHLJgK4cGI5wNhghp/+JQF+MM0oen8HQA8=
 gioui.org v0.0.0-20221216233230-5d1d1df2061c/go.mod h1:3lLo7xMHYnnHTrgKNNctBjEKKH3wQCO2Sn7ti5Jy8mU=
+gioui.org v0.0.0-20230101161950-e9bce02b24f0 h1:/3chuQ/TLkZ6SubTxxxOfO5FM1PUWVo0o/epk6PNe1o=
+gioui.org v0.0.0-20230101161950-e9bce02b24f0/go.mod h1:3lLo7xMHYnnHTrgKNNctBjEKKH3wQCO2Sn7ti5Jy8mU=
 gioui.org/cmd v0.0.0-20220818080936-02068d6340fc h1:KfVMY8YBF6OBlkw2WgCySAilfsyjtPtZaWaBAKSofo8=
 gioui.org/cmd v0.0.0-20220818080936-02068d6340fc/go.mod h1:sOPHaz5lc8CQuJqPyX/YTFdcs5+XKNXXa03qxFIln6w=
 gioui.org/cpu v0.0.0-20210808092351-bfe733dd3334/go.mod h1:A8M0Cn5o+vY5LTMlnRoK3O5kG+rH0kWfJjeKd9QpBmQ=
@@ -11,6 +13,8 @@ gioui.org/shader v1.0.6 h1:cvZmU+eODFR2545X+/8XucgZdTtEjR3QWW6W65b0q5Y=
 gioui.org/shader v1.0.6/go.mod h1:mWdiME581d/kV7/iEhLmUgUK5iZ09XR5XpduXzbePVM=
 gioui.org/x v0.0.0-20221217001840-a2b41ad69d71 h1:T2P+A5d6pPffixumuYpEU/WQSCzU+4tW92fRb6WwgWM=
 gioui.org/x v0.0.0-20221217001840-a2b41ad69d71/go.mod h1:uaOjXMbF4tegxQlbyQgIdXTX2GNUj7phJRLDpK3VeUk=
+git.sr.ht/~gioverse/chat v0.0.0-20221202192918-bc1dd00a8468 h1:lIUfRbNENf1b9Kyv5NX4VsvyrhjJZbu3x4eOLtHuAsg=
+git.sr.ht/~gioverse/chat v0.0.0-20221202192918-bc1dd00a8468/go.mod h1:TWsJOxL0pFjJT4qCIxg0w2cMxnM/3CF6GSDF4FZ6SpM=
 git.wow.st/gmp/jni v0.0.0-20210610011705-34026c7e22d0 h1:bGG/g4ypjrCJoSvFrP5hafr9PPB5aw8SjcOWWila7ZI=
 git.wow.st/gmp/jni v0.0.0-20210610011705-34026c7e22d0/go.mod h1:+axXBRUTIDlCeE73IKeD/os7LoEnTKdkp8/gQOFjqyo=
 github.com/ajstarks/svgo v0.0.0-20180226025133-644b8db467af/go.mod h1:K08gAheRH3/J6wwsYMMT4xOr94bZjxIelGM0+d/wbFw=

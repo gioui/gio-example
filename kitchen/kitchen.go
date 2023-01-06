@@ -192,6 +192,7 @@ var (
 	progressIncrementer chan float32
 	green               = true
 	topLabel            = "Hello, Gio"
+	topLabelState       = new(widget.Selectable)
 	icon                *widget.Icon
 	checkbox            = new(widget.Bool)
 	swtch               = new(widget.Bool)
@@ -243,7 +244,11 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 		}
 	}
 	widgets := []layout.Widget{
-		material.H3(th, topLabel).Layout,
+		func(gtx C) D {
+			l := material.H3(th, topLabel)
+			l.State = topLabelState
+			return l.Layout(gtx)
+		},
 		func(gtx C) D {
 			gtx.Constraints.Max.Y = gtx.Dp(unit.Dp(200))
 			return material.Editor(th, editor, "Hint").Layout(gtx)
