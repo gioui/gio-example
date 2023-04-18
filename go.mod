@@ -6,11 +6,9 @@ require (
 	eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d
 	gioui.org v0.0.0-20230401135047-e768fe347a73
 	gioui.org/cmd v0.0.0-20220818080936-02068d6340fc
-	gioui.org/x v0.0.0-20230403130642-fd712aa4daf5
-	github.com/benoitkugler/textlayout v0.3.0
+	gioui.org/x v0.0.0-20230418115547-b8533313f976
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210311203641-62640a716d48
-	github.com/go-text/typesetting v0.0.0-20230329143336-a38d00edd832
 	github.com/google/go-github/v24 v24.0.1
 	github.com/inkeliz/giohyperlink v0.0.0-20220903215451-2ac5d54abdce
 	golang.org/x/exp v0.0.0-20221012211006-4de253d81b95
@@ -28,6 +26,7 @@ require (
 	github.com/akavel/rsrc v0.10.1 // indirect
 	github.com/esiqveland/notify v0.11.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/go-text/typesetting v0.0.0-20230329143336-a38d00edd832 // indirect
 	github.com/godbus/dbus/v5 v5.0.6 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect

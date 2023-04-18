@@ -6,6 +6,7 @@ import (
 
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 	"gioui.org/x/component"
@@ -23,7 +24,7 @@ type (
 // Page holds the state for a page demonstrating the features of
 // the TextField component.
 type Page struct {
-	inputAlignment                                               layout.Alignment
+	inputAlignment                                               text.Alignment
 	inputAlignmentEnum                                           widget.Enum
 	nameInput, addressInput, priceInput, tweetInput, numberInput component.TextField
 	widget.List
@@ -131,13 +132,13 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 				if p.inputAlignmentEnum.Changed() {
 					switch p.inputAlignmentEnum.Value {
 					case layout.Start.String():
-						p.inputAlignment = layout.Start
+						p.inputAlignment = text.Start
 					case layout.Middle.String():
-						p.inputAlignment = layout.Middle
+						p.inputAlignment = text.Middle
 					case layout.End.String():
-						p.inputAlignment = layout.End
+						p.inputAlignment = text.End
 					default:
-						p.inputAlignment = layout.Start
+						p.inputAlignment = text.Start
 					}
 					op.InvalidateOp{}.Add(gtx.Ops)
 				}
