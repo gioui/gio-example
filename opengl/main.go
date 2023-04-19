@@ -19,7 +19,6 @@
 // You'll need the ANGLE libraries (EGL and GLESv2) in your library search path. On macOS:
 //
 // $ DYLD_LIBRARY_PATH=<path-to-ANGLE-libraries> ./opengl.exe
-//
 package main
 
 import (
