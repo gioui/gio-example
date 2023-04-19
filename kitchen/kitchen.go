@@ -19,6 +19,7 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/f32"
+	"gioui.org/font"
 	"gioui.org/font/gofont"
 	"gioui.org/gpu/headless"
 	"gioui.org/io/router"
@@ -27,7 +28,6 @@ import (
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
-	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -255,7 +255,7 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 		},
 		func(gtx C) D {
 			e := material.Editor(th, lineEditor, "Hint")
-			e.Font.Style = text.Italic
+			e.Font.Style = font.Italic
 			border := widget.Border{Color: color.NRGBA{A: 0xff}, CornerRadius: unit.Dp(8), Width: unit.Dp(2)}
 			return border.Layout(gtx, func(gtx C) D {
 				return layout.UniformInset(unit.Dp(8)).Layout(gtx, e.Layout)

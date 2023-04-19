@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"gioui.org/app"
+	"gioui.org/font"
 	"gioui.org/font/gofont"
 	"gioui.org/io/system"
 	"gioui.org/layout"
@@ -105,7 +106,7 @@ func layoutTable(th *material.Theme, gtx C, timings []FrameTiming, grid *compone
 
 	// Configure a label styled to be a heading.
 	headingLabel := material.Body1(th, "")
-	headingLabel.Font.Weight = text.Bold
+	headingLabel.Font.Weight = font.Bold
 	headingLabel.Alignment = text.Middle
 	headingLabel.MaxLines = 1
 

@@ -17,6 +17,7 @@ import (
 	"os"
 
 	"gioui.org/app"
+	"gioui.org/font"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -86,7 +87,7 @@ type Theme struct {
 }
 
 // NewTheme instantiates a theme, extending material theme.
-func NewTheme(font []text.FontFace) *Theme {
+func NewTheme(font []font.FontFace) *Theme {
 	return &Theme{
 		Base: material.NewTheme(font),
 	}

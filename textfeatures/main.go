@@ -14,7 +14,6 @@ import (
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
-	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 
@@ -38,16 +37,11 @@ func loop(w *app.Window) error {
 	// Load default font collection.
 	collection := gofont.Collection()
 	// Load a color emoji font.
-	face, err := opentype.Parse(colEmoji.TTF)
+	faces, err := opentype.ParseCollection(colEmoji.TTF)
 	if err != nil {
 		panic(err)
 	}
-	th := material.NewTheme(append(collection, text.FontFace{
-		Font: text.Font{
-			Typeface: "Noto Color Emoji",
-		},
-		Face: face,
-	}))
+	th := material.NewTheme(append(collection, faces...))
 	var ops op.Ops
 	var sel widget.Selectable
 	message := "🥳🧁🍰🎁🎂🎈🎺🎉🎊\n📧〽️🧿🌶️🔋\n😂❤️😍🤣😊\n🥺🙏💕😭😘\n👍😅👏"

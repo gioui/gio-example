@@ -11,6 +11,7 @@ import (
 	"os"
 
 	"gioui.org/app"
+	"gioui.org/font"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -42,9 +43,9 @@ type (
 func loop(w *app.Window) error {
 	arabicFace, _ := opentype.Parse(nsareg.TTF)
 	englishFace, _ := opentype.Parse(robotoregular.TTF)
-	collection := []text.FontFace{}
-	collection = append(collection, text.FontFace{Font: text.Font{Typeface: "Latin"}, Face: englishFace})
-	collection = append(collection, text.FontFace{Font: text.Font{Typeface: "Arabic"}, Face: arabicFace})
+	collection := []font.FontFace{}
+	collection = append(collection, font.FontFace{Font: font.Font{Typeface: "Latin"}, Face: englishFace})
+	collection = append(collection, font.FontFace{Font: font.Font{Typeface: "Arabic"}, Face: arabicFace})
 	th := material.NewTheme(collection)
 	var ed widget.Editor
 	txt := "Hello أهلا my good friend صديقي الجيد bidirectional text نص ثنائي الاتجاه."

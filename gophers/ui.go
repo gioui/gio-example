@@ -11,6 +11,7 @@ import (
 	"log"
 	"runtime"
 
+	"gioui.org/font"
 	"gioui.org/font/gofont"
 	"gioui.org/gesture"
 	"gioui.org/io/key"
@@ -19,7 +20,6 @@ import (
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
-	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -211,7 +211,7 @@ func (u *UI) layoutUsers(gtx layout.Context) {
 					return in.Layout(gtx, func(gtx C) D {
 						e := material.Editor(theme, u.edit2, "Hint")
 						e.TextSize = unit.Sp(14)
-						e.Font.Style = text.Italic
+						e.Font.Style = font.Italic
 						return e.Layout(gtx)
 					})
 				}),
