@@ -40,3 +40,7 @@ require (
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.23.0 // indirect
 )
+
+replace gioui.org => git.sr.ht/~whereswaldon/gio v0.0.0-20230620194146-b9ecd492b8ef
+
+replace github.com/go-text/typesetting => github.com/go-text/typesetting v0.0.0-20230620202534-0c3bf4fea317

@@ -20,7 +20,6 @@ import (
 	"gioui.org/app"
 	"gioui.org/f32"
 	"gioui.org/font"
-	"gioui.org/font/gofont"
 	"gioui.org/gpu/headless"
 	"gioui.org/io/router"
 	"gioui.org/io/system"
@@ -28,6 +27,7 @@ import (
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -97,7 +97,7 @@ func saveScreenshot(f string) error {
 		Constraints: layout.Exact(sz),
 		Queue:       new(router.Router),
 	}
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme(text.ShaperConfig{}, nil)
 	kitchen(gtx, th)
 	w.Frame(gtx.Ops)
 	img := image.NewRGBA(image.Rectangle{Max: sz})
@@ -113,7 +113,15 @@ func saveScreenshot(f string) error {
 }
 
 func loop(w *app.Window) error {
-	th := material.NewTheme(gofont.Collection())
+	shaperConfig := text.ShaperConfig{}
+	dd, err := app.DataDir()
+	if err != nil {
+		log.Printf("failed looking up app data dir, skipping OS fonts")
+	} else {
+		shaperConfig.UseSystemFonts = true
+		shaperConfig.FontCachePath = dd
+	}
+	th := material.NewTheme(shaperConfig, nil)
 
 	var ops op.Ops
 	for {
@@ -247,6 +255,7 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 		func(gtx C) D {
 			l := material.H3(th, topLabel)
 			l.State = topLabelState
+			l.Font.Typeface = "serif"
 			return l.Layout(gtx)
 		},
 		func(gtx C) D {
