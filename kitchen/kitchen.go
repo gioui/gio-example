@@ -20,6 +20,7 @@ import (
 	"gioui.org/app"
 	"gioui.org/f32"
 	"gioui.org/font"
+	"gioui.org/font/gofont"
 	"gioui.org/gpu/headless"
 	"gioui.org/io/router"
 	"gioui.org/io/system"
@@ -121,7 +122,7 @@ func loop(w *app.Window) error {
 		shaperConfig.UseSystemFonts = true
 		shaperConfig.FontCachePath = dd
 	}
-	th := material.NewTheme(shaperConfig, nil)
+	th := material.NewTheme(shaperConfig, gofont.Collection())
 
 	var ops op.Ops
 	for {
@@ -255,7 +256,6 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 		func(gtx C) D {
 			l := material.H3(th, topLabel)
 			l.State = topLabelState
-			l.Font.Typeface = "serif"
 			return l.Layout(gtx)
 		},
 		func(gtx C) D {

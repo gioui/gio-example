@@ -5,7 +5,7 @@ go 1.18
 require (
 	eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d
 	gioui.org v0.0.0-20230607224114-c6e4eecf21c3
-	gioui.org/cmd v0.0.0-20220818080936-02068d6340fc
+	gioui.org/cmd v0.0.0-20230502182008-0a86898b4184
 	gioui.org/x v0.0.0-20230609201311-f4f65e94fa90
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210311203641-62640a716d48
@@ -26,7 +26,7 @@ require (
 	github.com/akavel/rsrc v0.10.1 // indirect
 	github.com/esiqveland/notify v0.11.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
-	github.com/go-text/typesetting v0.0.0-20230602202114-9797aefac433 // indirect
+	github.com/go-text/typesetting v0.0.0-20230712171355-59e4e8ecaa7b // indirect
 	github.com/godbus/dbus/v5 v5.0.6 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
@@ -41,6 +41,4 @@ require (
 	google.golang.org/protobuf v1.23.0 // indirect
 )
 
-replace gioui.org => git.sr.ht/~whereswaldon/gio v0.0.0-20230620194146-b9ecd492b8ef
-
-replace github.com/go-text/typesetting => github.com/go-text/typesetting v0.0.0-20230620202534-0c3bf4fea317
+replace gioui.org => git.sr.ht/~whereswaldon/gio v0.0.0-20230712175454-005957660220
