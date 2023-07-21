@@ -25,6 +25,7 @@ import (
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -170,13 +171,14 @@ var (
 	ops         op.Ops
 	play, clear widget.Clickable
 	playing     = false
-	th          = material.NewTheme(gofont.Collection())
+	th          = material.NewTheme()
 	selected    image.Rectangle
 	selecting   = false
 	view        *viewport
 )
 
 func main() {
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	th.Palette.Fg, th.Palette.Bg = th.Palette.Bg, th.Palette.Fg
 	dist := distribution{}
 

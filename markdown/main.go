@@ -36,13 +36,14 @@ import (
 )
 
 func main() {
+	th := NewTheme(gofont.Collection())
 	ui := UI{
 		Window:   app.NewWindow(),
 		Renderer: markdown.NewRenderer(),
-		Shaper:   text.NewShaper(gofont.Collection()),
-		Theme:    NewTheme(gofont.Collection()),
+		Theme:    th,
 		Resize:   component.Resize{Ratio: 0.5},
 	}
+	ui.Renderer.Config.MonospaceFont.Typeface = "Go Mono"
 	go func() {
 		if err := ui.Loop(); err != nil {
 			log.Fatal(err)
@@ -64,8 +65,6 @@ type UI struct {
 	Window *app.Window
 	// Theme contains semantic style data. Extends `material.Theme`.
 	Theme *Theme
-	// Shaper cache of registered fonts.
-	Shaper *text.Shaper
 	// Renderer tranforms raw text containing markdown into richtext.
 	Renderer *markdown.Renderer
 
@@ -88,8 +87,10 @@ type Theme struct {
 
 // NewTheme instantiates a theme, extending material theme.
 func NewTheme(font []font.FontFace) *Theme {
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(font))
 	return &Theme{
-		Base: material.NewTheme(font),
+		Base: th,
 	}
 }
 
@@ -154,7 +155,7 @@ func (ui *UI) Layout(gtx C) D {
 		},
 		func(gtx C) D {
 			return layout.UniformInset(unit.Dp(4)).Layout(gtx, func(gtx C) D {
-				return richtext.Text(&ui.TextState, ui.Shaper, ui.Theme.cache...).Layout(gtx)
+				return richtext.Text(&ui.TextState, ui.Theme.Base.Shaper, ui.Theme.cache...).Layout(gtx)
 			})
 		},
 		func(gtx C) D {

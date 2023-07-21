@@ -12,6 +12,7 @@ import (
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/text"
 	"gioui.org/unit"
 
 	"gioui.org/widget"
@@ -31,7 +32,8 @@ type (
 
 func main() {
 	go func() {
-		th := material.NewTheme(gofont.Collection())
+		th := material.NewTheme()
+		th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 		n, err := notify.NewNotifier()
 		if err != nil {
 			panic(fmt.Errorf("init notification manager: %w", err))
@@ -58,9 +60,9 @@ func main() {
 						msg = txt
 					}
 					if ongoingSupported && setOngoing.Value {
-    					go notifier.(notify.OngoingNotifier).CreateOngoingNotification("Hello Gio!", msg)
+						go notifier.(notify.OngoingNotifier).CreateOngoingNotification("Hello Gio!", msg)
 					} else {
-    					go notifier.CreateNotification("Hello Gio!", msg)
+						go notifier.CreateNotification("Hello Gio!", msg)
 					}
 				}
 				layout.Center.Layout(gtx, func(gtx C) D {

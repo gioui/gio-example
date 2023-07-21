@@ -20,6 +20,7 @@ import (
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/text"
 	"gioui.org/widget/material"
 )
 
@@ -102,7 +103,8 @@ type WidgetView func(gtx layout.Context, th *material.Theme) layout.Dimensions
 func (view WidgetView) Run(w *Window) error {
 	var ops op.Ops
 
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 
 	applicationClose := w.App.Context.Done()
 	for {

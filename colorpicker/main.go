@@ -13,6 +13,7 @@ import (
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/text"
 	"gioui.org/widget/material"
 	"gioui.org/x/colorpicker"
 )
@@ -36,7 +37,8 @@ type (
 var white = color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xff}
 
 func loop(w *app.Window) error {
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	background := white
 	current := color.NRGBA{R: 255, G: 128, B: 75, A: 255}
 	picker := colorpicker.State{}
@@ -62,22 +64,24 @@ func loop(w *app.Window) error {
 		e := <-w.Events()
 		switch e := e.(type) {
 		case system.DestroyEvent:
-			log.Println("destroyed")
 			return e.Err
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, e)
 			if muxState.Changed() {
 				background = *muxState.Color()
-				log.Printf("mux changed")
 			}
 			if picker.Changed() {
 				current = picker.Color()
 				background = *muxState.Color()
-				log.Printf("picker changed")
 			}
 			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					return colorpicker.PickerStyle{Label: "Current", Theme: th, State: &picker}.Layout(gtx)
+					return colorpicker.PickerStyle{
+						Label:         "Current",
+						Theme:         th,
+						State:         &picker,
+						MonospaceFace: "Go Mono",
+					}.Layout(gtx)
 				}),
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 					return layout.Flex{}.Layout(gtx,

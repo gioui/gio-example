@@ -6,11 +6,13 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"gioui.org/app"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 
@@ -26,12 +28,14 @@ func main() {
 		if err := loop(w); err != nil {
 			log.Fatal(err)
 		}
+		os.Exit(0)
 	}()
 	app.Main()
 }
 
 func loop(w *app.Window) error {
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	btn := widget.Clickable{}
 	buzzer = haptic.NewBuzzer(w)
 	var ops op.Ops

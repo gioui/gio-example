@@ -11,17 +11,12 @@ import (
 	"os"
 
 	"gioui.org/app"
-	"gioui.org/font"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
-
-	nsareg "eliasnaur.com/font/noto/sans/arabic/regular"
-	"eliasnaur.com/font/roboto/robotoregular"
-	"gioui.org/font/opentype"
 )
 
 func main() {
@@ -41,12 +36,7 @@ type (
 )
 
 func loop(w *app.Window) error {
-	arabicFace, _ := opentype.Parse(nsareg.TTF)
-	englishFace, _ := opentype.Parse(robotoregular.TTF)
-	collection := []font.FontFace{}
-	collection = append(collection, font.FontFace{Font: font.Font{Typeface: "Latin"}, Face: englishFace})
-	collection = append(collection, font.FontFace{Font: font.Font{Typeface: "Arabic"}, Face: arabicFace})
-	th := material.NewTheme(collection)
+	th := material.NewTheme()
 	var ed widget.Editor
 	txt := "Hello أهلا my good friend صديقي الجيد bidirectional text نص ثنائي الاتجاه."
 	ed.SetText(txt)

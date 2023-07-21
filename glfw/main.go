@@ -28,6 +28,7 @@ import (
 	"gioui.org/io/router"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -91,7 +92,8 @@ func main() {
 
 	var queue router.Router
 	var ops op.Ops
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	gpuCtx, err := gpu.New(gpu.OpenGL{ES: !desktopGL, Shared: true})
 	if err != nil {
 		log.Fatal(err)

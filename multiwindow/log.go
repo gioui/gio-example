@@ -9,6 +9,7 @@ import (
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 )
@@ -45,7 +46,8 @@ func (log *Log) Printf(format string, args ...interface{}) {
 func (log *Log) Run(w *Window) error {
 	var ops op.Ops
 
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 
 	applicationClose := w.App.Context.Done()
 	for {

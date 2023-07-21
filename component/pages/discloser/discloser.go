@@ -115,7 +115,7 @@ func (p *Page) LayoutCustomDiscloser(gtx C, th *material.Theme) D {
 			if p.CustomDiscloserState.Visible() {
 				l.Text = "-"
 			}
-			l.Font.Variant = "Mono"
+			l.Font.Typeface = "Go Mono"
 			return layout.UniformInset(unit.Dp(2)).Layout(gtx, l.Layout)
 		},
 		material.Body1(th, "Custom Control").Layout,

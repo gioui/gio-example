@@ -12,6 +12,7 @@ import (
 	"gioui.org/layout"      // layout is used for layouting widgets.
 	"gioui.org/op"          // op is used for recording different operations.
 	"gioui.org/op/clip"
+	"gioui.org/text"
 	"gioui.org/unit"            // unit is used to define pixel-independent sizes
 	"gioui.org/widget"          // widget contains state handling for widgets.
 	"gioui.org/widget/material" // material contains material design widgets.
@@ -57,7 +58,8 @@ type UI struct {
 // NewUI creates a new UI using the Go Fonts.
 func NewUI() *UI {
 	ui := &UI{}
-	ui.Theme = material.NewTheme(gofont.Collection())
+	ui.Theme = material.NewTheme()
+	ui.Theme.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 
 	// start with reasonable defaults.
 	ui.Timer = NewTimer(5 * time.Second)

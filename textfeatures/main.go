@@ -14,6 +14,7 @@ import (
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 
@@ -41,13 +42,14 @@ func loop(w *app.Window) error {
 	if err != nil {
 		panic(err)
 	}
-	th := material.NewTheme(append(collection, faces...))
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(append(collection, faces...)))
 	var ops op.Ops
 	var sel widget.Selectable
 	message := "🥳🧁🍰🎁🎂🎈🎺🎉🎊\n📧〽️🧿🌶️🔋\n😂❤️😍🤣😊\n🥺🙏💕😭😘\n👍😅👏"
 	var customTruncator widget.Bool
 	var maxLines widget.Float
-	maxLines.Value = 1
+	maxLines.Value = 3
 
 	const (
 		minLinesRange = 1

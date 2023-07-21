@@ -10,13 +10,12 @@ import (
 	"os"
 
 	"gioui.org/app"
+	"gioui.org/font/gofont"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/text"
 	"gioui.org/widget/material"
-
-	"gioui.org/font/gofont"
 )
 
 func main() {
@@ -31,7 +30,8 @@ func main() {
 }
 
 func loop(w *app.Window) error {
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	var ops op.Ops
 	for {
 		e := <-w.Events()

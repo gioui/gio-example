@@ -20,6 +20,7 @@ import (
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -69,7 +70,8 @@ type (
 )
 
 func init() {
-	theme = material.NewTheme(gofont.Collection())
+	theme = material.NewTheme()
+	theme.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	theme.Palette.Fg = rgb(0x333333)
 }
 
@@ -127,7 +129,7 @@ func (u *UI) layoutTimings(gtx layout.Context) {
 		return layout.Inset{Top: unit.Dp(16)}.Layout(gtx, func(gtx C) D {
 			txt := fmt.Sprintf("m: %d %s", mallocs, u.profile.Timings)
 			lbl := material.Caption(theme, txt)
-			lbl.Font.Variant = "Mono"
+			lbl.Font.Typeface = "Go Mono"
 			return lbl.Layout(gtx)
 		})
 	})

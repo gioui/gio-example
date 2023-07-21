@@ -19,6 +19,7 @@ import (
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
+	"gioui.org/text"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
 
@@ -54,7 +55,8 @@ type ImageResult struct {
 func loop(w *app.Window) error {
 	expl := explorer.NewExplorer(w)
 	var openBtn, saveBtn widget.Clickable
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	imgChan := make(chan ImageResult)
 	saveChan := make(chan error)
 	var img ImageResult

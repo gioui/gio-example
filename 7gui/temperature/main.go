@@ -1,6 +1,7 @@
 package main
 
 import (
+	"image"
 	"image/color"
 	"log"
 	"os"
@@ -13,6 +14,7 @@ import (
 	"gioui.org/layout"      // layout is used for layouting widgets.
 	"gioui.org/op"          // op is used for recording different operations.
 	"gioui.org/op/clip"
+	"gioui.org/text"
 	"gioui.org/unit"            // unit is used to define pixel-independent sizes
 	"gioui.org/widget"          // widget contains state handling for widgets.
 	"gioui.org/widget/material" // material contains material design widgets.
@@ -56,7 +58,8 @@ type UI struct {
 // NewUI creates a new UI using the Go Fonts.
 func NewUI() *UI {
 	ui := &UI{}
-	ui.Theme = material.NewTheme(gofont.Collection())
+	ui.Theme = material.NewTheme()
+	ui.Theme.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 
 	ui.Converter.Init()
 	return ui
@@ -130,7 +133,9 @@ func (conv *Converter) Init() {
 // Layout lays out the editors.
 func (conv *Converter) Layout(th *material.Theme, gtx layout.Context) layout.Dimensions {
 	// We use an empty widget to add spacing between widgets.
-	spacer := layout.Rigid(layout.Spacer{Width: defaultMargin}.Layout)
+	spacer := layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+		return layout.Dimensions{Size: image.Pt(gtx.Dp(defaultMargin), 0)}
+	})
 
 	// check whether the celsius value has changed.
 	if conv.Celsius.Changed() {
@@ -155,8 +160,7 @@ func (conv *Converter) Layout(th *material.Theme, gtx layout.Context) layout.Dim
 		}
 	}
 
-	// TODO: use proper baseline alignment.
-	return layout.Flex{}.Layout(gtx,
+	return layout.Flex{Alignment: layout.Baseline}.Layout(gtx,
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 			return conv.Celsius.Layout(th, gtx)
 		}),

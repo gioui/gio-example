@@ -15,6 +15,7 @@ import (
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -91,12 +92,13 @@ var (
 
 func newUI() *UI {
 	ui := &UI{
-		theme: material.NewTheme(gofont.Collection()),
+		theme: material.NewTheme(),
 		list: layout.List{
 			Axis:      layout.Horizontal,
 			Alignment: layout.Baseline,
 		},
 	}
+	ui.theme.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	ui.tabs = append(ui.tabs,
 		uiTab{
 			name: "V wrap",

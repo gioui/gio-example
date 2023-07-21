@@ -55,7 +55,8 @@ func max(a, b int) int {
 }
 
 func loop(w *app.Window) error {
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	var (
 		ops  op.Ops
 		grid component.GridState
@@ -112,7 +113,7 @@ func layoutTable(th *material.Theme, gtx C, timings []FrameTiming, grid *compone
 
 	// Configure a label styled to be a data element.
 	dataLabel := material.Body1(th, "")
-	dataLabel.Font.Variant = "Mono"
+	dataLabel.Font.Typeface = "Go Mono"
 	dataLabel.MaxLines = 1
 	dataLabel.Alignment = text.End
 

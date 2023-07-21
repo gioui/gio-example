@@ -28,6 +28,7 @@ import (
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
+	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -97,7 +98,8 @@ func saveScreenshot(f string) error {
 		Constraints: layout.Exact(sz),
 		Queue:       new(router.Router),
 	}
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	kitchen(gtx, th)
 	w.Frame(gtx.Ops)
 	img := image.NewRGBA(image.Rectangle{Max: sz})
@@ -113,7 +115,8 @@ func saveScreenshot(f string) error {
 }
 
 func loop(w *app.Window) error {
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 
 	var ops op.Ops
 	for {

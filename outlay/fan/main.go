@@ -15,6 +15,7 @@ import (
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/text"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
@@ -58,7 +59,8 @@ func genCards(th *material.Theme) []boring.HoverCard {
 }
 
 func loop(w *app.Window) error {
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	fan := outlay.Fan{
 		Animation: outlay.Animation{
 			Duration: time.Second / 4,
@@ -99,7 +101,7 @@ func loop(w *app.Window) error {
 			}
 			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 				layout.Rigid(func(gtx C) D {
-					return layout.Flex{}.Layout(gtx,
+					return layout.Flex{Alignment: layout.Middle}.Layout(gtx,
 						layout.Rigid(func(gtx C) D {
 							return material.Body1(th, "1").Layout(gtx)
 						}),
@@ -112,7 +114,7 @@ func loop(w *app.Window) error {
 					)
 				}),
 				layout.Rigid(func(gtx C) D {
-					return layout.Flex{}.Layout(gtx,
+					return layout.Flex{Alignment: layout.Middle}.Layout(gtx,
 						layout.Rigid(func(gtx C) D {
 							return material.Body1(th, "width 0").Layout(gtx)
 						}),
@@ -125,7 +127,7 @@ func loop(w *app.Window) error {
 					)
 				}),
 				layout.Rigid(func(gtx C) D {
-					return layout.Flex{}.Layout(gtx,
+					return layout.Flex{Alignment: layout.Middle}.Layout(gtx,
 						layout.Rigid(func(gtx C) D {
 							return material.Body1(th, "offset 0").Layout(gtx)
 						}),
@@ -138,7 +140,7 @@ func loop(w *app.Window) error {
 					)
 				}),
 				layout.Rigid(func(gtx C) D {
-					return layout.Flex{}.Layout(gtx,
+					return layout.Flex{Alignment: layout.Middle}.Layout(gtx,
 						layout.Rigid(func(gtx C) D {
 							return material.CheckBox(th, &useRadius, "use").Layout(gtx)
 						}),
