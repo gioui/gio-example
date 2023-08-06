@@ -12,6 +12,7 @@ import (
 	"gioui.org/gpu/headless"
 	"gioui.org/layout"
 	"gioui.org/op"
+	"gioui.org/text"
 	"gioui.org/widget/material"
 )
 
@@ -24,7 +25,8 @@ func BenchmarkUI_All(b *testing.B) {
 }
 
 func benchmarkUI(b *testing.B, transform transformation) {
-	th := material.NewTheme(gofont.Collection())
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 
 	w, err := headless.NewWindow(800, 600)
 	if err != nil {
