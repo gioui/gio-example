@@ -5,6 +5,7 @@
 package main
 
 import (
+	"fmt"
 	"image/color"
 	"log"
 	"os"
@@ -64,7 +65,10 @@ func loop(w *app.Window) error {
 			paint.ColorOp{Color: color.NRGBA{A: 0xff, G: 0xff}}.Add(gtx.Ops)
 			paint.PaintOp{}.Add(gtx.Ops)
 			layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return material.Button(th, &b, "Toggle decorations").Layout(gtx)
+				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+					layout.Rigid(material.Button(th, &b, "Toggle decorations").Layout),
+					layout.Rigid(material.Body1(th, fmt.Sprintf("Decorated: %v", decorated)).Layout),
+				)
 			})
 			cl.Pop()
 			if !decorated {
