@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d
-	gioui.org v0.3.0
+	gioui.org v0.3.1-0.20231002234818-b66dcc436c65
 	gioui.org/cmd v0.0.0-20220818080936-02068d6340fc
 	gioui.org/x v0.3.0
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
@@ -20,7 +20,7 @@ require (
 
 require (
 	gioui.org/cpu v0.0.0-20210817075930-8d6a761490d2 // indirect
-	gioui.org/shader v1.0.6 // indirect
+	gioui.org/shader v1.0.8 // indirect
 	git.sr.ht/~jackmordaunt/go-toast v1.0.0 // indirect
 	git.wow.st/gmp/jni v0.0.0-20210610011705-34026c7e22d0 // indirect
 	github.com/akavel/rsrc v0.10.1 // indirect
@@ -30,6 +30,8 @@ require (
 	github.com/godbus/dbus/v5 v5.0.6 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
+	github.com/shurcooL/go v0.0.0-20200502201357-93f07166e636 // indirect
+	github.com/shurcooL/go-goon v1.0.0 // indirect
 	github.com/yuin/goldmark v1.4.13 // indirect
 	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/net v0.6.0 // indirect
