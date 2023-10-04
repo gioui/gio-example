@@ -4,14 +4,14 @@ go 1.18
 
 require (
 	eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d
-	gioui.org v0.3.1-0.20231002234818-b66dcc436c65
+	gioui.org v0.3.1
 	gioui.org/cmd v0.0.0-20220818080936-02068d6340fc
-	gioui.org/x v0.3.0
+	gioui.org/x v0.3.1
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210311203641-62640a716d48
 	github.com/google/go-github/v24 v24.0.1
 	github.com/inkeliz/giohyperlink v0.0.0-20220903215451-2ac5d54abdce
-	golang.org/x/exp v0.0.0-20221012211006-4de253d81b95
+	golang.org/x/exp v0.0.0-20230905200255-921286631fa9
 	golang.org/x/exp/shiny v0.0.0-20220906200021-fcb1a314c389
 	golang.org/x/image v0.7.0
 	golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be
@@ -30,15 +30,13 @@ require (
 	github.com/godbus/dbus/v5 v5.0.6 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
-	github.com/shurcooL/go v0.0.0-20200502201357-93f07166e636 // indirect
-	github.com/shurcooL/go-goon v1.0.0 // indirect
 	github.com/yuin/goldmark v1.4.13 // indirect
-	golang.org/x/mod v0.8.0 // indirect
-	golang.org/x/net v0.6.0 // indirect
-	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
-	golang.org/x/tools v0.6.0 // indirect
+	golang.org/x/mod v0.12.0 // indirect
+	golang.org/x/net v0.15.0 // indirect
+	golang.org/x/sync v0.3.0 // indirect
+	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
+	golang.org/x/tools v0.13.0 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.23.0 // indirect
 )
