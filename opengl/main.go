@@ -124,7 +124,8 @@ func loop(w *app.Window) error {
 	}
 	// eglMakeCurrent binds a context to an operating system thread. Prevent Go from switching thread.
 	runtime.LockOSThread()
-	for e := range w.Events() {
+	for {
+		e := w.NextEvent()
 		switch e := e.(type) {
 		case app.ViewEvent:
 			ve = e
@@ -146,7 +147,7 @@ func loop(w *app.Window) error {
 			gtx := layout.NewContext(&ops, e)
 			// Catch pointer events not hitting UI.
 			types := pointer.Move | pointer.Press | pointer.Release
-			pointer.InputOp{Tag: w, Types: types}.Add(gtx.Ops)
+			pointer.InputOp{Tag: w, Kinds: types}.Add(gtx.Ops)
 			for _, e := range gtx.Events(w) {
 				log.Println("Event:", e)
 			}
@@ -165,7 +166,7 @@ func loop(w *app.Window) error {
 				log.Fatal(fmt.Errorf("swap failed: %v", C.eglGetError()))
 			}
 
-			if btnScreenshot.Clicked() {
+			if btnScreenshot.Clicked(gtx) {
 				if err := screenshot(gioCtx, e.Size, gtx.Ops); err != nil {
 					log.Fatal(err)
 				}
@@ -175,7 +176,6 @@ func loop(w *app.Window) error {
 			e.Frame(gtx.Ops)
 		}
 	}
-	return nil
 }
 
 func screenshot(ctx gpu.GPU, size image.Point, ops *op.Ops) error {

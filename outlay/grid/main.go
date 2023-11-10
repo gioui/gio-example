@@ -41,7 +41,8 @@ func loop(w *app.Window) error {
 	ui := newUI()
 
 	var ops op.Ops
-	for e := range w.Events() {
+	for {
+		e := w.NextEvent()
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
@@ -155,7 +156,7 @@ func newUI() *UI {
 
 func (ui *UI) Layout(gtx layout.Context) layout.Dimensions {
 	for i := range ui.tabs {
-		for ui.tabs[i].click.Clicked() {
+		for ui.tabs[i].click.Clicked(gtx) {
 			ui.active = i
 		}
 	}

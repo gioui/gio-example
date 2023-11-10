@@ -71,7 +71,7 @@ If you like this library and work like it, please consider sponsoring Elias and/
 				return alo.DetailRow{}.Layout(gtx,
 					material.Body1(th, "Elias Naur can be sponsored on GitHub at "+sponsorEliasURL).Layout,
 					func(gtx C) D {
-						if p.eliasCopyButton.Clicked() {
+						if p.eliasCopyButton.Clicked(gtx) {
 							clipboard.WriteOp{
 								Text: sponsorEliasURL,
 							}.Add(gtx.Ops)
@@ -84,10 +84,10 @@ If you like this library and work like it, please consider sponsoring Elias and/
 					material.Body1(th, "Chris Waldon can be sponsored on GitHub at "+sponsorChrisURLGitHub+" and on Liberapay at "+sponsorChrisURLLiberapay).Layout,
 
 					func(gtx C) D {
-						if p.chrisCopyButtonGH.Clicked() {
+						if p.chrisCopyButtonGH.Clicked(gtx) {
 							clipboard.WriteOp{Text: sponsorChrisURLGitHub}.Add(gtx.Ops)
 						}
-						if p.chrisCopyButtonLP.Clicked() {
+						if p.chrisCopyButtonLP.Clicked(gtx) {
 							clipboard.WriteOp{Text: sponsorChrisURLLiberapay}.Add(gtx.Ops)
 						}
 						return alo.DefaultInset.Layout(gtx, func(gtx C) D {

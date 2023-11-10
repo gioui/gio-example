@@ -15,6 +15,7 @@ import (
 	"os"
 
 	"gioui.org/app"
+	"gioui.org/io/event"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -59,6 +60,20 @@ func loop(w *app.Window) error {
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	imgChan := make(chan ImageResult)
 	saveChan := make(chan error)
+
+	events := make(chan event.Event)
+	acks := make(chan struct{})
+
+	go func() {
+		for {
+			ev := w.NextEvent()
+			events <- ev
+			<-acks
+			if _, ok := ev.(system.DestroyEvent); ok {
+				return
+			}
+		}
+	}()
 	var img ImageResult
 	var saveErr error
 	var ops op.Ops
@@ -68,14 +83,15 @@ func loop(w *app.Window) error {
 			w.Invalidate()
 		case saveErr = <-saveChan:
 			w.Invalidate()
-		case e := <-w.Events():
+		case e := <-events:
 			expl.ListenEvents(e)
 			switch e := e.(type) {
 			case system.DestroyEvent:
+				acks <- struct{}{}
 				return e.Err
 			case system.FrameEvent:
 				gtx := layout.NewContext(&ops, e)
-				if openBtn.Clicked() {
+				if openBtn.Clicked(gtx) {
 					go func() {
 						file, err := expl.ChooseFile("png", "jpeg", "jpg")
 						if err != nil {
@@ -93,7 +109,7 @@ func loop(w *app.Window) error {
 						imgChan <- ImageResult{Image: imgData, Format: format}
 					}()
 				}
-				if saveBtn.Clicked() {
+				if saveBtn.Clicked(gtx) {
 					go func(img ImageResult) {
 						if img.Error != nil {
 							saveChan <- fmt.Errorf("no image loaded, cannot save")
@@ -155,6 +171,7 @@ func loop(w *app.Window) error {
 				)
 				e.Frame(gtx.Ops)
 			}
+			acks <- struct{}{}
 		}
 	}
 }

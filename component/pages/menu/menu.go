@@ -114,13 +114,13 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 			},
 		}
 	}
-	if p.redButton.Clicked() {
+	if p.redButton.Clicked(gtx) {
 		p.leftFillColor = color.NRGBA{R: 200, A: 255}
 	}
-	if p.greenButton.Clicked() {
+	if p.greenButton.Clicked(gtx) {
 		p.leftFillColor = color.NRGBA{G: 200, A: 255}
 	}
-	if p.blueButton.Clicked() {
+	if p.blueButton.Clicked(gtx) {
 		p.leftFillColor = color.NRGBA{B: 200, A: 255}
 	}
 	return layout.Flex{}.Layout(gtx,

@@ -64,7 +64,7 @@ The controls below allow you to see the various features available in our Naviga
 				return alo.DetailRow{}.Layout(gtx,
 					material.Body1(th, "Use non-modal drawer").Layout,
 					func(gtx C) D {
-						if p.nonModalDrawer.Changed() {
+						if p.nonModalDrawer.Update(gtx) {
 							p.Router.NonModalDrawer = p.nonModalDrawer.Value
 							if p.nonModalDrawer.Value {
 								p.Router.NavAnim.Appear(gtx.Now)

@@ -138,8 +138,8 @@ func (u *UI) layoutTimings(gtx layout.Context) {
 func (u *UI) Layout(gtx layout.Context) {
 	for i := range u.userClicks {
 		click := &u.userClicks[i]
-		for _, e := range click.Events(gtx) {
-			if e.Type == gesture.TypeClick {
+		for _, e := range click.Update(gtx) {
+			if e.Kind == gesture.KindClick {
 				u.selectedUser = u.newUserPage(u.users[i])
 			}
 		}
@@ -242,7 +242,7 @@ func (u *UI) layoutUsers(gtx layout.Context) {
 		layout.Stacked(func(gtx C) D {
 			in := layout.UniformInset(unit.Dp(16))
 			return in.Layout(gtx, func(gtx C) D {
-				for u.fab.Clicked() {
+				for u.fab.Clicked(gtx) {
 				}
 				return material.IconButton(theme, u.fab, u.fabIcon, "Floating Action Button Example").Layout(gtx)
 			})

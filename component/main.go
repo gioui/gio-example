@@ -52,16 +52,14 @@ func loop(w *app.Window) error {
 	router.Register(5, about.New(&router))
 
 	for {
-		select {
-		case e := <-w.Events():
-			switch e := e.(type) {
-			case system.DestroyEvent:
-				return e.Err
-			case system.FrameEvent:
-				gtx := layout.NewContext(&ops, e)
-				router.Layout(gtx, th)
-				e.Frame(gtx.Ops)
-			}
+		e := w.NextEvent()
+		switch e := e.(type) {
+		case system.DestroyEvent:
+			return e.Err
+		case system.FrameEvent:
+			gtx := layout.NewContext(&ops, e)
+			router.Layout(gtx, th)
+			e.Frame(gtx.Ops)
 		}
 	}
 }

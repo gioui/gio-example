@@ -98,7 +98,7 @@ func NewTheme(font []font.FontFace) *Theme {
 func (ui UI) Loop() error {
 	var ops op.Ops
 	for {
-		e := <-ui.Window.Events()
+		e := ui.Window.NextEvent()
 		giohyperlink.ListenEvents(e)
 		switch e := e.(type) {
 		case system.DestroyEvent:

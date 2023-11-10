@@ -66,7 +66,7 @@ func loop(w *app.Window) error {
 	frameCounter := 0
 	timingStart := time.Time{}
 	for {
-		e := <-w.Events()
+		e := w.NextEvent()
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err

@@ -7,10 +7,11 @@ import (
 
 	"gioui.org/app"         // app contains Window handling.
 	"gioui.org/font/gofont" // gofont is used for loading the default font.
-	"gioui.org/io/key"      // key is used for keyboard events.
-	"gioui.org/io/system"   // system is used for system events (e.g. closing the window).
-	"gioui.org/layout"      // layout is used for layouting widgets.
-	"gioui.org/op"          // op is used for recording different operations.
+	"gioui.org/io/event"
+	"gioui.org/io/key"    // key is used for keyboard events.
+	"gioui.org/io/system" // system is used for system events (e.g. closing the window).
+	"gioui.org/layout"    // layout is used for layouting widgets.
+	"gioui.org/op"        // op is used for recording different operations.
 	"gioui.org/op/clip"
 	"gioui.org/text"
 	"gioui.org/unit"            // unit is used to define pixel-independent sizes
@@ -63,7 +64,7 @@ func NewUI() *UI {
 
 	// start with reasonable defaults.
 	ui.Timer = NewTimer(5 * time.Second)
-	ui.duration.Value = 5
+	ui.duration.Value = .5
 
 	return ui
 }
@@ -75,6 +76,19 @@ func (ui *UI) Run(w *app.Window) error {
 	closeTimer := ui.Timer.Start()
 	defer closeTimer()
 
+	events := make(chan event.Event)
+	acks := make(chan struct{})
+	go func() {
+		for {
+			ev := w.NextEvent()
+			events <- ev
+			<-acks
+			if _, ok := ev.(system.DestroyEvent); ok {
+				return
+			}
+		}
+	}()
+
 	var ops op.Ops
 	for {
 		select {
@@ -82,7 +96,7 @@ func (ui *UI) Run(w *app.Window) error {
 		case <-ui.Timer.Updated:
 			w.Invalidate()
 
-		case e := <-w.Events():
+		case e := <-events:
 			// detect the type of the event.
 			switch e := e.(type) {
 			// this is sent when the application should re-render.
@@ -113,8 +127,10 @@ func (ui *UI) Run(w *app.Window) error {
 
 			// this is sent when the application is closed.
 			case system.DestroyEvent:
+				acks <- struct{}{}
 				return e.Err
 			}
+			acks <- struct{}{}
 		}
 	}
 }
@@ -124,12 +140,12 @@ func (ui *UI) Layout(gtx layout.Context) layout.Dimensions {
 	th := ui.Theme
 
 	// check whether the reset button was clicked.
-	if ui.reset.Clicked() {
+	if ui.reset.Clicked(gtx) {
 		ui.Timer.Reset()
 	}
 	// check whether the slider value has changed.
-	if ui.duration.Changed() {
-		ui.Timer.SetDuration(secondsToDuration(float64(ui.duration.Value)))
+	if ui.duration.Update(gtx) {
+		ui.Timer.SetDuration(secondsToDuration(float64(ui.duration.Value) * 15))
 	}
 
 	// get the latest information about the timer.
@@ -151,7 +167,7 @@ func (ui *UI) Layout(gtx layout.Context) layout.Dimensions {
 
 			layout.Rigid(layout.Spacer{Height: unit.Dp(8)}.Layout),
 			layout.Rigid(material.Body1(th, "Duration").Layout),
-			layout.Rigid(material.Slider(th, &ui.duration, 0, 15).Layout),
+			layout.Rigid(material.Slider(th, &ui.duration).Layout),
 
 			layout.Rigid(layout.Spacer{Height: unit.Dp(8)}.Layout),
 			layout.Rigid(material.Button(th, &ui.reset, "Reset").Layout),

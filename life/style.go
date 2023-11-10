@@ -38,7 +38,7 @@ func (board BoardStyle) Layout(gtx layout.Context) layout.Dimensions {
 	}
 	// Register to listen for pointer Drag events.
 	pr := clip.Rect(image.Rectangle{Max: size}).Push(gtx.Ops)
-	pointer.InputOp{Tag: board.Board, Types: pointer.Drag}.Add(gtx.Ops)
+	pointer.InputOp{Tag: board.Board, Kinds: pointer.Drag}.Add(gtx.Ops)
 	pr.Pop()
 
 	cellSize := float32(board.CellSizePx)

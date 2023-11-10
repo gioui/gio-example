@@ -70,7 +70,8 @@ func (ui *UI) Run(w *app.Window) error {
 	var ops op.Ops
 
 	// listen for events happening on the window.
-	for e := range w.Events() {
+	for {
+		e := w.NextEvent()
 		// detect the type of the event.
 		switch e := e.(type) {
 		// this is sent when the application should re-render.
@@ -104,8 +105,6 @@ func (ui *UI) Run(w *app.Window) error {
 			return e.Err
 		}
 	}
-
-	return nil
 }
 
 // Layout displays the main program layout.

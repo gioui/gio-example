@@ -38,27 +38,28 @@ func loop(w *app.Window) error {
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	btn := widget.Clickable{}
 	buzzer = haptic.NewBuzzer(w)
-	var ops op.Ops
-	for {
-		select {
-		case e := <-w.Events():
-			switch e := e.(type) {
-			case system.DestroyEvent:
-				return e.Err
-			case system.FrameEvent:
-				if btn.Clicked() {
-					buzzer.Buzz()
-				}
-				gtx := layout.NewContext(&ops, e)
-				layout.Center.Layout(gtx, material.Button(th, &btn, "buzz").Layout)
-				e.Frame(gtx.Ops)
-			default:
-				ProcessPlatformEvent(e)
-			}
-		case err := <-buzzer.Errors():
+	go func() {
+		for err := range buzzer.Errors() {
 			if err != nil {
 				log.Printf("buzzer error: %v", err)
 			}
+		}
+	}()
+	var ops op.Ops
+	for {
+		e := w.NextEvent()
+		switch e := e.(type) {
+		case system.DestroyEvent:
+			return e.Err
+		case system.FrameEvent:
+			gtx := layout.NewContext(&ops, e)
+			if btn.Clicked(gtx) {
+				buzzer.Buzz()
+			}
+			layout.Center.Layout(gtx, material.Button(th, &btn, "buzz").Layout)
+			e.Frame(gtx.Ops)
+		default:
+			ProcessPlatformEvent(e)
 		}
 	}
 }

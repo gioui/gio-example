@@ -61,13 +61,13 @@ func loop(w *app.Window) error {
 	background = *muxState.Color()
 	var ops op.Ops
 	for {
-		e := <-w.Events()
+		e := w.NextEvent()
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, e)
-			if muxState.Changed() {
+			if muxState.Update(gtx) {
 				background = *muxState.Color()
 			}
 			if picker.Changed() {

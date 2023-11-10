@@ -49,14 +49,14 @@ func loop(w *app.Window) error {
 	message := "🥳🧁🍰🎁🎂🎈🎺🎉🎊\n📧〽️🧿🌶️🔋\n😂❤️😍🤣😊\n🥺🙏💕😭😘\n👍😅👏"
 	var customTruncator widget.Bool
 	var maxLines widget.Float
-	maxLines.Value = 3
+	maxLines.Value = 0
 
 	const (
 		minLinesRange = 1
 		maxLinesRange = 5
 	)
 	for {
-		e := <-w.Events()
+		e := w.NextEvent()
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
@@ -71,7 +71,7 @@ func loop(w *app.Window) error {
 					} else {
 						l.Truncator = ""
 					}
-					l.MaxLines = int(math.Round(float64(maxLines.Value)))
+					l.MaxLines = minLinesRange + int(math.Round(float64(maxLines.Value)*(maxLinesRange-minLinesRange)))
 					l.State = &sel
 					return inset.Layout(gtx, l.Layout)
 				}),
@@ -92,7 +92,7 @@ func loop(w *app.Window) error {
 						return layout.Flex{Alignment: layout.Middle}.Layout(gtx,
 							layout.Rigid(material.Body2(th, strconv.Itoa(minLinesRange)).Layout),
 							layout.Rigid(layout.Spacer{Width: 5}.Layout),
-							layout.Flexed(1, material.Slider(th, &maxLines, minLinesRange, maxLinesRange).Layout),
+							layout.Flexed(1, material.Slider(th, &maxLines).Layout),
 							layout.Rigid(layout.Spacer{Width: 5}.Layout),
 							layout.Rigid(material.Body2(th, strconv.Itoa(maxLinesRange)).Layout),
 						)

@@ -129,7 +129,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 				return alo.DefaultInset.Layout(gtx, material.Body2(th, "Can have a character counter and help text.").Layout)
 			}),
 			layout.Rigid(func(gtx C) D {
-				if p.inputAlignmentEnum.Changed() {
+				if p.inputAlignmentEnum.Update(gtx) {
 					switch p.inputAlignmentEnum.Value {
 					case layout.Start.String():
 						p.inputAlignment = text.Start

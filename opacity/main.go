@@ -43,7 +43,7 @@ type opacityViewStyle struct {
 
 func opacityView(th *material.Theme, state *widget.Float) opacityViewStyle {
 	return opacityViewStyle{
-		slider:  material.Slider(th, state, 0, 1),
+		slider:  material.Slider(th, state),
 		padding: layout.UniformInset(12),
 		value:   material.Body1(th, fmt.Sprintf("%.2f", state.Value)),
 	}
@@ -79,7 +79,7 @@ func loop(w *app.Window) error {
 	outer.Value = .75
 	inner.Value = .5
 	for {
-		e := <-w.Events()
+		e := w.NextEvent()
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
@@ -88,7 +88,6 @@ func loop(w *app.Window) error {
 			opacityView(th, &outer).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 				return opacityView(th, &inner).Layout(gtx,
 					func(gtx layout.Context) layout.Dimensions {
-						//						return material.H1(th, "Hello").Layout(gtx)
 						return material.Loader(th).Layout(gtx)
 					})
 			})

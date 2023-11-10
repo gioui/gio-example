@@ -2,6 +2,8 @@ eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d h1:ARo7NCVvN2NdhLlJE9xAbKw
 eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d/go.mod h1:OYVuxibdk9OSLX8vAqydtRPP87PyTFcT9uH3MlEGBQA=
 gioui.org v0.3.1 h1:hslYkrkIWvx28Mxe3A87opl+8s9mnWsnWmPDh11+zco=
 gioui.org v0.3.1/go.mod h1:2atiYR4upH71/6ehnh6XsUELa7JZOrOHHNMDxGBZF0Q=
+gioui.org v0.3.2-0.20231110211756-c8801fe23370 h1:Ziubo6lzhYNYAiUNTnhCW0k9MG1KigOo2rVt5yhQadU=
+gioui.org v0.3.2-0.20231110211756-c8801fe23370/go.mod h1:2atiYR4upH71/6ehnh6XsUELa7JZOrOHHNMDxGBZF0Q=
 gioui.org/cmd v0.0.0-20220818080936-02068d6340fc h1:KfVMY8YBF6OBlkw2WgCySAilfsyjtPtZaWaBAKSofo8=
 gioui.org/cmd v0.0.0-20220818080936-02068d6340fc/go.mod h1:sOPHaz5lc8CQuJqPyX/YTFdcs5+XKNXXa03qxFIln6w=
 gioui.org/cpu v0.0.0-20210808092351-bfe733dd3334/go.mod h1:A8M0Cn5o+vY5LTMlnRoK3O5kG+rH0kWfJjeKd9QpBmQ=
@@ -15,6 +17,8 @@ gioui.org/x v0.3.2-0.20231016120800-a4eb92dc2fbc h1:uIvTWsv9ESVXNzW2AcnHVaUgodlz
 gioui.org/x v0.3.2-0.20231016120800-a4eb92dc2fbc/go.mod h1:RH5KfSS6NkQEYPxNX2uBPxuklKey96Pt3bQHf0/VBLQ=
 gioui.org/x v0.3.2 h1:bvrXyuKE+389UEJ6XKjmaK+WUt+jIW6s1gvi8dxqox4=
 gioui.org/x v0.3.2/go.mod h1:RH5KfSS6NkQEYPxNX2uBPxuklKey96Pt3bQHf0/VBLQ=
+gioui.org/x v0.3.3-0.20231110213423-e2613e1d936c h1:rBxfP6df0ETPRaLLHJncYQcmDkTA5EuJQWQpUYP2Emo=
+gioui.org/x v0.3.3-0.20231110213423-e2613e1d936c/go.mod h1:HDHadJuP55GoOjSzxWzO7u7lMMkS7xKk0g/nps6Y/Kg=
 git.sr.ht/~jackmordaunt/go-toast v1.0.0 h1:bbRox6VkotdOj3QcWimZQ84APoszIsA/pSIj8ypDdV8=
 git.sr.ht/~jackmordaunt/go-toast v1.0.0/go.mod h1:aIuRX/HdBOz7yRS8rOVYQCwJQlFS7DbYBTpUV0SHeeg=
 git.wow.st/gmp/jni v0.0.0-20210610011705-34026c7e22d0 h1:bGG/g4ypjrCJoSvFrP5hafr9PPB5aw8SjcOWWila7ZI=

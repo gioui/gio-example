@@ -203,50 +203,48 @@ func main() {
 		window.Invalidate()
 	}
 	for {
-		select {
-		case ev := <-window.Events():
-			switch ev := ev.(type) {
-			case system.DestroyEvent:
-				if ev.Err != nil {
-					log.Fatal(ev.Err)
-				}
-				return
-			case system.FrameEvent:
-				gtx := layout.NewContext(&ops, ev)
-				paint.Fill(gtx.Ops, th.Palette.Bg)
-
-				layout.Center.Layout(gtx, func(gtx C) D {
-					return widget.Border{
-						Color: th.Fg,
-						Width: unit.Dp(1),
-					}.Layout(gtx, func(gtx C) D {
-						if gtx.Constraints.Max.X > gtx.Constraints.Max.Y {
-							gtx.Constraints.Max.X = gtx.Constraints.Max.Y
-						} else {
-							gtx.Constraints.Max.Y = gtx.Constraints.Max.X
-						}
-						gtx.Constraints.Min = gtx.Constraints.Max
-
-						if clear.Clicked() {
-							view = nil
-						}
-						if play.Clicked() {
-							playing = !playing
-						}
-
-						layoutSelectionLayer(gtx)
-
-						for _, s := range stars {
-							dist.Scale(s).Layout(gtx, view)
-						}
-						layoutControls(gtx)
-						return D{Size: gtx.Constraints.Max}
-					})
-				})
-
-				ev.Frame(gtx.Ops)
-				iterateSim()
+		ev := window.NextEvent()
+		switch ev := ev.(type) {
+		case system.DestroyEvent:
+			if ev.Err != nil {
+				log.Fatal(ev.Err)
 			}
+			return
+		case system.FrameEvent:
+			gtx := layout.NewContext(&ops, ev)
+			paint.Fill(gtx.Ops, th.Palette.Bg)
+
+			layout.Center.Layout(gtx, func(gtx C) D {
+				return widget.Border{
+					Color: th.Fg,
+					Width: unit.Dp(1),
+				}.Layout(gtx, func(gtx C) D {
+					if gtx.Constraints.Max.X > gtx.Constraints.Max.Y {
+						gtx.Constraints.Max.X = gtx.Constraints.Max.Y
+					} else {
+						gtx.Constraints.Max.Y = gtx.Constraints.Max.X
+					}
+					gtx.Constraints.Min = gtx.Constraints.Max
+
+					if clear.Clicked(gtx) {
+						view = nil
+					}
+					if play.Clicked(gtx) {
+						playing = !playing
+					}
+
+					layoutSelectionLayer(gtx)
+
+					for _, s := range stars {
+						dist.Scale(s).Layout(gtx, view)
+					}
+					layoutControls(gtx)
+					return D{Size: gtx.Constraints.Max}
+				})
+			})
+
+			ev.Frame(gtx.Ops)
+			iterateSim()
 		}
 	}
 }
@@ -289,7 +287,7 @@ func layoutSelectionLayer(gtx C) D {
 			var intPt image.Point
 			intPt.X = int(event.Position.X)
 			intPt.Y = int(event.Position.Y)
-			switch event.Type {
+			switch event.Kind {
 			case pointer.Press:
 				selecting = true
 				selected.Min = intPt
@@ -331,7 +329,7 @@ func layoutSelectionLayer(gtx C) D {
 	pointer.CursorCrosshair.Add(gtx.Ops)
 	pointer.InputOp{
 		Tag:   &selected,
-		Types: pointer.Press | pointer.Release | pointer.Drag,
+		Kinds: pointer.Press | pointer.Release | pointer.Drag,
 	}.Add(gtx.Ops)
 	pr.Pop()
 

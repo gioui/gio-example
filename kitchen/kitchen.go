@@ -13,7 +13,6 @@ import (
 	"image/png"
 	"io/ioutil"
 	"log"
-	"math"
 	"os"
 	"time"
 
@@ -22,6 +21,7 @@ import (
 	"gioui.org/font"
 	"gioui.org/font/gofont"
 	"gioui.org/gpu/headless"
+	"gioui.org/io/event"
 	"gioui.org/io/router"
 	"gioui.org/io/system"
 	"gioui.org/layout"
@@ -118,19 +118,34 @@ func loop(w *app.Window) error {
 	th := material.NewTheme()
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 
+	events := make(chan event.Event)
+	acks := make(chan struct{})
+
+	go func() {
+		for {
+			ev := w.NextEvent()
+			events <- ev
+			<-acks
+			if _, ok := ev.(system.DestroyEvent); ok {
+				return
+			}
+		}
+	}()
+
 	var ops op.Ops
 	for {
 		select {
-		case e := <-w.Events():
+		case e := <-events:
 			switch e := e.(type) {
 			case system.DestroyEvent:
+				acks <- struct{}{}
 				return e.Err
 			case system.FrameEvent:
 				gtx := layout.NewContext(&ops, e)
 				if *disable {
 					gtx = gtx.Disabled()
 				}
-				if checkbox.Changed() {
+				if checkbox.Update(gtx) {
 					if checkbox.Value {
 						transformTime = e.Now
 					} else {
@@ -140,6 +155,7 @@ func loop(w *app.Window) error {
 				transformedKitchen(gtx, th)
 				e.Frame(gtx.Ops)
 			}
+			acks <- struct{}{}
 		case p := <-progressIncrementer:
 			progress += p
 			if progress > 1 {
@@ -292,7 +308,7 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 				}),
 				layout.Rigid(func(gtx C) D {
 					return in.Layout(gtx, func(gtx C) D {
-						for button.Clicked() {
+						for button.Clicked(gtx) {
 							green = !green
 						}
 						return material.Button(th, button, "Click me!").Layout(gtx)
@@ -368,7 +384,7 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 		},
 		func(gtx C) D {
 			return layout.Flex{Alignment: layout.Middle}.Layout(gtx,
-				layout.Flexed(1, material.Slider(th, float, 0, 2*math.Pi).Layout),
+				layout.Flexed(1, material.Slider(th, float).Layout),
 				layout.Rigid(func(gtx C) D {
 					return layout.UniformInset(unit.Dp(8)).Layout(gtx,
 						material.Body1(th, fmt.Sprintf("%.2f", float.Value)).Layout,

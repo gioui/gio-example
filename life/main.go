@@ -8,7 +8,8 @@ import (
 	"os"
 	"time"
 
-	"gioui.org/app"       // app contains Window handling.
+	"gioui.org/app" // app contains Window handling.
+	"gioui.org/io/event"
 	"gioui.org/io/key"    // key is used for keyboard events.
 	"gioui.org/io/system" // system is used for system events (e.g. closing the window).
 	"gioui.org/layout"    // layout is used for layouting widgets.
@@ -73,10 +74,24 @@ func (ui *UI) Run(w *app.Window) error {
 	advanceBoard := time.NewTicker(time.Second / 3)
 	defer advanceBoard.Stop()
 
+	events := make(chan event.Event)
+	acks := make(chan struct{})
+
+	go func() {
+		for {
+			ev := w.NextEvent()
+			events <- ev
+			<-acks
+			if _, ok := ev.(system.DestroyEvent); ok {
+				return
+			}
+		}
+	}()
+
 	// listen for events happening on the window.
 	for {
 		select {
-		case e := <-w.Events():
+		case e := <-events:
 			// detect the type of the event.
 			switch e := e.(type) {
 			// this is sent when the application should re-render.
@@ -107,8 +122,10 @@ func (ui *UI) Run(w *app.Window) error {
 
 			// this is sent when the application is closed.
 			case system.DestroyEvent:
+				acks <- struct{}{}
 				return e.Err
 			}
+			acks <- struct{}{}
 
 		case <-advanceBoard.C:
 			ui.Board.Advance()

@@ -17,6 +17,7 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/gesture"
+	"gioui.org/io/event"
 	"gioui.org/io/key"
 	"gioui.org/io/system"
 	"gioui.org/layout"
@@ -80,6 +81,20 @@ func initProfiling() {
 
 func (a *App) run() error {
 	a.ui.profiling = *stats
+
+	events := make(chan event.Event)
+	acks := make(chan struct{})
+
+	go func() {
+		for {
+			ev := a.w.NextEvent()
+			events <- ev
+			<-acks
+			if _, ok := ev.(system.DestroyEvent); ok {
+				return
+			}
+		}
+	}()
 	var ops op.Ops
 	for {
 		select {
@@ -90,9 +105,10 @@ func (a *App) run() error {
 		case commits := <-a.commitsResult:
 			a.ui.selectedUser.commits = commits
 			a.w.Invalidate()
-		case e := <-a.w.Events():
+		case e := <-events:
 			switch e := e.(type) {
 			case system.DestroyEvent:
+				acks <- struct{}{}
 				return e.Err
 			case system.StageEvent:
 				if e.Stage >= system.StageRunning {
@@ -142,6 +158,7 @@ func (a *App) run() error {
 				area.Pop()
 				e.Frame(gtx.Ops)
 			}
+			acks <- struct{}{}
 		}
 	}
 }

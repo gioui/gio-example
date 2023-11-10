@@ -48,13 +48,14 @@ func main() {
 			app.Size(unit.Dp(800), unit.Dp(600)))
 
 		var ops op.Ops
-		for event := range w.Events() {
+		for {
+			event := w.NextEvent()
 			switch event := event.(type) {
 			case system.DestroyEvent:
 				os.Exit(0)
 			case system.FrameEvent:
 				gtx := layout.NewContext(&ops, event)
-				if notifyBtn.Clicked() {
+				if notifyBtn.Clicked(gtx) {
 					msg := "This is a notification send from gio."
 					if txt := editor.Text(); txt != "" {
 						msg = txt

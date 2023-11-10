@@ -48,7 +48,7 @@ func loop(w *app.Window) error {
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	var ops op.Ops
 	for {
-		e := <-w.Events()
+		e := w.NextEvent()
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
@@ -57,7 +57,7 @@ func loop(w *app.Window) error {
 			title = e.Config.Title
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, e)
-			for b.Clicked() {
+			for b.Clicked(gtx) {
 				toggle = !toggle
 				w.Option(app.Decorated(toggle))
 			}
@@ -72,7 +72,7 @@ func loop(w *app.Window) error {
 			})
 			cl.Pop()
 			if !decorated {
-				w.Perform(deco.Actions())
+				w.Perform(deco.Update(gtx))
 				material.Decorations(th, &deco, ^system.Action(0), title).Layout(gtx)
 			}
 			e.Frame(gtx.Ops)

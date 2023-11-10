@@ -79,7 +79,7 @@ func loop(w *app.Window) error {
 	}
 	var ops op.Ops
 	for {
-		e := <-w.Events()
+		e := w.NextEvent()
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err
@@ -91,7 +91,7 @@ func loop(w *app.Window) error {
 			visibleCards := int(math.Round(float64(numCards.Value*float32(len(cardChildren)-1)))) + 1
 			fan.OffsetRadians = offset.Value * 2 * math.Pi
 			fan.WidthRadians = width.Value * 2 * math.Pi
-			if useRadius.Changed() || radius.Changed() {
+			if useRadius.Update(gtx) || radius.Update(gtx) {
 				if useRadius.Value {
 					r := cards[0].Height * unit.Dp(radius.Value*2)
 					fan.HollowRadius = &r
@@ -106,7 +106,7 @@ func loop(w *app.Window) error {
 							return material.Body1(th, "1").Layout(gtx)
 						}),
 						layout.Flexed(1, func(gtx C) D {
-							return material.Slider(th, &numCards, 0.0, 1.0).Layout(gtx)
+							return material.Slider(th, &numCards).Layout(gtx)
 						}),
 						layout.Rigid(func(gtx C) D {
 							return material.Body1(th, "10").Layout(gtx)
@@ -119,7 +119,7 @@ func loop(w *app.Window) error {
 							return material.Body1(th, "width 0").Layout(gtx)
 						}),
 						layout.Flexed(1, func(gtx C) D {
-							return material.Slider(th, &width, 0.0, 1.0).Layout(gtx)
+							return material.Slider(th, &width).Layout(gtx)
 						}),
 						layout.Rigid(func(gtx C) D {
 							return material.Body1(th, "2pi").Layout(gtx)
@@ -132,7 +132,7 @@ func loop(w *app.Window) error {
 							return material.Body1(th, "offset 0").Layout(gtx)
 						}),
 						layout.Flexed(1, func(gtx C) D {
-							return material.Slider(th, &offset, 0.0, 1.0).Layout(gtx)
+							return material.Slider(th, &offset).Layout(gtx)
 						}),
 						layout.Rigid(func(gtx C) D {
 							return material.Body1(th, "2pi").Layout(gtx)
@@ -148,7 +148,7 @@ func loop(w *app.Window) error {
 							return material.Body1(th, "radius 0%").Layout(gtx)
 						}),
 						layout.Flexed(1, func(gtx C) D {
-							return material.Slider(th, &radius, 0.0, 1.0).Layout(gtx)
+							return material.Slider(th, &radius).Layout(gtx)
 						}),
 						layout.Rigid(func(gtx C) D {
 							return material.Body1(th, "200%").Layout(gtx)

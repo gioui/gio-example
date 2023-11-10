@@ -4,9 +4,9 @@ go 1.18
 
 require (
 	eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d
-	gioui.org v0.3.1
+	gioui.org v0.3.2-0.20231110211756-c8801fe23370
 	gioui.org/cmd v0.0.0-20220818080936-02068d6340fc
-	gioui.org/x v0.3.2
+	gioui.org/x v0.3.3-0.20231110213423-e2613e1d936c
 	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210311203641-62640a716d48
 	github.com/google/go-github/v24 v24.0.1

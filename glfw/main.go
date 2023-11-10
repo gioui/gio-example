@@ -175,7 +175,7 @@ func registerCallbacks(window *glfw.Window, q *router.Router) {
 		}
 		lastPos = f32.Point{X: float32(xpos) * scale, Y: float32(ypos) * scale}
 		e := pointer.Event{
-			Type:     pointer.Move,
+			Kind:     pointer.Move,
 			Position: lastPos,
 			Source:   pointer.Mouse,
 			Time:     time.Since(beginning),
@@ -195,7 +195,7 @@ func registerCallbacks(window *glfw.Window, q *router.Router) {
 		case glfw.MouseButton3:
 			btn = pointer.ButtonTertiary
 		}
-		var typ pointer.Type
+		var typ pointer.Kind
 		switch action {
 		case glfw.Release:
 			typ = pointer.Release
@@ -205,7 +205,7 @@ func registerCallbacks(window *glfw.Window, q *router.Router) {
 			btns |= btn
 		}
 		e := pointer.Event{
-			Type:     typ,
+			Kind:     typ,
 			Source:   pointer.Mouse,
 			Time:     time.Since(beginning),
 			Position: lastPos,

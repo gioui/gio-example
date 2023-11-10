@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"gioui.org/font/gofont"
+	"gioui.org/io/event"
 	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -49,24 +50,41 @@ func (log *Log) Run(w *Window) error {
 	th := material.NewTheme()
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 
-	applicationClose := w.App.Context.Done()
+	go func() {
+		<-w.App.Context.Done()
+		w.Perform(system.ActionClose)
+	}()
+
+	events := make(chan event.Event)
+	acks := make(chan struct{})
+
+	go func() {
+		for {
+			ev := w.NextEvent()
+			events <- ev
+			<-acks
+			if _, ok := ev.(system.DestroyEvent); ok {
+				return
+			}
+		}
+	}()
 	for {
 		select {
-		case <-applicationClose:
-			return nil
 		// listen to new lines from Printf and add them to our lines.
 		case line := <-log.addLine:
 			log.lines = append(log.lines, line)
 			w.Invalidate()
-		case e := <-w.Events():
+		case e := <-events:
 			switch e := e.(type) {
 			case system.DestroyEvent:
+				acks <- struct{}{}
 				return e.Err
 			case system.FrameEvent:
 				gtx := layout.NewContext(&ops, e)
 				log.Layout(w, th, gtx)
 				e.Frame(gtx.Ops)
 			}
+			acks <- struct{}{}
 		}
 	}
 }
@@ -75,7 +93,7 @@ func (log *Log) Run(w *Window) error {
 func (log *Log) Layout(w *Window, th *material.Theme, gtx layout.Context) {
 	// This is here to demonstrate programmatic closing of a window,
 	// however it's probably better to use OS close button instead.
-	for log.close.Clicked() {
+	for log.close.Clicked(gtx) {
 		w.Window.Perform(system.ActionClose)
 	}
 

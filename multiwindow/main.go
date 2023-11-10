@@ -106,20 +106,19 @@ func (view WidgetView) Run(w *Window) error {
 	th := material.NewTheme()
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 
-	applicationClose := w.App.Context.Done()
+	go func() {
+		<-w.App.Context.Done()
+		w.Perform(system.ActionClose)
+	}()
 	for {
-		select {
-		case <-applicationClose:
-			return nil
-		case e := <-w.Events():
-			switch e := e.(type) {
-			case system.DestroyEvent:
-				return e.Err
-			case system.FrameEvent:
-				gtx := layout.NewContext(&ops, e)
-				view(gtx, th)
-				e.Frame(gtx.Ops)
-			}
+		e := w.NextEvent()
+		switch e := e.(type) {
+		case system.DestroyEvent:
+			return e.Err
+		case system.FrameEvent:
+			gtx := layout.NewContext(&ops, e)
+			view(gtx, th)
+			e.Frame(gtx.Ops)
 		}
 	}
 }

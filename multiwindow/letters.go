@@ -40,7 +40,7 @@ func (v *Letters) Run(w *Window) error {
 func (v *Letters) Layout(gtx layout.Context, th *material.Theme) layout.Dimensions {
 	return material.List(th, &v.list).Layout(gtx, len(v.items), func(gtx layout.Context, index int) layout.Dimensions {
 		item := v.items[index]
-		for item.Click.Clicked() {
+		for item.Click.Clicked(gtx) {
 			v.log.Printf("opening %s view", item.Text)
 
 			bigText := material.H1(th, item.Text)

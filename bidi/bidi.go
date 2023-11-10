@@ -44,7 +44,7 @@ func loop(w *app.Window) error {
 	ed.Alignment = text.Middle
 	var ops op.Ops
 	for {
-		e := <-w.Events()
+		e := w.NextEvent()
 		switch e := e.(type) {
 		case system.DestroyEvent:
 			return e.Err

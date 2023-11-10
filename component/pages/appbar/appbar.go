@@ -46,7 +46,7 @@ func (p *Page) Actions() []component.AppBarAction {
 				Tag:  &p.heartBtn,
 			},
 			Layout: func(gtx layout.Context, bg, fg color.NRGBA) layout.Dimensions {
-				if p.heartBtn.Clicked() {
+				if p.heartBtn.Clicked(gtx) {
 					p.favorited = !p.favorited
 				}
 				btn := component.SimpleIconButton(bg, fg, &p.heartBtn, icon.HeartIcon)
@@ -107,7 +107,7 @@ The controls below allow you to see the various features available in our App Ba
 			}),
 			layout.Rigid(func(gtx C) D {
 				return alo.DetailRow{}.Layout(gtx, material.Body1(th, "Contextual App Bar").Layout, func(gtx C) D {
-					if p.contextBtn.Clicked() {
+					if p.contextBtn.Clicked(gtx) {
 						p.Router.AppBar.SetContextualActions(
 							[]component.AppBarAction{
 								component.SimpleIconAction(&p.red, icon.HeartIcon,
@@ -137,7 +137,7 @@ The controls below allow you to see the various features available in our App Ba
 				return alo.DetailRow{}.Layout(gtx,
 					material.Body1(th, "Bottom App Bar").Layout,
 					func(gtx C) D {
-						if p.bottomBar.Changed() {
+						if p.bottomBar.Update(gtx) {
 							if p.bottomBar.Value {
 								p.Router.ModalNavDrawer.Anchor = component.Bottom
 								p.Router.AppBar.Anchor = component.Bottom
@@ -155,7 +155,7 @@ The controls below allow you to see the various features available in our App Ba
 				return alo.DetailRow{}.Layout(gtx,
 					material.Body1(th, "Custom Navigation Icon").Layout,
 					func(gtx C) D {
-						if p.customNavIcon.Changed() {
+						if p.customNavIcon.Update(gtx) {
 							if p.customNavIcon.Value {
 								p.Router.AppBar.NavigationIcon = icon.HomeIcon
 							} else {

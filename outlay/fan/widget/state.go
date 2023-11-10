@@ -23,7 +23,7 @@ func (c *HoverState) Hovering(gtx C) bool {
 	for _, ev := range gtx.Events(c) {
 		switch ev := ev.(type) {
 		case pointer.Event:
-			switch ev.Type {
+			switch ev.Kind {
 			case pointer.Enter:
 				c.hovering = true
 			case pointer.Leave:
@@ -43,7 +43,7 @@ func (c *HoverState) Layout(gtx C) D {
 	defer clip.Rect(image.Rectangle{Max: gtx.Constraints.Max}).Push(gtx.Ops).Pop()
 	pointer.InputOp{
 		Tag:   c,
-		Types: pointer.Enter | pointer.Leave,
+		Kinds: pointer.Enter | pointer.Leave,
 	}.Add(gtx.Ops)
 	return D{Size: gtx.Constraints.Max}
 }
