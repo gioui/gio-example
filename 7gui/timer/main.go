@@ -7,11 +7,10 @@ import (
 
 	"gioui.org/app"         // app contains Window handling.
 	"gioui.org/font/gofont" // gofont is used for loading the default font.
-	"gioui.org/io/event"
-	"gioui.org/io/key"    // key is used for keyboard events.
-	"gioui.org/io/system" // system is used for system events (e.g. closing the window).
-	"gioui.org/layout"    // layout is used for layouting widgets.
-	"gioui.org/op"        // op is used for recording different operations.
+	"gioui.org/io/key"      // key is used for keyboard events.
+	"gioui.org/io/system"   // system is used for system events (e.g. closing the window).
+	"gioui.org/layout"      // layout is used for layouting widgets.
+	"gioui.org/op"          // op is used for recording different operations.
 	"gioui.org/op/clip"
 	"gioui.org/text"
 	"gioui.org/unit"            // unit is used to define pixel-independent sizes
@@ -76,61 +75,46 @@ func (ui *UI) Run(w *app.Window) error {
 	closeTimer := ui.Timer.Start()
 	defer closeTimer()
 
-	events := make(chan event.Event)
-	acks := make(chan struct{})
 	go func() {
-		for {
-			ev := w.NextEvent()
-			events <- ev
-			<-acks
-			if _, ok := ev.(system.DestroyEvent); ok {
-				return
-			}
+		for range ui.Timer.Updated {
+			// when the timer is updated we should update the screen.
+			w.Invalidate()
 		}
 	}()
 
 	var ops op.Ops
 	for {
-		select {
-		// when the timer is updated we should update the screen.
-		case <-ui.Timer.Updated:
-			w.Invalidate()
+		// detect the type of the event.
+		switch e := w.NextEvent().(type) {
+		// this is sent when the application should re-render.
+		case system.FrameEvent:
+			// gtx is used to pass around rendering and event information.
+			gtx := layout.NewContext(&ops, e)
+			// register a global key listener for the escape key wrapping our entire UI.
+			area := clip.Rect{Max: gtx.Constraints.Max}.Push(gtx.Ops)
+			key.InputOp{
+				Tag:  w,
+				Keys: key.NameEscape,
+			}.Add(gtx.Ops)
 
-		case e := <-events:
-			// detect the type of the event.
-			switch e := e.(type) {
-			// this is sent when the application should re-render.
-			case system.FrameEvent:
-				// gtx is used to pass around rendering and event information.
-				gtx := layout.NewContext(&ops, e)
-				// register a global key listener for the escape key wrapping our entire UI.
-				area := clip.Rect{Max: gtx.Constraints.Max}.Push(gtx.Ops)
-				key.InputOp{
-					Tag:  w,
-					Keys: key.NameEscape,
-				}.Add(gtx.Ops)
-
-				// check for presses of the escape key and close the window if we find them.
-				for _, event := range gtx.Events(w) {
-					switch event := event.(type) {
-					case key.Event:
-						if event.Name == key.NameEscape {
-							return nil
-						}
+			// check for presses of the escape key and close the window if we find them.
+			for _, event := range gtx.Events(w) {
+				switch event := event.(type) {
+				case key.Event:
+					if event.Name == key.NameEscape {
+						return nil
 					}
 				}
-				// render and handle UI.
-				ui.Layout(gtx)
-				area.Pop()
-				// render and handle the operations from the UI.
-				e.Frame(gtx.Ops)
-
-			// this is sent when the application is closed.
-			case system.DestroyEvent:
-				acks <- struct{}{}
-				return e.Err
 			}
-			acks <- struct{}{}
+			// render and handle UI.
+			ui.Layout(gtx)
+			area.Pop()
+			// render and handle the operations from the UI.
+			e.Frame(gtx.Ops)
+
+		// this is sent when the application is closed.
+		case system.DestroyEvent:
+			return e.Err
 		}
 	}
 }
