@@ -45,8 +45,7 @@ func loop(w *app.Window) error {
 	sideLength := 1000
 	cellSize := unit.Dp(10)
 	for {
-		e := w.NextEvent()
-		switch e := e.(type) {
+		switch e := w.NextEvent().(type) {
 		case system.DestroyEvent:
 			return e.Err
 		case system.FrameEvent:

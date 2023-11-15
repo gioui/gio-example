@@ -79,8 +79,7 @@ func loop(w *app.Window) error {
 	outer.Value = .75
 	inner.Value = .5
 	for {
-		e := w.NextEvent()
-		switch e := e.(type) {
+		switch e := w.NextEvent().(type) {
 		case system.DestroyEvent:
 			return e.Err
 		case system.FrameEvent:

@@ -49,8 +49,7 @@ func main() {
 
 		var ops op.Ops
 		for {
-			event := w.NextEvent()
-			switch event := event.(type) {
+			switch event := w.NextEvent().(type) {
 			case system.DestroyEvent:
 				os.Exit(0)
 			case system.FrameEvent:

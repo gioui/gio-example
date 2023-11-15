@@ -203,8 +203,7 @@ func main() {
 		window.Invalidate()
 	}
 	for {
-		ev := window.NextEvent()
-		switch ev := ev.(type) {
+		switch e := w.NextEvent().(type) {
 		case system.DestroyEvent:
 			if ev.Err != nil {
 				log.Fatal(ev.Err)

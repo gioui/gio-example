@@ -125,8 +125,7 @@ func loop(w *app.Window) error {
 	// eglMakeCurrent binds a context to an operating system thread. Prevent Go from switching thread.
 	runtime.LockOSThread()
 	for {
-		e := w.NextEvent()
-		switch e := e.(type) {
+		switch e := w.NextEvent().(type) {
 		case app.ViewEvent:
 			ve = e
 			init = true

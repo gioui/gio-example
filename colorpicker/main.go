@@ -61,8 +61,7 @@ func loop(w *app.Window) error {
 	background = *muxState.Color()
 	var ops op.Ops
 	for {
-		e := w.NextEvent()
-		switch e := e.(type) {
+		switch e := w.NextEvent().(type) {
 		case system.DestroyEvent:
 			return e.Err
 		case system.FrameEvent:

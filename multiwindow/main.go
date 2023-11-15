@@ -111,8 +111,7 @@ func (view WidgetView) Run(w *Window) error {
 		w.Perform(system.ActionClose)
 	}()
 	for {
-		e := w.NextEvent()
-		switch e := e.(type) {
+		switch e := w.NextEvent().(type) {
 		case system.DestroyEvent:
 			return e.Err
 		case system.FrameEvent:

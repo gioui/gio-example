@@ -71,9 +71,8 @@ func (ui *UI) Run(w *app.Window) error {
 
 	// listen for events happening on the window.
 	for {
-		e := w.NextEvent()
 		// detect the type of the event.
-		switch e := e.(type) {
+		switch e := w.NextEvent().(type) {
 		// this is sent when the application should re-render.
 		case system.FrameEvent:
 			// gtx is used to pass around rendering and event information.
