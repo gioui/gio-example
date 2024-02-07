@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 
+	"gioui.org/app"
 	"gioui.org/font/gofont"
 	"gioui.org/io/event"
 	"gioui.org/io/system"
@@ -63,7 +64,7 @@ func (log *Log) Run(w *Window) error {
 			ev := w.NextEvent()
 			events <- ev
 			<-acks
-			if _, ok := ev.(system.DestroyEvent); ok {
+			if _, ok := ev.(app.DestroyEvent); ok {
 				return
 			}
 		}
@@ -76,11 +77,11 @@ func (log *Log) Run(w *Window) error {
 			w.Invalidate()
 		case e := <-events:
 			switch e := e.(type) {
-			case system.DestroyEvent:
+			case app.DestroyEvent:
 				acks <- struct{}{}
 				return e.Err
-			case system.FrameEvent:
-				gtx := layout.NewContext(&ops, e)
+			case app.FrameEvent:
+				gtx := app.NewContext(&ops, e)
 				log.Layout(w, th, gtx)
 				e.Frame(gtx.Ops)
 			}

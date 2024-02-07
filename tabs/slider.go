@@ -68,7 +68,7 @@ func (s *Slider) Layout(gtx layout.Context, w layout.Widget) layout.Dimensions {
 			}
 		}
 
-		op.InvalidateOp{}.Add(gtx.Ops)
+		gtx.Execute(op.InvalidateCmd{})
 	}
 
 	var dims layout.Dimensions

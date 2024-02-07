@@ -3,6 +3,7 @@ package widget
 import (
 	"image"
 
+	"gioui.org/io/event"
 	"gioui.org/io/pointer"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -20,7 +21,14 @@ type HoverState struct {
 
 func (c *HoverState) Hovering(gtx C) bool {
 	start := c.hovering
-	for _, ev := range gtx.Events(c) {
+	for {
+		ev, ok := gtx.Event(pointer.Filter{
+			Target: c,
+			Kinds:  pointer.Enter | pointer.Leave,
+		})
+		if !ok {
+			break
+		}
 		switch ev := ev.(type) {
 		case pointer.Event:
 			switch ev.Kind {
@@ -34,16 +42,13 @@ func (c *HoverState) Hovering(gtx C) bool {
 		}
 	}
 	if c.hovering != start {
-		op.InvalidateOp{}.Add(gtx.Ops)
+		gtx.Execute(op.InvalidateCmd{})
 	}
 	return c.hovering
 }
 
 func (c *HoverState) Layout(gtx C) D {
 	defer clip.Rect(image.Rectangle{Max: gtx.Constraints.Max}).Push(gtx.Ops).Pop()
-	pointer.InputOp{
-		Tag:   c,
-		Kinds: pointer.Enter | pointer.Leave,
-	}.Add(gtx.Ops)
+	event.Op(gtx.Ops, c)
 	return D{Size: gtx.Constraints.Max}
 }

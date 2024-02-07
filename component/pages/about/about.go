@@ -1,6 +1,9 @@
 package about
 
 import (
+	"io"
+	"strings"
+
 	"gioui.org/io/clipboard"
 	"gioui.org/layout"
 	"gioui.org/widget"
@@ -72,9 +75,9 @@ If you like this library and work like it, please consider sponsoring Elias and/
 					material.Body1(th, "Elias Naur can be sponsored on GitHub at "+sponsorEliasURL).Layout,
 					func(gtx C) D {
 						if p.eliasCopyButton.Clicked(gtx) {
-							clipboard.WriteOp{
-								Text: sponsorEliasURL,
-							}.Add(gtx.Ops)
+							gtx.Execute(clipboard.WriteCmd{
+								Data: io.NopCloser(strings.NewReader(sponsorEliasURL)),
+							})
 						}
 						return material.Button(th, &p.eliasCopyButton, "Copy Sponsorship URL").Layout(gtx)
 					})
@@ -85,10 +88,14 @@ If you like this library and work like it, please consider sponsoring Elias and/
 
 					func(gtx C) D {
 						if p.chrisCopyButtonGH.Clicked(gtx) {
-							clipboard.WriteOp{Text: sponsorChrisURLGitHub}.Add(gtx.Ops)
+							gtx.Execute(clipboard.WriteCmd{
+								Data: io.NopCloser(strings.NewReader(sponsorChrisURLGitHub)),
+							})
 						}
 						if p.chrisCopyButtonLP.Clicked(gtx) {
-							clipboard.WriteOp{Text: sponsorChrisURLLiberapay}.Add(gtx.Ops)
+							gtx.Execute(clipboard.WriteCmd{
+								Data: io.NopCloser(strings.NewReader(sponsorChrisURLLiberapay)),
+							})
 						}
 						return alo.DefaultInset.Layout(gtx, func(gtx C) D {
 							return layout.Flex{}.Layout(gtx,

@@ -49,13 +49,13 @@ func loop(w *app.Window) error {
 	var ops op.Ops
 	for {
 		switch e := w.NextEvent().(type) {
-		case system.DestroyEvent:
+		case app.DestroyEvent:
 			return e.Err
 		case app.ConfigEvent:
 			decorated = e.Config.Decorated
 			title = e.Config.Title
-		case system.FrameEvent:
-			gtx := layout.NewContext(&ops, e)
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, e)
 			for b.Clicked(gtx) {
 				toggle = !toggle
 				w.Option(app.Decorated(toggle))

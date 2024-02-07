@@ -10,7 +10,6 @@ import (
 	"os"
 
 	"gioui.org/app"
-	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
@@ -46,10 +45,10 @@ func loop(w *app.Window) error {
 	cellSize := unit.Dp(10)
 	for {
 		switch e := w.NextEvent().(type) {
-		case system.DestroyEvent:
+		case app.DestroyEvent:
 			return e.Err
-		case system.FrameEvent:
-			gtx := layout.NewContext(&ops, e)
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, e)
 			component.Grid(th, &grid).Layout(gtx, sideLength, sideLength,
 				func(axis layout.Axis, index, constraint int) int {
 					return gtx.Dp(cellSize)

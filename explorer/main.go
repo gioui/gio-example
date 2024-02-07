@@ -16,7 +16,6 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/io/event"
-	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
@@ -69,7 +68,7 @@ func loop(w *app.Window) error {
 			ev := w.NextEvent()
 			events <- ev
 			<-acks
-			if _, ok := ev.(system.DestroyEvent); ok {
+			if _, ok := ev.(app.DestroyEvent); ok {
 				return
 			}
 		}
@@ -86,11 +85,11 @@ func loop(w *app.Window) error {
 		case e := <-events:
 			expl.ListenEvents(e)
 			switch e := e.(type) {
-			case system.DestroyEvent:
+			case app.DestroyEvent:
 				acks <- struct{}{}
 				return e.Err
-			case system.FrameEvent:
-				gtx := layout.NewContext(&ops, e)
+			case app.FrameEvent:
+				gtx := app.NewContext(&ops, e)
 				if openBtn.Clicked(gtx) {
 					go func() {
 						file, err := expl.ChooseFile("png", "jpeg", "jpg")
@@ -158,7 +157,7 @@ func loop(w *app.Window) error {
 					}),
 					layout.Rigid(func(gtx C) D {
 						if img.Image == nil {
-							gtx.Queue = nil
+							gtx = gtx.Disabled()
 						}
 						return material.Button(th, &saveBtn, "Save Image").Layout(gtx)
 					}),

@@ -19,8 +19,6 @@ import (
 	"gioui.org/gesture"
 	"gioui.org/io/event"
 	"gioui.org/io/key"
-	"gioui.org/io/system"
-	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/unit"
@@ -90,7 +88,7 @@ func (a *App) run() error {
 			ev := a.w.NextEvent()
 			events <- ev
 			<-acks
-			if _, ok := ev.(system.DestroyEvent); ok {
+			if _, ok := ev.(app.DestroyEvent); ok {
 				return
 			}
 		}
@@ -107,11 +105,11 @@ func (a *App) run() error {
 			a.w.Invalidate()
 		case e := <-events:
 			switch e := e.(type) {
-			case system.DestroyEvent:
+			case app.DestroyEvent:
 				acks <- struct{}{}
 				return e.Err
-			case system.StageEvent:
-				if e.Stage >= system.StageRunning {
+			case app.StageEvent:
+				if e.Stage >= app.StageRunning {
 					if a.ctxCancel == nil {
 						a.ctx, a.ctxCancel = context.WithCancel(context.Background())
 					}
@@ -124,18 +122,30 @@ func (a *App) run() error {
 						a.ctxCancel = nil
 					}
 				}
-			case system.FrameEvent:
-				gtx := layout.NewContext(&ops, e)
+			case app.FrameEvent:
+				gtx := app.NewContext(&ops, e)
 
 				// register a global key listener for the escape key wrapping our entire UI.
 				area := clip.Rect{Max: gtx.Constraints.Max}.Push(gtx.Ops)
-				key.InputOp{
-					Tag:  a.w,
-					Keys: key.NameEscape + `|Short-P|` + key.NameBack,
-				}.Add(gtx.Ops)
+				event.Op(gtx.Ops, a.w)
 
 				// check for presses of global keyboard shortcuts and process them.
-				for _, event := range gtx.Events(a.w) {
+				for {
+					event, ok := gtx.Event(
+						key.Filter{
+							Required: key.ModShortcut,
+							Name:     "P",
+						},
+						key.Filter{
+							Name: key.NameBack,
+						},
+						key.Filter{
+							Name: key.NameEscape,
+						},
+					)
+					if !ok {
+						break
+					}
 					switch event := event.(type) {
 					case key.Event:
 						switch event.Name {

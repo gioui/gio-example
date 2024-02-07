@@ -22,8 +22,7 @@ import (
 	"gioui.org/font/gofont"
 	"gioui.org/gpu/headless"
 	"gioui.org/io/event"
-	"gioui.org/io/router"
-	"gioui.org/io/system"
+	"gioui.org/io/input"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
@@ -96,7 +95,6 @@ func saveScreenshot(f string) error {
 			PxPerSp: scale,
 		},
 		Constraints: layout.Exact(sz),
-		Queue:       new(router.Router),
 	}
 	th := material.NewTheme()
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
@@ -126,7 +124,7 @@ func loop(w *app.Window) error {
 			ev := w.NextEvent()
 			events <- ev
 			<-acks
-			if _, ok := ev.(system.DestroyEvent); ok {
+			if _, ok := ev.(app.DestroyEvent); ok {
 				return
 			}
 		}
@@ -137,11 +135,11 @@ func loop(w *app.Window) error {
 		select {
 		case e := <-events:
 			switch e := e.(type) {
-			case system.DestroyEvent:
+			case app.DestroyEvent:
 				acks <- struct{}{}
 				return e.Err
-			case system.FrameEvent:
-				gtx := layout.NewContext(&ops, e)
+			case app.FrameEvent:
+				gtx := app.NewContext(&ops, e)
 				if *disable {
 					gtx = gtx.Disabled()
 				}
@@ -170,7 +168,7 @@ func transformedKitchen(gtx layout.Context, th *material.Theme) layout.Dimension
 	if !transformTime.IsZero() {
 		dt := float32(gtx.Now.Sub(transformTime).Seconds())
 		angle := dt * .1
-		op.InvalidateOp{}.Add(gtx.Ops)
+		gtx.Execute(op.InvalidateCmd{})
 		tr := f32.Affine2D{}
 		tr = tr.Rotate(f32.Pt(300, 20), -angle)
 		scale := 1.0 - dt*.5
@@ -256,7 +254,11 @@ func (b iconAndTextButton) Layout(gtx layout.Context) layout.Dimensions {
 }
 
 func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
-	for _, e := range lineEditor.Events() {
+	for {
+		e, ok := lineEditor.Update(gtx)
+		if !ok {
+			break
+		}
 		if e, ok := e.(widget.SubmitEvent); ok {
 			topLabel = e.Text
 			lineEditor.SetText("")
@@ -332,7 +334,7 @@ func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
 						return material.Clickable(gtx, flatBtn, func(gtx C) D {
 							return layout.UniformInset(unit.Dp(12)).Layout(gtx, func(gtx C) D {
 								flatBtnText := material.Body1(th, "Flat")
-								if gtx.Queue == nil {
+								if gtx.Source == (input.Source{}) {
 									flatBtnText.Color.A = 150
 								}
 								return layout.Center.Layout(gtx, flatBtnText.Layout)

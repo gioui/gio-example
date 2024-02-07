@@ -24,8 +24,8 @@ import (
 	"gioui.org/f32"
 	"gioui.org/font/gofont"
 	"gioui.org/gpu"
+	"gioui.org/io/input"
 	"gioui.org/io/pointer"
-	"gioui.org/io/router"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/text"
@@ -90,7 +90,7 @@ func main() {
 		gl.BindVertexArray(defVBA)
 	}
 
-	var queue router.Router
+	var queue input.Router
 	var ops op.Ops
 	th := material.NewTheme()
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
@@ -108,9 +108,9 @@ func main() {
 		sz := image.Point{X: width, Y: height}
 		ops.Reset()
 		gtx := layout.Context{
-			Ops:   &ops,
-			Now:   time.Now(),
-			Queue: &queue,
+			Ops:    &ops,
+			Now:    time.Now(),
+			Source: queue.Source(),
 			Metric: unit.Metric{
 				PxPerDp: scale,
 				PxPerSp: scale,
@@ -162,7 +162,7 @@ func draw(gtx layout.Context, th *material.Theme) layout.Dimensions {
 	)
 }
 
-func registerCallbacks(window *glfw.Window, q *router.Router) {
+func registerCallbacks(window *glfw.Window, q *input.Router) {
 	var btns pointer.Buttons
 	beginning := time.Now()
 	var lastPos f32.Point
@@ -181,7 +181,8 @@ func registerCallbacks(window *glfw.Window, q *router.Router) {
 			Time:     time.Since(beginning),
 			Buttons:  btns,
 		}
-		if !q.Queue(e) {
+		q.Queue(e)
+		if _, ok := q.WakeupTime(); !ok {
 			handleCursorEvent(xpos, ypos)
 		}
 	})
@@ -211,7 +212,8 @@ func registerCallbacks(window *glfw.Window, q *router.Router) {
 			Position: lastPos,
 			Buttons:  btns,
 		}
-		if !q.Queue(e) {
+		q.Queue(e)
+		if _, ok := q.WakeupTime(); !ok {
 			handleMouseButtonEvent(button, action, mods)
 		}
 	})

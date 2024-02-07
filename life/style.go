@@ -6,7 +6,8 @@ import (
 	"image"
 	"image/color"
 
-	"gioui.org/f32"        // f32 is used for shape calculations.
+	"gioui.org/f32" // f32 is used for shape calculations.
+	"gioui.org/io/event"
 	"gioui.org/io/pointer" // system is used for system events (e.g. closing the window).
 	"gioui.org/layout"     // layout is used for layouting widgets.
 
@@ -28,7 +29,14 @@ func (board BoardStyle) Layout(gtx layout.Context) layout.Dimensions {
 	gtx.Constraints = layout.Exact(size)
 
 	// Handle any input from a pointer.
-	for _, ev := range gtx.Events(board.Board) {
+	for {
+		ev, ok := gtx.Event(pointer.Filter{
+			Target: board.Board,
+			Kinds:  pointer.Drag,
+		})
+		if !ok {
+			break
+		}
 		if ev, ok := ev.(pointer.Event); ok {
 			p := image.Pt(int(ev.Position.X), int(ev.Position.Y))
 			// Calculate the board coordinate given a cursor position.
@@ -38,7 +46,7 @@ func (board BoardStyle) Layout(gtx layout.Context) layout.Dimensions {
 	}
 	// Register to listen for pointer Drag events.
 	pr := clip.Rect(image.Rectangle{Max: size}).Push(gtx.Ops)
-	pointer.InputOp{Tag: board.Board, Kinds: pointer.Drag}.Add(gtx.Ops)
+	event.Op(gtx.Ops, board.Board)
 	pr.Pop()
 
 	cellSize := float32(board.CellSizePx)

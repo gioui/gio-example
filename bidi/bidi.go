@@ -11,7 +11,7 @@ import (
 	"os"
 
 	"gioui.org/app"
-	"gioui.org/io/system"
+	"gioui.org/io/key"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/text"
@@ -40,15 +40,19 @@ func loop(w *app.Window) error {
 	var ed widget.Editor
 	txt := "Hello أهلا my good friend صديقي الجيد bidirectional text نص ثنائي الاتجاه."
 	ed.SetText(txt)
-	ed.Focus()
+	init := false
 	ed.Alignment = text.Middle
 	var ops op.Ops
 	for {
 		switch e := w.NextEvent().(type) {
-		case system.DestroyEvent:
+		case app.DestroyEvent:
 			return e.Err
-		case system.FrameEvent:
-			gtx := layout.NewContext(&ops, e)
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, e)
+			if !init {
+				init = true
+				gtx.Execute(key.FocusCmd{Tag: &ed})
+			}
 			layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 				layout.Rigid(func(gtx C) D {
 					med := material.Editor(th, &ed, "")

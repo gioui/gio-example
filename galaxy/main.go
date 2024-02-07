@@ -19,8 +19,8 @@ import (
 	"gioui.org/app"
 	"gioui.org/f32"
 	"gioui.org/font/gofont"
+	"gioui.org/io/event"
 	"gioui.org/io/pointer"
-	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
@@ -204,13 +204,13 @@ func main() {
 	}
 	for {
 		switch ev := window.NextEvent().(type) {
-		case system.DestroyEvent:
+		case app.DestroyEvent:
 			if ev.Err != nil {
 				log.Fatal(ev.Err)
 			}
 			return
-		case system.FrameEvent:
-			gtx := layout.NewContext(&ops, ev)
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, ev)
 			paint.Fill(gtx.Ops, th.Palette.Bg)
 
 			layout.Center.Layout(gtx, func(gtx C) D {
@@ -280,7 +280,14 @@ func layoutControls(gtx C) D {
 }
 
 func layoutSelectionLayer(gtx C) D {
-	for _, event := range gtx.Events(&selected) {
+	for {
+		event, ok := gtx.Event(pointer.Filter{
+			Target: &selected,
+			Kinds:  pointer.Press | pointer.Release | pointer.Drag,
+		})
+		if !ok {
+			break
+		}
 		switch event := event.(type) {
 		case pointer.Event:
 			var intPt image.Point
@@ -326,10 +333,7 @@ func layoutSelectionLayer(gtx C) D {
 	}
 	pr := clip.Rect(image.Rectangle{Max: gtx.Constraints.Max}).Push(gtx.Ops)
 	pointer.CursorCrosshair.Add(gtx.Ops)
-	pointer.InputOp{
-		Tag:   &selected,
-		Kinds: pointer.Press | pointer.Release | pointer.Drag,
-	}.Add(gtx.Ops)
+	event.Op(gtx.Ops, &selected)
 	pr.Pop()
 
 	return D{Size: gtx.Constraints.Max}

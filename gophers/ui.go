@@ -15,7 +15,6 @@ import (
 	"gioui.org/font/gofont"
 	"gioui.org/gesture"
 	"gioui.org/io/key"
-	"gioui.org/io/profile"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
@@ -44,7 +43,6 @@ type UI struct {
 
 	// Profiling.
 	profiling   bool
-	profile     profile.Event
 	lastMallocs uint64
 }
 
@@ -115,19 +113,13 @@ func (u *UI) layoutTimings(gtx layout.Context) {
 	if !u.profiling {
 		return
 	}
-	for _, e := range gtx.Events(u) {
-		if e, ok := e.(profile.Event); ok {
-			u.profile = e
-		}
-	}
-	profile.Op{Tag: u}.Add(gtx.Ops)
 	var mstats runtime.MemStats
 	runtime.ReadMemStats(&mstats)
 	mallocs := mstats.Mallocs - u.lastMallocs
 	u.lastMallocs = mstats.Mallocs
 	layout.NE.Layout(gtx, func(gtx C) D {
 		return layout.Inset{Top: unit.Dp(16)}.Layout(gtx, func(gtx C) D {
-			txt := fmt.Sprintf("m: %d %s", mallocs, u.profile.Timings)
+			txt := fmt.Sprintf("m: %d", mallocs)
 			lbl := material.Caption(theme, txt)
 			lbl.Font.Typeface = "Go Mono"
 			return lbl.Layout(gtx)
@@ -138,7 +130,11 @@ func (u *UI) layoutTimings(gtx layout.Context) {
 func (u *UI) Layout(gtx layout.Context) {
 	for i := range u.userClicks {
 		click := &u.userClicks[i]
-		for _, e := range click.Update(gtx) {
+		for {
+			e, ok := click.Update(gtx.Source)
+			if !ok {
+				break
+			}
 			if e.Kind == gesture.KindClick {
 				u.selectedUser = u.newUserPage(u.users[i])
 			}
@@ -164,7 +160,7 @@ func (u *UI) newUserPage(user *user) *userPage {
 func (up *userPage) Layout(gtx layout.Context) {
 	l := up.commitsList
 	if l.List.Dragging() {
-		key.SoftKeyboardOp{Show: false}.Add(gtx.Ops)
+		gtx.Execute(key.SoftKeyboardCmd{Show: false})
 	}
 	material.List(theme, l).Layout(gtx, len(up.commits), func(gtx C, i int) D {
 		return up.commit(gtx, i)
@@ -253,7 +249,7 @@ func (u *UI) layoutUsers(gtx layout.Context) {
 func (u *UI) layoutContributors(gtx layout.Context) layout.Dimensions {
 	l := u.usersList
 	if l.List.Dragging() {
-		key.SoftKeyboardOp{Show: false}.Add(gtx.Ops)
+		gtx.Execute(key.SoftKeyboardCmd{Show: false})
 	}
 	return material.List(theme, l).Layout(gtx, len(u.users), func(gtx C, i int) D {
 		return u.user(gtx, i)

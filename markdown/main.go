@@ -18,7 +18,6 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/font"
-	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
@@ -101,10 +100,10 @@ func (ui UI) Loop() error {
 		e := ui.Window.NextEvent()
 		giohyperlink.ListenEvents(e)
 		switch e := e.(type) {
-		case system.DestroyEvent:
+		case app.DestroyEvent:
 			return e.Err
-		case system.FrameEvent:
-			gtx := layout.NewContext(&ops, e)
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, e)
 			ui.Layout(gtx)
 			e.Frame(gtx.Ops)
 		}
@@ -113,26 +112,32 @@ func (ui UI) Loop() error {
 
 // Update processes events from the previous frame, updating state accordingly.
 func (ui *UI) Update(gtx C) {
-	for o, events := ui.TextState.Events(); o != nil; o, events = ui.TextState.Events() {
-		for _, e := range events {
-			switch e.Type {
-			case richtext.Click:
-				if url, ok := o.Get(markdown.MetadataURL).(string); ok && url != "" {
-					if err := giohyperlink.Open(url); err != nil {
-						// TODO(jfm): display UI element explaining the error to the user.
-						log.Printf("error: opening hyperlink: %v", err)
-					}
+	for {
+		o, event, ok := ui.TextState.Update(gtx)
+		if !ok {
+			break
+		}
+		switch event.Type {
+		case richtext.Click:
+			if url, ok := o.Get(markdown.MetadataURL).(string); ok && url != "" {
+				if err := giohyperlink.Open(url); err != nil {
+					// TODO(jfm): display UI element explaining the error to the user.
+					log.Printf("error: opening hyperlink: %v", err)
 				}
-			case richtext.Hover:
-			case richtext.LongPress:
-				log.Println("longpress")
-				if url, ok := o.Get(markdown.MetadataURL).(string); ok && url != "" {
-					ui.Window.Option(app.Title(url))
-				}
+			}
+		case richtext.Hover:
+		case richtext.LongPress:
+			log.Println("longpress")
+			if url, ok := o.Get(markdown.MetadataURL).(string); ok && url != "" {
+				ui.Window.Option(app.Title(url))
 			}
 		}
 	}
-	for _, event := range ui.Editor.Events() {
+	for {
+		event, ok := ui.Editor.Update(gtx)
+		if !ok {
+			break
+		}
 		if _, ok := event.(widget.ChangeEvent); ok {
 			var err error
 			ui.Theme.cache, err = ui.Renderer.Render([]byte(ui.Editor.Text()))
