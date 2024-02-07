@@ -9,7 +9,6 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/font/gofont"
-	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
@@ -80,10 +79,10 @@ func loop(w *app.Window) error {
 	inner.Value = .5
 	for {
 		switch e := w.NextEvent().(type) {
-		case system.DestroyEvent:
+		case app.DestroyEvent:
 			return e.Err
-		case system.FrameEvent:
-			gtx := layout.NewContext(&ops, e)
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, e)
 			opacityView(th, &outer).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 				return opacityView(th, &inner).Layout(gtx,
 					func(gtx layout.Context) layout.Dimensions {

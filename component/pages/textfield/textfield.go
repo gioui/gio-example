@@ -140,7 +140,7 @@ func (p *Page) Layout(gtx C, th *material.Theme) D {
 					default:
 						p.inputAlignment = text.Start
 					}
-					op.InvalidateOp{}.Add(gtx.Ops)
+					gtx.Execute(op.InvalidateCmd{})
 				}
 				return alo.DefaultInset.Layout(
 					gtx,

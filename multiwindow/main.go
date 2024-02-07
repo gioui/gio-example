@@ -112,10 +112,10 @@ func (view WidgetView) Run(w *Window) error {
 	}()
 	for {
 		switch e := w.NextEvent().(type) {
-		case system.DestroyEvent:
+		case app.DestroyEvent:
 			return e.Err
-		case system.FrameEvent:
-			gtx := layout.NewContext(&ops, e)
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, e)
 			view(gtx, th)
 			e.Frame(gtx.Ops)
 		}

@@ -35,8 +35,8 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/gpu"
+	"gioui.org/io/event"
 	"gioui.org/io/pointer"
-	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/text"
@@ -132,9 +132,9 @@ func loop(w *app.Window) error {
 			if size != (image.Point{}) {
 				recreateContext()
 			}
-		case system.DestroyEvent:
+		case app.DestroyEvent:
 			return e.Err
-		case system.FrameEvent:
+		case app.FrameEvent:
 			if init && size != e.Size {
 				size = e.Size
 				recreateContext()
@@ -143,11 +143,18 @@ func loop(w *app.Window) error {
 				break
 			}
 			// Build ops.
-			gtx := layout.NewContext(&ops, e)
+			gtx := app.NewContext(&ops, e)
 			// Catch pointer events not hitting UI.
 			types := pointer.Move | pointer.Press | pointer.Release
-			pointer.InputOp{Tag: w, Kinds: types}.Add(gtx.Ops)
-			for _, e := range gtx.Events(w) {
+			event.Op(gtx.Ops, w)
+			for {
+				e, ok := gtx.Event(pointer.Filter{
+					Target: w,
+					Kinds:  types,
+				})
+				if !ok {
+					break
+				}
 				log.Println("Event:", e)
 			}
 			drawUI(th, gtx)

@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"gioui.org/app"
-	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/text"
@@ -50,10 +49,10 @@ func main() {
 		var ops op.Ops
 		for {
 			switch event := w.NextEvent().(type) {
-			case system.DestroyEvent:
+			case app.DestroyEvent:
 				os.Exit(0)
-			case system.FrameEvent:
-				gtx := layout.NewContext(&ops, event)
+			case app.FrameEvent:
+				gtx := app.NewContext(&ops, event)
 				if notifyBtn.Clicked(gtx) {
 					msg := "This is a notification send from gio."
 					if txt := editor.Text(); txt != "" {

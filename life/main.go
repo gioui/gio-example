@@ -10,10 +10,11 @@ import (
 
 	"gioui.org/app" // app contains Window handling.
 	"gioui.org/io/event"
-	"gioui.org/io/key"    // key is used for keyboard events.
-	"gioui.org/io/system" // system is used for system events (e.g. closing the window).
-	"gioui.org/layout"    // layout is used for layouting widgets.
-	"gioui.org/op"        // op is used for recording different operations.
+	"gioui.org/io/key" // key is used for keyboard events.
+
+	// system is used for system events (e.g. closing the window).
+	"gioui.org/layout" // layout is used for layouting widgets.
+	"gioui.org/op"     // op is used for recording different operations.
 	"gioui.org/op/clip"
 	"gioui.org/unit" // unit is used to define pixel-independent sizes
 )
@@ -82,7 +83,7 @@ func (ui *UI) Run(w *app.Window) error {
 			ev := w.NextEvent()
 			events <- ev
 			<-acks
-			if _, ok := ev.(system.DestroyEvent); ok {
+			if _, ok := ev.(app.DestroyEvent); ok {
 				return
 			}
 		}
@@ -95,18 +96,21 @@ func (ui *UI) Run(w *app.Window) error {
 			// detect the type of the event.
 			switch e := e.(type) {
 			// this is sent when the application should re-render.
-			case system.FrameEvent:
+			case app.FrameEvent:
 				// gtx is used to pass around rendering and event information.
-				gtx := layout.NewContext(&ops, e)
+				gtx := app.NewContext(&ops, e)
 				// register a global key listener for the escape key wrapping our entire UI.
 				area := clip.Rect{Max: gtx.Constraints.Max}.Push(gtx.Ops)
-				key.InputOp{
-					Tag:  w,
-					Keys: key.NameEscape,
-				}.Add(gtx.Ops)
+				event.Op(gtx.Ops, w)
 
 				// check for presses of the escape key and close the window if we find them.
-				for _, event := range gtx.Events(w) {
+				for {
+					event, ok := gtx.Event(key.Filter{
+						Name: key.NameEscape,
+					})
+					if !ok {
+						break
+					}
 					switch event := event.(type) {
 					case key.Event:
 						if event.Name == key.NameEscape {
@@ -121,7 +125,7 @@ func (ui *UI) Run(w *app.Window) error {
 				e.Frame(gtx.Ops)
 
 			// this is sent when the application is closed.
-			case system.DestroyEvent:
+			case app.DestroyEvent:
 				acks <- struct{}{}
 				return e.Err
 			}

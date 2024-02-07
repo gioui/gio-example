@@ -14,7 +14,6 @@ import (
 	"gioui.org/example/component/pages/navdrawer"
 	"gioui.org/example/component/pages/textfield"
 	"gioui.org/font/gofont"
-	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/text"
@@ -53,10 +52,10 @@ func loop(w *app.Window) error {
 
 	for {
 		switch e := w.NextEvent().(type) {
-		case system.DestroyEvent:
+		case app.DestroyEvent:
 			return e.Err
-		case system.FrameEvent:
-			gtx := layout.NewContext(&ops, e)
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, e)
 			router.Layout(gtx, th)
 			e.Frame(gtx.Ops)
 		}
