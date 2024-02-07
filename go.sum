@@ -1,9 +1,7 @@
 eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d h1:ARo7NCVvN2NdhLlJE9xAbKweuI9L6UgfTbYb0YwPacY=
 eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d/go.mod h1:OYVuxibdk9OSLX8vAqydtRPP87PyTFcT9uH3MlEGBQA=
-gioui.org v0.4.1 h1:sCTw5Fexg0xg9CxYmbrkKtHXcobf0JMbl5XpF2TC/zc=
-gioui.org v0.4.1/go.mod h1:2atiYR4upH71/6ehnh6XsUELa7JZOrOHHNMDxGBZF0Q=
-gioui.org v0.4.2-0.20240107183444-ab021c4566b5 h1:dmfy0z6BnNblAXmyU+arSqK5RevDIG0oWXxnED3ty5o=
-gioui.org v0.4.2-0.20240107183444-ab021c4566b5/go.mod h1:2atiYR4upH71/6ehnh6XsUELa7JZOrOHHNMDxGBZF0Q=
+gioui.org v0.4.2-0.20240205110936-297c03925d0a h1:UlUZuyS7lwUKk1qBxvwxGipjMsYNYZf1AVEy7rANl+E=
+gioui.org v0.4.2-0.20240205110936-297c03925d0a/go.mod h1:2atiYR4upH71/6ehnh6XsUELa7JZOrOHHNMDxGBZF0Q=
 gioui.org/cmd v0.0.0-20220818080936-02068d6340fc h1:KfVMY8YBF6OBlkw2WgCySAilfsyjtPtZaWaBAKSofo8=
 gioui.org/cmd v0.0.0-20220818080936-02068d6340fc/go.mod h1:sOPHaz5lc8CQuJqPyX/YTFdcs5+XKNXXa03qxFIln6w=
 gioui.org/cpu v0.0.0-20210808092351-bfe733dd3334/go.mod h1:A8M0Cn5o+vY5LTMlnRoK3O5kG+rH0kWfJjeKd9QpBmQ=
@@ -11,8 +9,8 @@ gioui.org/cpu v0.0.0-20210817075930-8d6a761490d2 h1:AGDDxsJE1RpcXTAxPG2B4jrwVUJG
 gioui.org/cpu v0.0.0-20210817075930-8d6a761490d2/go.mod h1:A8M0Cn5o+vY5LTMlnRoK3O5kG+rH0kWfJjeKd9QpBmQ=
 gioui.org/shader v1.0.8 h1:6ks0o/A+b0ne7RzEqRZK5f4Gboz2CfG+mVliciy6+qA=
 gioui.org/shader v1.0.8/go.mod h1:mWdiME581d/kV7/iEhLmUgUK5iZ09XR5XpduXzbePVM=
-gioui.org/x v0.4.1-0.20240115142416-0d2ba4c48bbe h1:5kogxdsq3CuM23loaU9StZ5qSJxPAmmEgHe7VIwyPIw=
-gioui.org/x v0.4.1-0.20240115142416-0d2ba4c48bbe/go.mod h1:yTvnUyvNWPBsKSAgyL3HICzNTwBn9Z12dWmGMPohOnI=
+gioui.org/x v0.4.1-0.20240207184850-a9f45ca46c7c h1:flFCExMAE8gc8RWsRTI+SMnhTC8Nnu0Fc1B25GoXmuI=
+gioui.org/x v0.4.1-0.20240207184850-a9f45ca46c7c/go.mod h1:+IYPxammUtYayhiq+S8uYjaTyHUlN94sz1End/oZTZQ=
 git.sr.ht/~jackmordaunt/go-toast v1.0.0 h1:bbRox6VkotdOj3QcWimZQ84APoszIsA/pSIj8ypDdV8=
 git.sr.ht/~jackmordaunt/go-toast v1.0.0/go.mod h1:aIuRX/HdBOz7yRS8rOVYQCwJQlFS7DbYBTpUV0SHeeg=
 git.wow.st/gmp/jni v0.0.0-20210610011705-34026c7e22d0 h1:bGG/g4ypjrCJoSvFrP5hafr9PPB5aw8SjcOWWila7ZI=
