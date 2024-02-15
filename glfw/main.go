@@ -182,6 +182,9 @@ func registerCallbacks(window *glfw.Window, q *input.Router) {
 			Buttons:  btns,
 		}
 		q.Queue(e)
+		if _, ok := q.WakeupTime(); !ok {
+			handleCursorEvent(xpos, ypos)
+		}
 	})
 	window.SetMouseButtonCallback(func(w *glfw.Window, button glfw.MouseButton, action glfw.Action, mods glfw.ModifierKey) {
 		var btn pointer.Buttons
@@ -210,5 +213,8 @@ func registerCallbacks(window *glfw.Window, q *input.Router) {
 			Buttons:  btns,
 		}
 		q.Queue(e)
+		if _, ok := q.WakeupTime(); !ok {
+			handleMouseButtonEvent(button, action, mods)
+		}
 	})
 }
