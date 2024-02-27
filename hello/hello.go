@@ -5,15 +5,15 @@ package main
 // A simple Gio program. See https://gioui.org for more information.
 
 import (
-	"fmt"
+	"image/color"
 	"log"
 	"os"
 
 	"gioui.org/app"
-	"gioui.org/io/event"
-	"gioui.org/io/key"
-	"gioui.org/io/pointer"
+	"gioui.org/font/gofont"
 	"gioui.org/op"
+	"gioui.org/text"
+	"gioui.org/widget/material"
 )
 
 func main() {
@@ -28,7 +28,8 @@ func main() {
 }
 
 func loop(w *app.Window) error {
-	tag := new(int)
+	th := material.NewTheme()
+	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	var ops op.Ops
 	for {
 		switch e := w.NextEvent().(type) {
@@ -36,33 +37,11 @@ func loop(w *app.Window) error {
 			return e.Err
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
-			for {
-				ev, ok := gtx.Source.Event(pointer.Filter{
-					Target: tag,
-					Kinds:  pointer.Release,
-				})
-				if !ok {
-					break
-				}
-				switch ev := ev.(type) {
-				case pointer.Event:
-					if ev.Kind == pointer.Release {
-						gtx.Execute(key.FocusCmd{Tag: tag})
-						fmt.Println("triggered focus command")
-					}
-				}
-				fmt.Printf("%#+v\n", ev)
-			}
-			for {
-				ev, ok := gtx.Source.Event(key.Filter{
-					Focus: tag,
-				})
-				if !ok {
-					break
-				}
-				fmt.Printf("%#+v\n", ev)
-			}
-			event.Op(gtx.Ops, tag)
+			l := material.H1(th, "Hello, Gio")
+			maroon := color.NRGBA{R: 127, G: 0, B: 0, A: 255}
+			l.Color = maroon
+			l.Alignment = text.Middle
+			l.Layout(gtx)
 			e.Frame(gtx.Ops)
 		}
 	}
