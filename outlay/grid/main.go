@@ -24,7 +24,8 @@ import (
 
 func main() {
 	go func() {
-		w := app.NewWindow(
+		w := new(app.Window)
+		w.Option(
 			app.Size(unit.Dp(800), unit.Dp(400)),
 			app.Title("Gio layouts"),
 		)
@@ -41,7 +42,7 @@ func loop(w *app.Window) error {
 
 	var ops op.Ops
 	for {
-		switch e := w.NextEvent().(type) {
+		switch e := w.Event().(type) {
 		case app.DestroyEvent:
 			return e.Err
 

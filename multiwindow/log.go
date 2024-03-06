@@ -61,7 +61,7 @@ func (log *Log) Run(w *Window) error {
 
 	go func() {
 		for {
-			ev := w.NextEvent()
+			ev := w.Event()
 			events <- ev
 			<-acks
 			if _, ok := ev.(app.DestroyEvent); ok {

@@ -37,7 +37,7 @@ import (
 func main() {
 	th := NewTheme(gofont.Collection())
 	ui := UI{
-		Window:   app.NewWindow(),
+		Window:   new(app.Window),
 		Renderer: markdown.NewRenderer(),
 		Theme:    th,
 		Resize:   component.Resize{Ratio: 0.5},
@@ -97,7 +97,7 @@ func NewTheme(font []font.FontFace) *Theme {
 func (ui UI) Loop() error {
 	var ops op.Ops
 	for {
-		e := ui.Window.NextEvent()
+		e := ui.Window.Event()
 		giohyperlink.ListenEvents(e)
 		switch e := e.(type) {
 		case app.DestroyEvent:

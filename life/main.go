@@ -35,7 +35,8 @@ func main() {
 	windowHeight := cellSize * (unit.Dp(boardSize.Y + 2))
 	// This creates a new application window and starts the UI.
 	go func() {
-		w := app.NewWindow(
+		w := new(app.Window)
+		w.Option(
 			app.Title("Game of Life"),
 			app.Size(windowWidth, windowHeight),
 		)
@@ -80,7 +81,7 @@ func (ui *UI) Run(w *app.Window) error {
 
 	go func() {
 		for {
-			ev := w.NextEvent()
+			ev := w.Event()
 			events <- ev
 			<-acks
 			if _, ok := ev.(app.DestroyEvent); ok {

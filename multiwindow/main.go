@@ -75,8 +75,9 @@ func (a *Application) NewWindow(title string, view View, opts ...app.Option) {
 	opts = append(opts, app.Title(title))
 	w := &Window{
 		App:    a,
-		Window: app.NewWindow(opts...),
+		Window: new(app.Window),
 	}
+	w.Window.Option(opts...)
 	a.active.Add(1)
 	go func() {
 		defer a.active.Done()
@@ -111,7 +112,7 @@ func (view WidgetView) Run(w *Window) error {
 		w.Perform(system.ActionClose)
 	}()
 	for {
-		switch e := w.NextEvent().(type) {
+		switch e := w.Event().(type) {
 		case app.DestroyEvent:
 			return e.Err
 		case app.FrameEvent:

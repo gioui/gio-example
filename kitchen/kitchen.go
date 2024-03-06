@@ -11,7 +11,6 @@ import (
 	"image"
 	"image/color"
 	"image/png"
-	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -72,7 +71,8 @@ func main() {
 	}()
 
 	go func() {
-		w := app.NewWindow(app.Size(unit.Dp(800), unit.Dp(700)))
+		w := new(app.Window)
+		w.Option(app.Size(unit.Dp(800), unit.Dp(700)))
 		if err := loop(w); err != nil {
 			log.Fatal(err)
 		}
@@ -109,7 +109,7 @@ func saveScreenshot(f string) error {
 	if err := png.Encode(&buf, img); err != nil {
 		return err
 	}
-	return ioutil.WriteFile(f, buf.Bytes(), 0o666)
+	return os.WriteFile(f, buf.Bytes(), 0o666)
 }
 
 func loop(w *app.Window) error {
@@ -121,7 +121,7 @@ func loop(w *app.Window) error {
 
 	go func() {
 		for {
-			ev := w.NextEvent()
+			ev := w.Event()
 			events <- ev
 			<-acks
 			if _, ok := ev.(app.DestroyEvent); ok {

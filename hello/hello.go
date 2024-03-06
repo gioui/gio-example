@@ -18,7 +18,7 @@ import (
 
 func main() {
 	go func() {
-		w := app.NewWindow()
+		w := new(app.Window)
 		if err := loop(w); err != nil {
 			log.Fatal(err)
 		}
@@ -32,7 +32,7 @@ func loop(w *app.Window) error {
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	var ops op.Ops
 	for {
-		switch e := w.NextEvent().(type) {
+		switch e := w.Event().(type) {
 		case app.DestroyEvent:
 			return e.Err
 		case app.FrameEvent:

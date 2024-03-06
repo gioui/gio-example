@@ -190,7 +190,8 @@ func main() {
 	dist.Update(stars)
 
 	desiredSize := unit.Dp(800)
-	window := app.NewWindow(
+	window := new(app.Window)
+	window.Option(
 		app.Size(desiredSize, desiredSize),
 		app.Title("Seed: "+strconv.Itoa(int(seed))),
 	)
@@ -203,7 +204,7 @@ func main() {
 		window.Invalidate()
 	}
 	for {
-		switch ev := window.NextEvent().(type) {
+		switch ev := window.Event().(type) {
 		case app.DestroyEvent:
 			if ev.Err != nil {
 				log.Fatal(ev.Err)

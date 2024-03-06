@@ -42,13 +42,14 @@ func main() {
 		var editor component.TextField
 		var notifyBtn widget.Clickable
 		var setOngoing widget.Bool
-		w := app.NewWindow(
+		w := new(app.Window)
+		w.Option(
 			app.Title("notify"),
 			app.Size(unit.Dp(800), unit.Dp(600)))
 
 		var ops op.Ops
 		for {
-			switch event := w.NextEvent().(type) {
+			switch event := w.Event().(type) {
 			case app.DestroyEvent:
 				os.Exit(0)
 			case app.FrameEvent:

@@ -56,7 +56,8 @@ func main() {
 		fmt.Println("See https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line.")
 	}
 	go func() {
-		w := app.NewWindow(
+		w := new(app.Window)
+		w.Option(
 			app.Size(unit.Dp(400), unit.Dp(800)),
 			app.Title("Gophers"),
 		)
@@ -85,7 +86,7 @@ func (a *App) run() error {
 
 	go func() {
 		for {
-			ev := a.w.NextEvent()
+			ev := a.w.Event()
 			events <- ev
 			<-acks
 			if _, ok := ev.(app.DestroyEvent); ok {
@@ -106,23 +107,20 @@ func (a *App) run() error {
 		case e := <-events:
 			switch e := e.(type) {
 			case app.DestroyEvent:
+				if a.ctxCancel != nil {
+					a.ctxCancel()
+					a.ctxCancel = nil
+				}
 				acks <- struct{}{}
 				return e.Err
-			case app.StageEvent:
-				if e.Stage >= app.StageRunning {
-					if a.ctxCancel == nil {
-						a.ctx, a.ctxCancel = context.WithCancel(context.Background())
-					}
-					if a.ui.users == nil {
-						go a.fetchContributors()
-					}
-				} else {
-					if a.ctxCancel != nil {
-						a.ctxCancel()
-						a.ctxCancel = nil
-					}
-				}
 			case app.FrameEvent:
+				if a.ctxCancel == nil {
+					a.ctx, a.ctxCancel = context.WithCancel(context.Background())
+				}
+				if a.ui.users == nil {
+					a.ui.users = []*user{}
+					go a.fetchContributors()
+				}
 				gtx := app.NewContext(&ops, e)
 
 				// register a global key listener for the escape key wrapping our entire UI.

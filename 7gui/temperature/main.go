@@ -29,7 +29,8 @@ func main() {
 
 	// This creates a new application window and starts the UI.
 	go func() {
-		w := app.NewWindow(
+		w := new(app.Window)
+		w.Option(
 			app.Title("Temperature Converter"),
 			app.Size(unit.Dp(360), unit.Dp(47)),
 		)
@@ -74,7 +75,7 @@ func (ui *UI) Run(w *app.Window) error {
 	// listen for events happening on the window.
 	for {
 		// detect the type of the event.
-		switch e := w.NextEvent().(type) {
+		switch e := w.Event().(type) {
 		// this is sent when the application should re-render.
 		case app.FrameEvent:
 			// gtx is used to pass around rendering and event information.

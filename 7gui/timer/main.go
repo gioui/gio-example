@@ -27,7 +27,8 @@ func main() {
 
 	// This creates a new application window and starts the UI.
 	go func() {
-		w := app.NewWindow(
+		w := new(app.Window)
+		w.Option(
 			app.Title("Timer"),
 			app.Size(unit.Dp(360), unit.Dp(360)),
 		)
@@ -87,7 +88,7 @@ func (ui *UI) Run(w *app.Window) error {
 	var ops op.Ops
 	for {
 		// detect the type of the event.
-		switch e := w.NextEvent().(type) {
+		switch e := w.Event().(type) {
 		// this is sent when the application should re-render.
 		case app.FrameEvent:
 			// gtx is used to pass around rendering and event information.

@@ -68,7 +68,8 @@ type eglContext struct {
 func main() {
 	go func() {
 		// Set CustomRenderer so we can provide our own rendering context.
-		w := app.NewWindow(app.CustomRenderer(true))
+		w := new(app.Window)
+		w.Option(app.CustomRenderer(true))
 		if err := loop(w); err != nil {
 			log.Fatal(err)
 		}
@@ -125,7 +126,7 @@ func loop(w *app.Window) error {
 	// eglMakeCurrent binds a context to an operating system thread. Prevent Go from switching thread.
 	runtime.LockOSThread()
 	for {
-		switch e := w.NextEvent().(type) {
+		switch e := w.Event().(type) {
 		case app.ViewEvent:
 			ve = e
 			init = true
