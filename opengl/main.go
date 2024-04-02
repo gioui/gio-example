@@ -158,6 +158,12 @@ func loop(w *app.Window) error {
 				}
 				log.Println("Event:", e)
 			}
+			if btnScreenshot.Clicked(gtx) {
+				if err := screenshot(gioCtx, e.Size, gtx.Ops); err != nil {
+					log.Fatal(err)
+				}
+			}
+
 			drawUI(th, gtx)
 			// Trigger window resize detection in ANGLE.
 			C.eglWaitClient()
@@ -171,12 +177,6 @@ func loop(w *app.Window) error {
 
 			if ok := C.eglSwapBuffers(ctx.disp, ctx.surf); ok != C.EGL_TRUE {
 				log.Fatal(fmt.Errorf("swap failed: %v", C.eglGetError()))
-			}
-
-			if btnScreenshot.Clicked(gtx) {
-				if err := screenshot(gioCtx, e.Size, gtx.Ops); err != nil {
-					log.Fatal(err)
-				}
 			}
 
 			// Process non-drawing ops.
