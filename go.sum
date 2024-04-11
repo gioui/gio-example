@@ -9,8 +9,8 @@ gioui.org/cpu v0.0.0-20210817075930-8d6a761490d2 h1:AGDDxsJE1RpcXTAxPG2B4jrwVUJG
 gioui.org/cpu v0.0.0-20210817075930-8d6a761490d2/go.mod h1:A8M0Cn5o+vY5LTMlnRoK3O5kG+rH0kWfJjeKd9QpBmQ=
 gioui.org/shader v1.0.8 h1:6ks0o/A+b0ne7RzEqRZK5f4Gboz2CfG+mVliciy6+qA=
 gioui.org/shader v1.0.8/go.mod h1:mWdiME581d/kV7/iEhLmUgUK5iZ09XR5XpduXzbePVM=
-gioui.org/x v0.6.0 h1:IY2ccbYkPtRVEDBDFVWVKIfnsaMoVlFMyej+I7//lrU=
-gioui.org/x v0.6.0/go.mod h1:18BNyA2swIgDWV3/Nf7cQh9TaCTQQGbdLUg+pmURS3o=
+gioui.org/x v0.6.1 h1:cHxT3CA07YYm6yNv6FrHRUqbNH2KId8vli3uIM8BF5A=
+gioui.org/x v0.6.1/go.mod h1:18BNyA2swIgDWV3/Nf7cQh9TaCTQQGbdLUg+pmURS3o=
 git.sr.ht/~jackmordaunt/go-toast v1.0.0 h1:bbRox6VkotdOj3QcWimZQ84APoszIsA/pSIj8ypDdV8=
 git.sr.ht/~jackmordaunt/go-toast v1.0.0/go.mod h1:aIuRX/HdBOz7yRS8rOVYQCwJQlFS7DbYBTpUV0SHeeg=
 git.wow.st/gmp/jni v0.0.0-20210610011705-34026c7e22d0 h1:bGG/g4ypjrCJoSvFrP5hafr9PPB5aw8SjcOWWila7ZI=
