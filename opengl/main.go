@@ -37,6 +37,7 @@ import (
 	"gioui.org/gpu"
 	"gioui.org/io/event"
 	"gioui.org/io/pointer"
+	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/text"
@@ -59,6 +60,7 @@ import (
 import "C"
 
 type eglContext struct {
+	view    C.ulong
 	disp    C.EGLDisplay
 	ctx     C.EGLContext
 	surf    C.EGLSurface
@@ -80,7 +82,54 @@ func main() {
 
 var btnScreenshot widget.Clickable
 
-func loop(w *app.Window) error {
+func discardContext(w *app.Window, gioGPU gpu.GPU, eglCtx *eglContext) error {
+	var err error
+	w.Run(func() {
+		if gioGPU != nil {
+			gioGPU.Release()
+		}
+		if eglCtx != nil {
+			if ok := C.eglMakeCurrent(eglCtx.disp, eglCtx.surf, eglCtx.surf, eglCtx.ctx); ok != C.EGL_TRUE {
+				err = fmt.Errorf("eglMakeCurrent failed (%#x)", C.eglGetError())
+			} else {
+				eglCtx.Release()
+			}
+		}
+	})
+	return err
+}
+
+func recreateContext(w *app.Window, ve app.ViewEvent, gioGPU gpu.GPU, eglCtx *eglContext, size image.Point) (gpu.GPU, *eglContext, error) {
+	err := discardContext(w, gioGPU, eglCtx)
+	gioGPU = nil
+	eglCtx = nil
+	if err != nil {
+		return nil, nil, err
+	}
+	w.Run(func() {
+		eglCtx, err = createContext(ve, size)
+		if err != nil {
+			err = fmt.Errorf("failed creating context: %w", err)
+		}
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+	if ok := C.eglMakeCurrent(eglCtx.disp, eglCtx.surf, eglCtx.surf, eglCtx.ctx); ok != C.EGL_TRUE {
+		return gioGPU, eglCtx, fmt.Errorf("eglMakeCurrent failed (%#x)", C.eglGetError())
+	}
+	glGetString := func(e C.GLenum) string {
+		return C.GoString((*C.char)(unsafe.Pointer(C.glGetString(e))))
+	}
+	fmt.Printf("GL_VERSION: %s\nGL_RENDERER: %s\n", glGetString(C.GL_VERSION), glGetString(C.GL_RENDERER))
+	gioGPU, err = gpu.New(gpu.OpenGL{ES: true, Shared: true})
+	return gioGPU, eglCtx, err
+}
+
+func loop(w *app.Window) (windowErr error) {
+	// eglMakeCurrent binds a context to an operating system thread. Prevent Go from switching thread.
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
 	th := material.NewTheme()
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	var ops op.Ops
@@ -88,60 +137,33 @@ func loop(w *app.Window) error {
 		ctx    *eglContext
 		gioCtx gpu.GPU
 		ve     app.ViewEvent
-		init   bool
 		size   image.Point
 	)
 
-	recreateContext := func() {
-		w.Run(func() {
-			if gioCtx != nil {
-				gioCtx.Release()
-				gioCtx = nil
-			}
-			if ctx != nil {
-				C.eglMakeCurrent(ctx.disp, nil, nil, nil)
-				ctx.Release()
-				ctx = nil
-			}
-			c, err := createContext(ve, size)
-			if err != nil {
-				log.Fatal(err)
-			}
-			ctx = c
-		})
-		if ok := C.eglMakeCurrent(ctx.disp, ctx.surf, ctx.surf, ctx.ctx); ok != C.EGL_TRUE {
-			err := fmt.Errorf("eglMakeCurrent failed (%#x)", C.eglGetError())
-			log.Fatal(err)
-		}
-		glGetString := func(e C.GLenum) string {
-			return C.GoString((*C.char)(unsafe.Pointer(C.glGetString(e))))
-		}
-		fmt.Printf("GL_VERSION: %s\nGL_RENDERER: %s\n", glGetString(C.GL_VERSION), glGetString(C.GL_RENDERER))
-		var err error
-		gioCtx, err = gpu.New(gpu.OpenGL{ES: true, Shared: true})
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-	// eglMakeCurrent binds a context to an operating system thread. Prevent Go from switching thread.
-	runtime.LockOSThread()
 	for {
 		switch e := w.Event().(type) {
 		case app.ViewEvent:
 			ve = e
-			init = true
-			if size != (image.Point{}) {
-				recreateContext()
-			}
+			err := discardContext(w, gioCtx, ctx)
+			windowErr = errors.Join(windowErr, err)
+			gioCtx = nil
+			ctx = nil
 		case app.DestroyEvent:
-			return e.Err
+			windowErr = errors.Join(windowErr, e.Err)
+			return windowErr
 		case app.FrameEvent:
-			if init && size != e.Size {
-				size = e.Size
-				recreateContext()
+			resized := e.Size != size
+			size = e.Size
+			if ve.Valid() && size != (image.Point{}) && gioCtx == nil {
+				var err error
+				gioCtx, ctx, err = recreateContext(w, ve, gioCtx, ctx, size)
+				windowErr = errors.Join(windowErr, err)
+			} else if ve.Valid() && resized {
+				ctx.resizeSurface(ve, size)
 			}
-			if gioCtx == nil || !init {
-				break
+			if windowErr != nil {
+				w.Perform(system.ActionClose)
+				continue
 			}
 			// Build ops.
 			gtx := app.NewContext(&ops, e)
@@ -160,7 +182,7 @@ func loop(w *app.Window) error {
 			}
 			if btnScreenshot.Clicked(gtx) {
 				if err := screenshot(gioCtx, e.Size, gtx.Ops); err != nil {
-					log.Fatal(err)
+					log.Printf("failed taking screenshot: %v", err)
 				}
 			}
 
@@ -172,11 +194,13 @@ func loop(w *app.Window) error {
 
 			// Render drawing ops.
 			if err := gioCtx.Frame(gtx.Ops, gpu.OpenGLRenderTarget{}, e.Size); err != nil {
-				log.Fatal(fmt.Errorf("render failed: %v", err))
+				windowErr = errors.Join(windowErr, fmt.Errorf("render failed: %v", err))
+				continue
 			}
 
 			if ok := C.eglSwapBuffers(ctx.disp, ctx.surf); ok != C.EGL_TRUE {
-				log.Fatal(fmt.Errorf("swap failed: %v", C.eglGetError()))
+				windowErr = errors.Join(windowErr, fmt.Errorf("swap failed: 0x%x", C.eglGetError()))
+				continue
 			}
 
 			// Process non-drawing ops.
@@ -289,7 +313,18 @@ func createContext(ve app.ViewEvent, size image.Point) (*eglContext, error) {
 	if surf == nil {
 		return nil, fmt.Errorf("eglCreateWindowSurface failed (0x%x)", C.eglGetError())
 	}
-	return &eglContext{disp: disp, ctx: ctx, surf: surf, cleanup: cleanup}, nil
+	e := &eglContext{
+		view:    view,
+		disp:    disp,
+		ctx:     ctx,
+		surf:    surf,
+		cleanup: cleanup,
+	}
+	return e, nil
+}
+
+func (c *eglContext) resizeSurface(ve app.ViewEvent, size image.Point) {
+	nativeViewResize(ve, c.view, size)
 }
 
 func (c *eglContext) Release() {

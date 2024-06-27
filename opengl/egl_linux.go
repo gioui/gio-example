@@ -46,3 +46,11 @@ func nativeViewFor(e app.ViewEvent, size image.Point) (C.EGLNativeWindowType, fu
 	}
 	panic("no native view available")
 }
+
+func nativeViewResize(e app.ViewEvent, view C.EGLNativeWindowType, newSize image.Point) {
+	switch e.(type) {
+	case app.X11ViewEvent:
+	case app.WaylandViewEvent:
+		C.wl_egl_window_resize(*(**C.struct_wl_egl_window)(unsafe.Pointer(&view)), C.int(newSize.X), C.int(newSize.Y), 0, 0)
+	}
+}
