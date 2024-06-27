@@ -12,6 +12,8 @@ import (
 )
 
 /*
+#cgo CFLAGS: -I../../Plato/pgc/angle/include/
+#cgo LDFLAGS: -L../../Plato/pgc/blobs/darwin_arm64
 #cgo CFLAGS: -DEGL_NO_X11
 #cgo LDFLAGS: -lEGL -lGLESv2
 

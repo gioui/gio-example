@@ -14,5 +14,5 @@ import (
 import "C"
 
 func nativeViewFor(e app.ViewEvent, _ image.Point) (C.EGLNativeWindowType, func()) {
-	return C.EGLNativeWindowType(e.Layer), func() {}
+	return C.EGLNativeWindowType(e.(app.AppKitViewEvent).Layer), func() {}
 }
