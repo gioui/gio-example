@@ -60,7 +60,7 @@ import (
 import "C"
 
 type eglContext struct {
-	view    C.ulong
+	view    C.EGLNativeWindowType
 	disp    C.EGLDisplay
 	ctx     C.EGLContext
 	surf    C.EGLSurface
