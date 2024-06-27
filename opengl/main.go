@@ -28,7 +28,6 @@ import (
 	"log"
 	"math"
 	"os"
-	"reflect"
 	"runtime"
 	"strings"
 	"sync"
@@ -117,7 +116,6 @@ func loop(w *app.Window) error {
 		ctx    *eglContext
 		gioCtx gpu.GPU
 		ve     app.ViewEvent
-		init   bool
 		size   image.Point
 	)
 
@@ -163,22 +161,21 @@ func loop(w *app.Window) error {
 		switch e := w.Event().(type) {
 		case app.ViewEvent:
 			ve = e
-			init = !reflect.ValueOf(e).IsZero()
-			if init && size != (image.Point{}) {
+			if size != (image.Point{}) {
 				if err := recreateContext(); err != nil {
-					return err
+					log.Println(err)
 				}
 			}
 		case app.DestroyEvent:
 			return e.Err
 		case app.FrameEvent:
-			if init && size != e.Size {
+			if size != e.Size {
 				size = e.Size
 				if err := recreateContext(); err != nil {
-					return err
+					log.Println(err)
 				}
 			}
-			if gioCtx == nil || !init {
+			if gioCtx == nil {
 				break
 			}
 			// Build ops.
