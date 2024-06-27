@@ -30,6 +30,7 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"sync"
 	"unsafe"
 
 	"gioui.org/app"
@@ -66,18 +67,46 @@ type eglContext struct {
 
 func main() {
 	go func() {
-		// Set CustomRenderer so we can provide our own rendering context.
-		w := new(app.Window)
-		w.Option(app.CustomRenderer(true))
-		if err := loop(w); err != nil {
-			log.Fatal(err)
-		}
+		var wg sync.WaitGroup
+		go func() {
+			defer wg.Done()
+			// Set CustomRenderer so we can provide our own rendering context.
+			w := new(app.Window)
+			w.Option(app.CustomRenderer(true))
+			if err := loop(w); err != nil {
+				log.Println("custom window", err)
+			}
+		}()
+		go func() {
+			defer wg.Done()
+			w := new(app.Window)
+			if err := plainLoop(w); err != nil {
+				log.Println("custom window", err)
+			}
+		}()
+		wg.Add(2)
+		wg.Wait()
 		os.Exit(0)
 	}()
 	app.Main()
 }
 
 var btnScreenshot widget.Clickable
+
+func plainLoop(w *app.Window) error {
+	var ops op.Ops
+	th := material.NewTheme()
+	for {
+		switch e := w.Event().(type) {
+		case app.DestroyEvent:
+			return e.Err
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, e)
+			material.Loader(th).Layout(gtx)
+			e.Frame(gtx.Ops)
+		}
+	}
+}
 
 func loop(w *app.Window) error {
 	th := material.NewTheme()
@@ -91,7 +120,7 @@ func loop(w *app.Window) error {
 		size   image.Point
 	)
 
-	recreateContext := func() {
+	recreateContext := func() (ctxErr error) {
 		w.Run(func() {
 			if gioCtx != nil {
 				gioCtx.Release()
@@ -104,13 +133,17 @@ func loop(w *app.Window) error {
 			}
 			c, err := createContext(ve, size)
 			if err != nil {
-				log.Fatal(err)
+				ctxErr = err
+				log.Println(err)
 			}
 			ctx = c
 		})
+		if ctxErr != nil {
+			return ctxErr
+		}
 		if ok := C.eglMakeCurrent(ctx.disp, ctx.surf, ctx.surf, ctx.ctx); ok != C.EGL_TRUE {
 			err := fmt.Errorf("eglMakeCurrent failed (%#x)", C.eglGetError())
-			log.Fatal(err)
+			return err
 		}
 		glGetString := func(e C.GLenum) string {
 			return C.GoString((*C.char)(unsafe.Pointer(C.glGetString(e))))
@@ -119,8 +152,9 @@ func loop(w *app.Window) error {
 		var err error
 		gioCtx, err = gpu.New(gpu.OpenGL{ES: true, Shared: true})
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
+		return nil
 	}
 	// eglMakeCurrent binds a context to an operating system thread. Prevent Go from switching thread.
 	runtime.LockOSThread()
@@ -130,14 +164,18 @@ func loop(w *app.Window) error {
 			ve = e
 			init = true
 			if size != (image.Point{}) {
-				recreateContext()
+				if err := recreateContext(); err != nil {
+					return err
+				}
 			}
 		case app.DestroyEvent:
 			return e.Err
 		case app.FrameEvent:
 			if init && size != e.Size {
 				size = e.Size
-				recreateContext()
+				if err := recreateContext(); err != nil {
+					return err
+				}
 			}
 			if gioCtx == nil || !init {
 				break
@@ -165,11 +203,11 @@ func loop(w *app.Window) error {
 
 			// Render drawing ops.
 			if err := gioCtx.Frame(gtx.Ops, gpu.OpenGLRenderTarget{}, e.Size); err != nil {
-				log.Fatal(fmt.Errorf("render failed: %v", err))
+				return err
 			}
 
 			if ok := C.eglSwapBuffers(ctx.disp, ctx.surf); ok != C.EGL_TRUE {
-				log.Fatal(fmt.Errorf("swap failed: %v", C.eglGetError()))
+				return fmt.Errorf("swap failed: %v", C.eglGetError())
 			}
 
 			// Process non-drawing ops.
