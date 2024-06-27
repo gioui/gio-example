@@ -28,6 +28,7 @@ import (
 	"log"
 	"math"
 	"os"
+	"reflect"
 	"runtime"
 	"strings"
 	"sync"
@@ -162,8 +163,8 @@ func loop(w *app.Window) error {
 		switch e := w.Event().(type) {
 		case app.ViewEvent:
 			ve = e
-			init = true
-			if size != (image.Point{}) {
+			init = !reflect.ValueOf(e).IsZero()
+			if init && size != (image.Point{}) {
 				if err := recreateContext(); err != nil {
 					return err
 				}
