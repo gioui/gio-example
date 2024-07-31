@@ -54,6 +54,7 @@ func loop(w *app.Window) error {
 			return e.Err
 		case app.ConfigEvent:
 			decorated = e.Config.Decorated
+			deco.Maximized = e.Config.Mode == app.Maximized
 			title = e.Config.Title
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
