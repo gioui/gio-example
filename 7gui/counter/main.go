@@ -130,6 +130,9 @@ type Counter struct {
 
 // Layout lays out the counter and handles input.
 func (counter *Counter) Layout(th *material.Theme, gtx layout.Context) layout.Dimensions {
+	// first, update the count so that once it renders it has the correct value
+	counter.UpdateCount(gtx)
+
 	// Flex layout lays out widgets from left to right by default.
 	return layout.Flex{}.Layout(gtx,
 		// We use weight 1 for both text and count to make them the same size.
@@ -143,12 +146,15 @@ func (counter *Counter) Layout(th *material.Theme, gtx layout.Context) layout.Di
 		// and the button.
 		layout.Rigid(layout.Spacer{Height: defaultMargin}.Layout),
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-			// For every click on the button increment the count.
-			for counter.increase.Clicked(gtx) {
-				counter.Count++
-			}
-			// Finally display the button.
+			// display the button.
 			return material.Button(th, &counter.increase, "Count").Layout(gtx)
 		}),
 	)
+}
+
+func (counter *Counter) UpdateCount(gtx layout.Context) {
+	// For every click on the button increment the count.
+	for counter.increase.Clicked(gtx) {
+		counter.Count++
+	}
 }
