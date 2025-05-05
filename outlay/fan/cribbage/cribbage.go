@@ -3,6 +3,7 @@ package cribbage
 import (
 	"fmt"
 	"math/rand"
+	"slices"
 
 	"gioui.org/example/outlay/fan/playing"
 )
@@ -67,8 +68,8 @@ func NewGame(players int) Game {
 	var g Game
 	g.Players = make([]Player, players)
 	g.Dealer = g.NumPlayers() - 1
-	for i := 0; i < 4; i++ {
-		for j := 0; j < 13; j++ {
+	for i := range 4 {
+		for j := range 13 {
 			g.Deck = append(g.Deck, playing.Card{
 				Suit: playing.Suit(i),
 				Rank: playing.Rank(j),
@@ -123,12 +124,12 @@ func (g *Game) DealRound() {
 	g.Dealer = g.Left(g.Dealer)
 	g.Reset()
 	g.Shuffle()
-	for i := 0; i < g.CardsToDealPerPlayer(); i++ {
+	for range g.CardsToDealPerPlayer() {
 		for i := range g.Players {
 			g.DealCardTo(&(g.Players[i].Hand))
 		}
 	}
-	for i := 0; i < g.CardsDealtToCrib(); i++ {
+	for range g.CardsDealtToCrib() {
 		g.DealCardTo(&g.Crib)
 	}
 	g.Phase = Sacrifice
@@ -166,6 +167,6 @@ func (g *Game) Sacrifice(player, card int) {
 		return
 	}
 	c := hand[card]
-	g.Players[player].Hand = append(hand[:card], hand[card+1:]...)
+	g.Players[player].Hand = slices.Delete(hand, card, card+1)
 	g.Crib = append(g.Crib, c)
 }

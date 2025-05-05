@@ -30,7 +30,6 @@ func (m *mass) move(f r2.Vec) {
 }
 
 func galaxy(numStars int, rnd *rand.Rand) ([]*mass, barneshut.Plane) {
-
 	// Make 50 stars in random locations and velocities.
 	stars := make([]*mass, numStars)
 	p := make([]barneshut.Particle2, len(stars))
