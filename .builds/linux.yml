@@ -28,8 +28,8 @@ tasks:
  - install_go: |
      mkdir -p /home/build/sdk
      cd /home/build/sdk
-     curl -Lso go.tar.gz https://go.dev/dl/go1.23.4.linux-amd64.tar.gz
-     echo "6924efde5de86fe277676e929dc9917d466efa02fb934197bc2eba35d5680971 go.tar.gz" | sha256sum -c -
+     curl -Lso go.tar.gz https://go.dev/dl/go1.24.2.linux-amd64.tar.gz
+     echo "68097bd680839cbc9d464a0edce4f7c333975e27a90246890e9f1078c7e702ad go.tar.gz" | sha256sum -c -
      tar xzf go.tar.gz
  - test_example: |
      cd gio-example
