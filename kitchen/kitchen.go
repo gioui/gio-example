@@ -171,15 +171,9 @@ func transformedKitchen(gtx layout.Context, th *material.Theme) layout.Dimension
 		gtx.Execute(op.InvalidateCmd{})
 		tr := f32.Affine2D{}
 		tr = tr.Rotate(f32.Pt(300, 20), -angle)
-		scale := 1.0 - dt*.5
-		if scale < 0.5 {
-			scale = 0.5
-		}
+		scale := max(1.0-dt*.5, 0.5)
 		tr = tr.Scale(f32.Pt(300, 20), f32.Pt(scale, scale))
-		offset := dt * 50
-		if offset > 200 {
-			offset = 200
-		}
+		offset := min(dt*50, 200)
 		tr = tr.Offset(f32.Pt(0, offset))
 		op.Affine(tr).Add(gtx.Ops)
 	}

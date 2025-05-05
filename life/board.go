@@ -81,8 +81,8 @@ func (b *Board) Advance() {
 		next[i] = 0
 	}
 
-	for y := 0; y < b.Size.Y; y++ {
-		for x := 0; x < b.Size.X; x++ {
+	for y := range b.Size.Y {
+		for x := range b.Size.X {
 			var t byte
 			t += cur[b.At(image.Pt(x-1, y-1))]
 			t += cur[b.At(image.Pt(x+0, y-1))]

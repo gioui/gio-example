@@ -44,7 +44,7 @@ func genCards(th *material.Theme) []boring.HoverCard {
 	rand.Shuffle(len(deck), func(i, j int) {
 		deck[i], deck[j] = deck[j], deck[i]
 	})
-	for i := 0; i < max; i++ {
+	for i := range max {
 		cards = append(cards, boring.HoverCard{
 			CardStyle: boring.CardStyle{
 				Card:   deck[i],

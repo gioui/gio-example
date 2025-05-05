@@ -4,9 +4,11 @@ playing cards.
 */
 package playing
 
-type Suit uint8
-type Rank uint8
-type Color bool
+type (
+	Suit  uint8
+	Rank  uint8
+	Color bool
+)
 
 const (
 	Spades Suit = iota
@@ -45,8 +47,8 @@ type Card struct {
 
 func Deck() []Card {
 	d := make([]Card, 0, 52)
-	for i := 0; i < 4; i++ {
-		for k := 0; k < 13; k++ {
+	for i := range 4 {
+		for k := range 13 {
 			d = append(d, Card{
 				Suit: Suit(i),
 				Rank: Rank(k),

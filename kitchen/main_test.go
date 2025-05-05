@@ -37,9 +37,8 @@ func benchmarkUI(b *testing.B, transform transformation) {
 	var layoutTime time.Duration
 	var frameTime time.Duration
 
-	b.ResetTimer()
 	var ops op.Ops
-	for i := 0; i < b.N; i++ {
+	for i := 0; b.Loop(); i++ {
 		ops.Reset()
 		gtx := layout.Context{
 			Ops:         &ops,
@@ -72,17 +71,11 @@ func addTransform(i int, transform transformation, ops *op.Ops) {
 		tr = tr.Rotate(f32.Pt(300, 20), -angle)
 	}
 	if transform.scale {
-		scale := 1.0 - dt*.5
-		if scale < 0.5 {
-			scale = 0.5
-		}
+		scale := max(1.0-dt*.5, 0.5)
 		tr = tr.Scale(f32.Pt(300, 20), f32.Pt(scale, scale))
 	}
 	if transform.offset {
-		offset := dt * 50
-		if offset > 200 {
-			offset = 200
-		}
+		offset := min(dt*50, 200)
 		tr = tr.Offset(f32.Pt(0, offset))
 	}
 	op.Affine(tr).Add(ops)

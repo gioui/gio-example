@@ -14,7 +14,7 @@ func BenchmarkUI(b *testing.B) {
 	fetch := func(_ string) {}
 	u := newUI(fetch)
 	var ops op.Ops
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		gtx := layout.Context{
 			Ops:         &ops,
 			Constraints: layout.Exact(image.Pt(800, 600)),

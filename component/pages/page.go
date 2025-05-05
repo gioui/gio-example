@@ -19,8 +19,8 @@ type Page interface {
 }
 
 type Router struct {
-	pages   map[interface{}]Page
-	current interface{}
+	pages   map[any]Page
+	current any
 	*component.ModalNavDrawer
 	NavAnim component.VisibilityAnimation
 	*component.AppBar
@@ -42,7 +42,7 @@ func NewRouter() Router {
 		Duration: time.Millisecond * 250,
 	}
 	return Router{
-		pages:          make(map[interface{}]Page),
+		pages:          make(map[any]Page),
 		ModalLayer:     modal,
 		ModalNavDrawer: modalNav,
 		AppBar:         bar,
@@ -50,11 +50,11 @@ func NewRouter() Router {
 	}
 }
 
-func (r *Router) Register(tag interface{}, p Page) {
+func (r *Router) Register(tag any, p Page) {
 	r.pages[tag] = p
 	navItem := p.NavItem()
 	navItem.Tag = tag
-	if r.current == interface{}(nil) {
+	if r.current == any(nil) {
 		r.current = tag
 		r.AppBar.Title = navItem.Name
 		r.AppBar.SetActions(p.Actions(), p.Overflow())
@@ -62,7 +62,7 @@ func (r *Router) Register(tag interface{}, p Page) {
 	r.ModalNavDrawer.AddNavItem(navItem)
 }
 
-func (r *Router) SwitchTo(tag interface{}) {
+func (r *Router) SwitchTo(tag any) {
 	p, ok := r.pages[tag]
 	if !ok {
 		return

@@ -34,7 +34,7 @@ func NewLog() *Log {
 }
 
 // Printf adds a new line to the log.
-func (log *Log) Printf(format string, args ...interface{}) {
+func (log *Log) Printf(format string, args ...any) {
 	s := fmt.Sprintf(format, args...)
 
 	// ensure that this logging does not block.
@@ -106,5 +106,4 @@ func (log *Log) Layout(w *Window, th *material.Theme, gtx layout.Context) {
 			})
 		}),
 	)
-
 }

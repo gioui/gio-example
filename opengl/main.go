@@ -236,7 +236,7 @@ func screenshot(ctx gpu.GPU, size image.Point, ops *op.Ops) error {
 		return fmt.Errorf("screenshot: %w", err)
 	}
 	const file = "screenshot.png"
-	if err := os.WriteFile(file, buf.Bytes(), 0644); err != nil {
+	if err := os.WriteFile(file, buf.Bytes(), 0o644); err != nil {
 		return fmt.Errorf("screenshot: %w", err)
 	}
 	fmt.Printf("wrote %q\n", file)

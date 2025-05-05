@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"slices"
 
 	"golang.org/x/oauth2"
 
@@ -233,7 +234,7 @@ func (a *App) fetchContributors() {
 			userErrs <- err
 		}()
 	}
-	for i := 0; i < len(cons); i++ {
+	for range cons {
 		if err := <-userErrs; err != nil {
 			fmt.Fprintf(os.Stderr, "github: failed to fetch user: %v\n", err)
 		}
@@ -244,7 +245,7 @@ func (a *App) fetchContributors() {
 	// Drop users with no avatar or name.
 	for i := len(users) - 1; i >= 0; i-- {
 		if u := users[i]; u.name == "" || u.avatar.Bounds().Size() == (image.Point{}) {
-			users = append(users[:i], users[i+1:]...)
+			users = slices.Delete(users, i, i+1)
 		}
 	}
 	a.updateUsers <- users

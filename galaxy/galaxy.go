@@ -23,14 +23,13 @@ func (m *mass) move(f r2.Vec) {
 	// F = ma
 	f.X /= m.m
 	f.Y /= m.m
-	m.v = m.v.Add(f)
+	m.v = r2.Add(m.v, f)
 
 	// Update position.
-	m.d = m.d.Add(m.v)
+	m.d = r2.Add(m.d, m.v)
 }
 
 func galaxy(numStars int, rnd *rand.Rand) ([]*mass, barneshut.Plane) {
-
 	// Make 50 stars in random locations and velocities.
 	stars := make([]*mass, numStars)
 	p := make([]barneshut.Particle2, len(stars))
