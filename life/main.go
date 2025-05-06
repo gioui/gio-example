@@ -72,7 +72,7 @@ func NewUI() *UI {
 func (ui *UI) Run(w *app.Window) error {
 	var ops op.Ops
 
-	// Update the board 3 times per second.
+	// Events the board 3 times per second.
 	advanceBoard := time.NewTicker(time.Second / 3)
 	defer advanceBoard.Stop()
 
