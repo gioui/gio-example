@@ -129,22 +129,18 @@ func (a *App) run() error {
 				event.Op(gtx.Ops, a.w)
 
 				// check for presses of global keyboard shortcuts and process them.
-				for {
-					event, ok := gtx.Event(
-						key.Filter{
-							Required: key.ModShortcut,
-							Name:     "P",
-						},
-						key.Filter{
-							Name: key.NameBack,
-						},
-						key.Filter{
-							Name: key.NameEscape,
-						},
-					)
-					if !ok {
-						break
-					}
+				for event := range gtx.Events(
+					key.Filter{
+						Required: key.ModShortcut,
+						Name:     "P",
+					},
+					key.Filter{
+						Name: key.NameBack,
+					},
+					key.Filter{
+						Name: key.NameEscape,
+					},
+				) {
 					switch event := event.(type) {
 					case key.Event:
 						switch event.Name {

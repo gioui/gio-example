@@ -82,13 +82,10 @@ func (ui *UI) Run(w *app.Window) error {
 			event.Op(gtx.Ops, w)
 
 			// check for presses of the escape key and close the window if we find them.
-			for {
-				event, ok := gtx.Event(key.Filter{
-					Name: key.NameEscape,
-				})
-				if !ok {
-					break
-				}
+
+			for event := range gtx.Events(key.Filter{
+				Name: key.NameEscape,
+			}) {
 				switch event := event.(type) {
 				case key.Event:
 					if event.Name == key.NameEscape {
@@ -96,6 +93,7 @@ func (ui *UI) Run(w *app.Window) error {
 					}
 				}
 			}
+
 			// render and handle UI.
 			ui.Layout(gtx)
 			area.Pop()
