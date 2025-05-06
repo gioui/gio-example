@@ -281,14 +281,10 @@ func layoutControls(gtx C) D {
 }
 
 func layoutSelectionLayer(gtx C) D {
-	for {
-		event, ok := gtx.Event(pointer.Filter{
-			Target: &selected,
-			Kinds:  pointer.Press | pointer.Release | pointer.Drag,
-		})
-		if !ok {
-			break
-		}
+	for event := range gtx.Events(pointer.Filter{
+		Target: &selected,
+		Kinds:  pointer.Press | pointer.Release | pointer.Drag,
+	}) {
 		switch event := event.(type) {
 		case pointer.Event:
 			var intPt image.Point

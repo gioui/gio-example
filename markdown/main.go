@@ -133,11 +133,7 @@ func (ui *UI) Update(gtx C) {
 			}
 		}
 	}
-	for {
-		event, ok := ui.Editor.Update(gtx)
-		if !ok {
-			break
-		}
+	for event := range ui.Editor.Update(gtx) {
 		if _, ok := event.(widget.ChangeEvent); ok {
 			var err error
 			ui.Theme.cache, err = ui.Renderer.Render([]byte(ui.Editor.Text()))

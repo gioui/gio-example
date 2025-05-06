@@ -21,14 +21,10 @@ type HoverState struct {
 
 func (c *HoverState) Hovering(gtx C) bool {
 	start := c.hovering
-	for {
-		ev, ok := gtx.Event(pointer.Filter{
-			Target: c,
-			Kinds:  pointer.Enter | pointer.Leave,
-		})
-		if !ok {
-			break
-		}
+	for ev := range gtx.Events(pointer.Filter{
+		Target: c,
+		Kinds:  pointer.Enter | pointer.Leave,
+	}) {
 		switch ev := ev.(type) {
 		case pointer.Event:
 			switch ev.Kind {

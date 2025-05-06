@@ -130,11 +130,7 @@ func (u *UI) layoutTimings(gtx layout.Context) {
 func (u *UI) Layout(gtx layout.Context) {
 	for i := range u.userClicks {
 		click := &u.userClicks[i]
-		for {
-			e, ok := click.Update(gtx.Source)
-			if !ok {
-				break
-			}
+		for e := range click.Update(gtx.Source) {
 			if e.Kind == gesture.KindClick {
 				u.selectedUser = u.newUserPage(u.users[i])
 			}

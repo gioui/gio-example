@@ -72,7 +72,7 @@ func NewUI() *UI {
 func (ui *UI) Run(w *app.Window) error {
 	var ops op.Ops
 
-	// Update the board 3 times per second.
+	// Events the board 3 times per second.
 	advanceBoard := time.NewTicker(time.Second / 3)
 	defer advanceBoard.Stop()
 
@@ -105,13 +105,9 @@ func (ui *UI) Run(w *app.Window) error {
 				event.Op(gtx.Ops, w)
 
 				// check for presses of the escape key and close the window if we find them.
-				for {
-					event, ok := gtx.Event(key.Filter{
-						Name: key.NameEscape,
-					})
-					if !ok {
-						break
-					}
+				for event := range gtx.Events(key.Filter{
+					Name: key.NameEscape,
+				}) {
 					switch event := event.(type) {
 					case key.Event:
 						if event.Name == key.NameEscape {
