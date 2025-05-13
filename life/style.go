@@ -29,14 +29,10 @@ func (board BoardStyle) Layout(gtx layout.Context) layout.Dimensions {
 	gtx.Constraints = layout.Exact(size)
 
 	// Handle any input from a pointer.
-	for {
-		ev, ok := gtx.Event(pointer.Filter{
-			Target: board.Board,
-			Kinds:  pointer.Drag,
-		})
-		if !ok {
-			break
-		}
+	for ev := range gtx.Events(pointer.Filter{
+		Target: board.Board,
+		Kinds:  pointer.Drag,
+	}) {
 		if ev, ok := ev.(pointer.Event); ok {
 			p := image.Pt(int(ev.Position.X), int(ev.Position.Y))
 			// Calculate the board coordinate given a cursor position.

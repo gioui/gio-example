@@ -49,14 +49,11 @@ func loop(w *app.Window) error {
 			area := clip.Rect(r).Push(&ops)
 			event.Op(&ops, &mousePos)
 			area.Pop()
-			for {
-				ev, ok := gtx.Event(pointer.Filter{
-					Target: &mousePos,
-					Kinds:  pointer.Move | pointer.Enter | pointer.Leave,
-				})
-				if !ok {
-					break
-				}
+
+			for ev := range gtx.Events(pointer.Filter{
+				Target: &mousePos,
+				Kinds:  pointer.Move | pointer.Enter | pointer.Leave,
+			}) {
 				switch ev := ev.(type) {
 				case pointer.Event:
 					switch ev.Kind {
