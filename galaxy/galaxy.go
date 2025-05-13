@@ -25,7 +25,7 @@ func (m *mass) move(f r2.Vec) {
 	f.Y /= m.m
 	m.v = m.v.Add(f)
 
-	// Events position.
+	// Update position.
 	m.d = m.d.Add(m.v)
 }
 
@@ -76,7 +76,7 @@ func simulate(stars []*mass, plane barneshut.Plane, dist *distribution) {
 		vectors[j] = plane.ForceOn(s, theta, barneshut.Gravity2).Scale(G)
 	}
 
-	// Events positions.
+	// Update positions.
 	for j, s := range stars {
 		s.move(vectors[j])
 	}
