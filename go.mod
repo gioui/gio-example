@@ -4,16 +4,16 @@ go 1.24.1
 
 require (
 	eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d
-	gioui.org v0.8.1-0.20250424183133-e18db649912a
-	gioui.org/cmd v0.8.1-0.20250321120711-01ffdf788daa
-	gioui.org/x v0.8.2-0.20250115181849-c005f2ad1592
+	gioui.org v0.9.0
+	gioui.org/cmd v0.9.0
+	gioui.org/x v0.9.0
 	github.com/go-gl/gl v0.0.0-20231021071112-07e5d0ea2e71
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728
 	github.com/google/go-github/v24 v24.0.1
 	github.com/inkeliz/giohyperlink v0.0.0-20220903215451-2ac5d54abdce
-	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394
+	golang.org/x/exp v0.0.0-20250408133849-7e4ce0ab07d0
 	golang.org/x/exp/shiny v0.0.0-20250408133849-7e4ce0ab07d0
-	golang.org/x/image v0.25.0
+	golang.org/x/image v0.26.0
 	golang.org/x/oauth2 v0.30.0
 	gonum.org/v1/gonum v0.8.2
 )
@@ -31,7 +31,7 @@ require (
 	github.com/yuin/goldmark v1.7.11 // indirect
 	golang.org/x/mod v0.24.0 // indirect
 	golang.org/x/sync v0.13.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
-	golang.org/x/tools v0.31.0 // indirect
+	golang.org/x/tools v0.32.0 // indirect
 )
