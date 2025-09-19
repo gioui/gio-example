@@ -170,14 +170,10 @@ func loop(w *app.Window) (windowErr error) {
 			// Catch pointer events not hitting UI.
 			types := pointer.Move | pointer.Press | pointer.Release
 			event.Op(gtx.Ops, w)
-			for {
-				e, ok := gtx.Event(pointer.Filter{
-					Target: w,
-					Kinds:  types,
-				})
-				if !ok {
-					break
-				}
+			for e := range gtx.Events(pointer.Filter{
+				Target: w,
+				Kinds:  types,
+			}) {
 				log.Println("Event:", e)
 			}
 			if btnScreenshot.Clicked(gtx) {

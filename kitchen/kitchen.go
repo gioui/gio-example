@@ -248,11 +248,7 @@ func (b iconAndTextButton) Layout(gtx layout.Context) layout.Dimensions {
 }
 
 func kitchen(gtx layout.Context, th *material.Theme) layout.Dimensions {
-	for {
-		e, ok := lineEditor.Update(gtx)
-		if !ok {
-			break
-		}
+	for e := range lineEditor.Update(gtx) {
 		if e, ok := e.(widget.SubmitEvent); ok {
 			topLabel = e.Text
 			lineEditor.SetText("")
