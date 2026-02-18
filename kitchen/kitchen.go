@@ -20,7 +20,6 @@ import (
 	"gioui.org/font"
 	"gioui.org/font/gofont"
 	"gioui.org/gpu/headless"
-	"gioui.org/io/event"
 	"gioui.org/io/input"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -54,7 +53,7 @@ func main() {
 		log.Fatal(err)
 	}
 	icon = ic
-	progressIncrementer = make(chan float32)
+	progressIncrementer = make(chan float32, 1)
 	if *screenshot != "" {
 		if err := saveScreenshot(*screenshot); err != nil {
 			fmt.Fprintf(os.Stderr, "failed to save screenshot: %v\n", err)
@@ -64,14 +63,21 @@ func main() {
 	}
 
 	go func() {
-		for {
-			time.Sleep(time.Second)
-			progressIncrementer <- 0.1
-		}
-	}()
-
-	go func() {
 		w := new(app.Window)
+		go func() {
+			for {
+				time.Sleep(time.Second)
+				p := float32(0.1)
+				select {
+				case old := <-progressIncrementer:
+					p += old
+				default:
+				}
+				progressIncrementer <- 0.1
+				w.Invalidate()
+			}
+		}()
+
 		w.Option(app.Size(unit.Dp(800), unit.Dp(700)))
 		if err := loop(w); err != nil {
 			log.Fatal(err)
@@ -116,50 +122,34 @@ func loop(w *app.Window) error {
 	th := material.NewTheme()
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 
-	events := make(chan event.Event)
-	acks := make(chan struct{})
-
-	go func() {
-		for {
-			ev := w.Event()
-			events <- ev
-			<-acks
-			if _, ok := ev.(app.DestroyEvent); ok {
-				return
-			}
-		}
-	}()
-
 	var ops op.Ops
 	for {
 		select {
-		case e := <-events:
-			switch e := e.(type) {
-			case app.DestroyEvent:
-				acks <- struct{}{}
-				return e.Err
-			case app.FrameEvent:
-				gtx := app.NewContext(&ops, e)
-				if *disable {
-					gtx = gtx.Disabled()
-				}
-				if checkbox.Update(gtx) {
-					if checkbox.Value {
-						transformTime = e.Now
-					} else {
-						transformTime = time.Time{}
-					}
-				}
-				transformedKitchen(gtx, th)
-				e.Frame(gtx.Ops)
-			}
-			acks <- struct{}{}
 		case p := <-progressIncrementer:
 			progress += p
 			if progress > 1 {
 				progress = 0
 			}
-			w.Invalidate()
+		default:
+		}
+		e := w.Event()
+		switch e := e.(type) {
+		case app.DestroyEvent:
+			return e.Err
+		case app.FrameEvent:
+			gtx := app.NewContext(&ops, e)
+			if *disable {
+				gtx = gtx.Disabled()
+			}
+			if checkbox.Update(gtx) {
+				if checkbox.Value {
+					transformTime = e.Now
+				} else {
+					transformTime = time.Time{}
+				}
+			}
+			transformedKitchen(gtx, th)
+			e.Frame(gtx.Ops)
 		}
 	}
 }
