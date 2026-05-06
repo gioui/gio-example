@@ -6,7 +6,7 @@ require (
 	eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d
 	gioui.org v0.9.0
 	gioui.org/cmd v0.9.0
-	gioui.org/x v0.9.0
+	gioui.org/x v0.9.1-0.20260506141419-1683c697d8d1
 	github.com/go-gl/gl v0.0.0-20231021071112-07e5d0ea2e71
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728
 	github.com/google/go-github/v24 v24.0.1

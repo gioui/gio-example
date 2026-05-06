@@ -50,11 +50,12 @@ type ImageResult struct {
 	Error  error
 	Format string
 	Image  image.Image
+	URL    string
 }
 
 func loop(w *app.Window) error {
 	expl := explorer.NewExplorer(w)
-	var openBtn, saveBtn widget.Clickable
+	var openBtn, reopenBtn, saveBtn widget.Clickable
 	th := material.NewTheme()
 	th.Shaper = text.NewShaper(text.WithCollection(gofont.Collection()))
 	imgChan := make(chan ImageResult)
@@ -74,11 +75,16 @@ func loop(w *app.Window) error {
 		}
 	}()
 	var img ImageResult
+	var lastURL string
 	var saveErr error
 	var ops op.Ops
 	for {
 		select {
-		case img = <-imgChan:
+		case newImg := <-imgChan:
+			if img != (ImageResult{}) {
+				lastURL = img.URL
+			}
+			img = newImg
 			w.Invalidate()
 		case saveErr = <-saveChan:
 			w.Invalidate()
@@ -99,14 +105,40 @@ func loop(w *app.Window) error {
 							return
 						}
 						defer file.Close()
+						url := ""
+						if f, ok := file.(*explorer.File); ok {
+							url = f.URI()
+							log.Printf("image url is %q", url)
+						} else if f, ok := file.(*os.File); ok {
+							url = f.Name()
+							log.Printf("image url is %q", url)
+						}
 						imgData, format, err := image.Decode(file)
 						if err != nil {
 							err = fmt.Errorf("failed decoding image data: %w", err)
 							imgChan <- ImageResult{Error: err}
 							return
 						}
-						imgChan <- ImageResult{Image: imgData, Format: format}
+						imgChan <- ImageResult{Image: imgData, Format: format, URL: url}
 					}()
+				}
+				if reopenBtn.Clicked(gtx) {
+					go func(url string) {
+						file, err := expl.ReadFile(url)
+						if err != nil {
+							err = fmt.Errorf("failed reopening image file: %w", err)
+							imgChan <- ImageResult{Error: err}
+							return
+						}
+						defer file.Close()
+						imgData, format, err := image.Decode(file)
+						if err != nil {
+							err = fmt.Errorf("failed decoding image data: %w", err)
+							imgChan <- ImageResult{Error: err}
+							return
+						}
+						imgChan <- ImageResult{Image: imgData, Format: format, URL: url}
+					}(lastURL)
 				}
 				if saveBtn.Clicked(gtx) {
 					go func(img ImageResult) {
@@ -156,10 +188,20 @@ func loop(w *app.Window) error {
 						}.Layout(gtx)
 					}),
 					layout.Rigid(func(gtx C) D {
-						if img.Image == nil {
-							gtx = gtx.Disabled()
-						}
-						return material.Button(th, &saveBtn, "Save Image").Layout(gtx)
+						return layout.Flex{}.Layout(gtx,
+							layout.Flexed(.5, func(gtx layout.Context) layout.Dimensions {
+								if img.Image == nil {
+									gtx = gtx.Disabled()
+								}
+								return material.Button(th, &saveBtn, "Save Image").Layout(gtx)
+							}),
+							layout.Flexed(.5, func(gtx layout.Context) layout.Dimensions {
+								if lastURL == "" {
+									gtx = gtx.Disabled()
+								}
+								return material.Button(th, &reopenBtn, "Reopen Previous Image").Layout(gtx)
+							}),
+						)
 					}),
 					layout.Rigid(func(gtx C) D {
 						if saveErr == nil {
