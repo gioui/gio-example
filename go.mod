@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d
-	gioui.org v0.10.0
+	gioui.org v0.10.1
 	gioui.org/cmd v0.10.0
 	gioui.org/x v0.10.0
 	github.com/go-gl/gl v0.0.0-20231021071112-07e5d0ea2e71
@@ -23,6 +23,7 @@ require (
 	git.sr.ht/~jackmordaunt/go-toast v1.1.2 // indirect
 	git.wow.st/gmp/jni v0.0.0-20210610011705-34026c7e22d0 // indirect
 	github.com/akavel/rsrc v0.10.1 // indirect
+	github.com/andybalholm/stroke v0.0.0-20251027184313-5126dd7227a1 // indirect
 	github.com/esiqveland/notify v0.13.3 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-text/typesetting v0.3.4 // indirect
