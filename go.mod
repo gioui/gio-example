@@ -4,9 +4,9 @@ go 1.24.1
 
 require (
 	eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d
-	gioui.org v0.10.1
+	gioui.org v0.10.2
 	gioui.org/cmd v0.10.0
-	gioui.org/x v0.10.1
+	gioui.org/x v0.10.2
 	github.com/go-gl/gl v0.0.0-20231021071112-07e5d0ea2e71
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728
 	github.com/google/go-github/v24 v24.0.1
@@ -19,7 +19,7 @@ require (
 )
 
 require (
-	gioui.org/shader v1.0.8 // indirect
+	gioui.org/shader v1.0.9 // indirect
 	git.sr.ht/~jackmordaunt/go-toast v1.1.2 // indirect
 	git.wow.st/gmp/jni v0.0.0-20210610011705-34026c7e22d0 // indirect
 	github.com/akavel/rsrc v0.10.1 // indirect
