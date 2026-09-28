@@ -4,9 +4,9 @@ go 1.24.1
 
 require (
 	eliasnaur.com/font v0.0.0-20230308162249-dd43949cb42d
-	gioui.org v0.10.2
+	gioui.org v0.10.3
 	gioui.org/cmd v0.10.0
-	gioui.org/x v0.10.2
+	gioui.org/x v0.10.3
 	github.com/go-gl/gl v0.0.0-20231021071112-07e5d0ea2e71
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728
 	github.com/google/go-github/v24 v24.0.1
@@ -26,8 +26,8 @@ require (
 	github.com/andybalholm/stroke v0.0.0-20251027184313-5126dd7227a1 // indirect
 	github.com/esiqveland/notify v0.13.3 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
-	github.com/go-text/typesetting v0.3.4 // indirect
-	github.com/godbus/dbus/v5 v5.1.0 // indirect
+	github.com/go-text/typesetting v0.3.5 // indirect
+	github.com/godbus/dbus/v5 v5.2.2 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/yuin/goldmark v1.7.11 // indirect
 	golang.org/x/mod v0.30.0 // indirect
