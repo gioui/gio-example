@@ -41,7 +41,6 @@ func loop(w *app.Window) error {
 		deco widget.Decorations
 	)
 	var (
-		toggle    bool
 		decorated bool
 		title     string
 	)
@@ -59,8 +58,7 @@ func loop(w *app.Window) error {
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e)
 			for b.Clicked(gtx) {
-				toggle = !toggle
-				w.Option(app.Decorated(toggle))
+				w.Option(app.Decorated(!decorated))
 			}
 			cl := clip.Rect{Max: e.Size}.Push(gtx.Ops)
 			paint.ColorOp{Color: color.NRGBA{A: 0xff, G: 0xff}}.Add(gtx.Ops)
