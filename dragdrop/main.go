@@ -13,7 +13,6 @@ import (
 
 	"gioui.org/app"
 	"gioui.org/io/event"
-	"gioui.org/io/pointer"
 	"gioui.org/io/transfer"
 	"gioui.org/layout"
 	"gioui.org/op"
@@ -36,7 +35,6 @@ type dropArea struct {
 	mime    string
 	drops   int
 	active  bool
-	hovered bool
 	err     error
 	list    widget.List
 }
@@ -113,10 +111,7 @@ func (d *demo) Layout(gtx layout.Context, theme *material.Theme) layout.Dimensio
 }
 
 func (d *dropArea) Layout(gtx layout.Context, theme *material.Theme, title string, files bool) layout.Dimensions {
-	filters := []event.Filter{
-		transfer.TargetFilter{Target: d, Type: "text/plain"},
-		pointer.Filter{Target: d, Kinds: pointer.Enter | pointer.Leave | pointer.Cancel},
-	}
+	filters := []event.Filter{transfer.TargetFilter{Target: d, Type: "text/plain"}}
 	if files {
 		filters = append(filters, transfer.TargetFilter{Target: d, Type: "text/uri-list"})
 	}
@@ -130,13 +125,6 @@ func (d *dropArea) Layout(gtx layout.Context, theme *material.Theme, title strin
 			d.active = true
 		case transfer.CancelEvent:
 			d.active = false
-		case pointer.Event:
-			switch e.Kind {
-			case pointer.Enter:
-				d.hovered = true
-			case pointer.Leave, pointer.Cancel:
-				d.hovered = false
-			}
 		case transfer.DataEvent:
 			// Read the data in this frame and close the reader after use.
 			reader := e.Open()
@@ -156,7 +144,7 @@ func (d *dropArea) Layout(gtx layout.Context, theme *material.Theme, title strin
 	// Keep the whole area droppable, even when empty.
 	event.Op(gtx.Ops, d)
 	bg := color.NRGBA{R: 235, G: 240, B: 245, A: 255}
-	if d.active && d.hovered {
+	if d.active {
 		bg = color.NRGBA{R: 210, G: 235, B: 215, A: 255}
 	}
 	paint.Fill(gtx.Ops, bg)
